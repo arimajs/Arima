@@ -1,0 +1,11 @@
+{
+  "category": "preconditions"
+}
+---
+import { Precondition } from '@sapphire/framework';
+
+export class UserPrecondition extends Precondition<undefined> {
+	public run(argument: string) {
+        
+	}
+}

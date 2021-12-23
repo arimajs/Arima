@@ -1,0 +1,6 @@
+{
+	"extends": "@sapphire",
+	"rules": {
+		"curly": "error"
+	}
+}

@@ -1,0 +1,31 @@
+{
+  "category": "commands"
+}
+---
+import type { CommandInteraction } from 'discord.js';
+import type { CommandOptions } from '@sapphire/framework';
+import { RegisterBehavior } from '@sapphire/framework';
+import { ApplyOptions } from '@sapphire/decorators';
+import { Command } from '#structures/Command';
+
+@ApplyOptions<CommandOptions>({
+	description: '',
+	chatInputCommand: {
+		register: true,
+		behaviorWhenNotIdentical: RegisterBehavior.Overwrite
+	}
+})
+export class UserCommand extends Command {
+	public override async chatInputRun(interaction: CommandInteraction) {
+        
+	}
+
+	public override registerApplicationCommands(register: ApplicationCommandRegistry) {
+		register.registerChatInputCommand((builder) =>
+			builder //
+				.setName(this.name)
+				.setDescription(''),
+			{ behaviorWhenNotIdentical: RegisterBehavior.Overwrite }
+		);
+	}
+}

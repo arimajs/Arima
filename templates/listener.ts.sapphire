@@ -1,0 +1,11 @@
+{
+  "category": "listeners"
+}
+---
+import { Events, Listener } from '@sapphire/framework';
+
+export class UserListener extends Listener<typeof Events.{{name}}> {
+	public async run() {
+        
+	}
+}

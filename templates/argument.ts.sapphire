@@ -1,0 +1,11 @@
+{
+  "category": "arguments"
+}
+---
+import { Argument } from '@sapphire/framework';
+
+export class UserPrecondition extends Argument<undefined> {
+	public run(argument: string) {
+        
+	}
+}

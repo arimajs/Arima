@@ -1,0 +1,11 @@
+{
+	"extends": "@sapphire/ts-config",
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "ESNext",
+		"importHelpers": true,
+		"noEmitHelpers": true,
+		"noImplicitOverride": true,
+		"importsNotUsedAsValues": "error"
+	}
+}
