@@ -18,7 +18,7 @@
 		"pm2": "pm2 start pm2.ecosystem.yml",
 		"start": "node --enable-source-maps .",
 		"lint": "eslint src tests scripts --ext js,ts --fix",
-		"format": "prettier --write \"{src,tests}/**/*.ts\"",
+		"format": "prettier --write \"{src,tests,scripts}/**/*.[jt]s\"",
 		"update": "yarn upgrade-interactive",
 		"build": "node scripts/build.js",
 		"watch": "node scripts/watch.js",
