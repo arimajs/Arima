@@ -4,15 +4,13 @@
 ---
 import type { CommandInteraction } from 'discord.js';
 import type { CommandOptions } from '@sapphire/framework';
-import { RegisterBehavior } from '@sapphire/framework';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Command } from '#structures/Command';
 
 @ApplyOptions<CommandOptions>({
 	description: '',
 	chatInputCommand: {
-		register: true,
-		behaviorWhenNotIdentical: RegisterBehavior.Overwrite
+		register: true
 	}
 })
 export class UserCommand extends Command {
@@ -24,8 +22,7 @@ export class UserCommand extends Command {
 		register.registerChatInputCommand((builder) =>
 			builder //
 				.setName(this.name)
-				.setDescription(''),
-			{ behaviorWhenNotIdentical: RegisterBehavior.Overwrite }
+				.setDescription('')
 		);
 	}
 }
