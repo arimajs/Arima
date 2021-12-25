@@ -1,9 +1,9 @@
 {
-	"name": "sapphire-template",
+	"name": "arima",
 	"version": "0.0.1",
 	"description": "Template for my typescript Discord bot projects",
 	"main": "dist/index.js",
-	"repository": "https://github.com/Lioness100/sapphire-template",
+	"repository": "https://github.com/Lioness100/Arima",
 	"author": "Lioness100 <jchickmm2@gmail.com>",
 	"license": "Apache-2.0",
 	"type": "module",
