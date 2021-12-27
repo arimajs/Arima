@@ -1,4 +1,4 @@
-import type { ApplicationCommandRegistry, CommandOptions, Store } from '@sapphire/framework';
+import type { ApplicationCommandRegistry, Store } from '@sapphire/framework';
 import type { AutocompleteInteraction, CommandInteraction } from 'discord.js';
 import { ApplyOptions } from '@sapphire/decorators';
 import { createEmbed } from '#utils/responses';
@@ -8,7 +8,7 @@ import { Command } from '#structures/Command';
 import { Piece } from '@sapphire/framework';
 import Fuse from 'fuse.js/dist/fuse.basic.min.js';
 
-@ApplyOptions<CommandOptions>({
+@ApplyOptions<Command.Options>({
 	preconditions: ['OwnerOnly']
 })
 export class UserCommand extends Command {
@@ -71,7 +71,6 @@ export class UserCommand extends Command {
 			(builder) =>
 				builder
 					.setName(this.name)
-					.setDescription('[owner only] Reload a piece, or a store, or all of both')
 					.addSubcommand((builder) =>
 						builder
 							.setName('piece')
@@ -79,7 +78,7 @@ export class UserCommand extends Command {
 							.addStringOption((builder) =>
 								builder //
 									.setName('name')
-									.setDescription('The name of the piece to reload')
+									.setDescription('[owner only] The name of the piece to reload')
 									.setRequired(true)
 									.setAutocomplete(true)
 							)
@@ -91,7 +90,7 @@ export class UserCommand extends Command {
 							.addStringOption((builder) =>
 								builder //
 									.setName('name')
-									.setDescription('The name of the store to reload')
+									.setDescription('[owner only] The name of the store to reload')
 									.setRequired(true)
 									.setAutocomplete(true)
 							)
@@ -99,7 +98,7 @@ export class UserCommand extends Command {
 					.addSubcommand((builder) =>
 						builder //
 							.setName('all')
-							.setDescription('Reload all stores and pieces')
+							.setDescription('[owner only] Reload all stores and pieces')
 					),
 			{
 				idHints: ['919288852072501299']
