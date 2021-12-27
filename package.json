@@ -1,7 +1,7 @@
 {
 	"name": "arima",
 	"version": "0.0.1",
-	"description": "Template for my typescript Discord bot projects",
+	"description": "🎶 A music quiz discord bot designed for lightly competitive fun!",
 	"main": "dist/index.js",
 	"repository": "https://github.com/Lioness100/Arima",
 	"author": "Lioness100 <jchickmm2@gmail.com>",
