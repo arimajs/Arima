@@ -2,10 +2,10 @@ import type { ApplicationCommandRegistry } from '@sapphire/framework';
 import type { CommandInteraction } from 'discord.js';
 import { codeBlock, inlineCode } from '@discordjs/builders';
 import { ApplyOptions } from '@sapphire/decorators';
+import { ArimaCommand } from '#structures/ArimaCommand';
 import { createEmbed } from '#utils/responses';
 import { isThenable } from '@sapphire/utilities';
 import { Stopwatch } from '@sapphire/stopwatch';
-import { Command } from '#structures/Command';
 import { inspect } from 'node:util';
 import { Buffer } from 'node:buffer';
 import { Type } from '@sapphire/type';
@@ -13,7 +13,7 @@ import { Type } from '@sapphire/type';
 // In the future, this may be converted to/accompanied with a context menu
 // interaction. That way, users could naturally send multiline code. Or, modals
 // could be used instead (when they're released).
-@ApplyOptions<Command.Options>({
+@ApplyOptions<ArimaCommand.Options>({
 	description: 'Evaluate any JavaScript code',
 	detailedDescription: [
 		'Evaluate any JavaScript code and send the result, or error accompanied by a return type.',
@@ -24,7 +24,7 @@ import { Type } from '@sapphire/type';
 	flags: ['async', 'ephemeral'],
 	options: ['depth', 'decimals']
 })
-export class UserCommand extends Command {
+export class UserCommand extends ArimaCommand {
 	public override async chatInputRun(interaction: CommandInteraction) {
 		const code = interaction.options.getString('code', true);
 		const depth = interaction.options.getInteger('depth');

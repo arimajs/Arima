@@ -1,18 +1,18 @@
 import type { CommandInteraction, Message } from 'discord.js';
 import { BrandingColors } from '#utils/constants';
+import { ArimaCommand } from '#structures/ArimaCommand';
 import { ApplyOptions } from '@sapphire/decorators';
 import { createEmbed } from '#utils/responses';
 import { inlineCode } from '@discordjs/builders';
-import { Command } from '#structures/Command';
 
-@ApplyOptions<Command.Options>({
+@ApplyOptions<ArimaCommand.Options>({
 	description: 'View my latency',
 	chatInputCommand: {
 		register: true,
 		idHints: ['919288852131217419']
 	}
 })
-export class UserCommand extends Command {
+export class UserCommand extends ArimaCommand {
 	public override async chatInputRun(interaction: CommandInteraction) {
 		const embed = createEmbed('', BrandingColors.Secondary).setTitle('Ping? 🏓');
 		const message = (await interaction.reply({ embeds: [embed], fetchReply: true })) as Message;

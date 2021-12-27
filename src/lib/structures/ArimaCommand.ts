@@ -1,9 +1,9 @@
 import type { Args, Piece } from '@sapphire/framework';
-import { Command as SapphireCommand, UserError } from '@sapphire/framework';
+import { Command, UserError } from '@sapphire/framework';
 import { PermissionFlagsBits } from 'discord-api-types/v9';
 import { Permissions } from 'discord.js';
 
-export abstract class Command<O extends Command.Options = Command.Options> extends SapphireCommand<Args, O> {
+export abstract class ArimaCommand<O extends ArimaCommand.Options = ArimaCommand.Options> extends Command<Args, O> {
 	public constructor(context: Piece.Context, options: O) {
 		super(context, {
 			// All commands use embeds and thus require this permissions
@@ -22,7 +22,7 @@ export abstract class Command<O extends Command.Options = Command.Options> exten
 	}
 }
 
-export namespace Command {
+export namespace ArimaCommand {
 	// Convenience type to save imports.
-	export type Options = SapphireCommand.Options;
+	export type Options = Command.Options;
 }

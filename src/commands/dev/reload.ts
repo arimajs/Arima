@@ -1,17 +1,17 @@
 import type { ApplicationCommandRegistry, Store } from '@sapphire/framework';
 import type { AutocompleteInteraction, CommandInteraction } from 'discord.js';
 import { ApplyOptions } from '@sapphire/decorators';
+import { ArimaCommand } from '#structures/ArimaCommand';
 import { createEmbed } from '#utils/responses';
 import { Collection } from 'discord.js';
 import { Stopwatch } from '@sapphire/stopwatch';
-import { Command } from '#structures/Command';
 import { Piece } from '@sapphire/framework';
 import Fuse from 'fuse.js/dist/fuse.basic.min.js';
 
-@ApplyOptions<Command.Options>({
+@ApplyOptions<ArimaCommand.Options>({
 	preconditions: ['OwnerOnly']
 })
-export class UserCommand extends Command {
+export class UserCommand extends ArimaCommand {
 	public override async chatInputRun(interaction: CommandInteraction) {
 		const type = interaction.options.getSubcommand(true);
 		const name = interaction.options.getString('name', true);
