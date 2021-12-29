@@ -4,9 +4,11 @@
  * Modified for use in this project.
  */
 
+/* eslint-disable @typescript-eslint/unbound-method */
 import { fileURLToPath, URL } from 'node:url';
-import { opendir } from 'node:fs/promises';
+import { opendir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import typescript from 'typescript';
 import esbuild from 'esbuild';
 
 async function* scan(path, cb) {
@@ -37,7 +39,7 @@ export async function build(watch = false) {
 	}
 
 	const tsconfig = join(fileURLToPath(srcFolder), 'tsconfig.json');
-	const outdir = fileURLToPath(distFolder);
+	const outDir = fileURLToPath(distFolder);
 
 	await esbuild.build({
 		logLevel: 'info',
@@ -45,8 +47,9 @@ export async function build(watch = false) {
 		format: 'esm',
 		resolveExtensions: ['.ts', '.js'],
 		write: true,
-		outdir,
+		outdir: outDir,
 		platform: 'node',
+		plugins: [{ name: 'tsc', setup: await pluginTsc(tsconfig, outDir) }],
 		tsconfig,
 		watch,
 		incremental: watch,
@@ -54,4 +57,30 @@ export async function build(watch = false) {
 		external: [],
 		minify: process.env.NODE_ENV === 'production'
 	});
+}
+
+/**
+ * Plugin to reroute all files in the `entities` director to use tsc instead of esbuild.
+ * This is needed to preserve metadata in entities for mikro-orm.
+ * @param {string} tsconfigPath
+ * @param {string} outDir
+ */
+async function pluginTsc(tsconfigPath, outDir) {
+	const raw = await readFile(tsconfigPath, 'utf8');
+	const tsconfig = JSON.parse(raw);
+
+	// The config needs to be parsed to resolve extensions (among other things).
+	const parsedTsConfig = typescript.parseJsonConfigFileContent(tsconfig, typescript.sys, outDir);
+
+	/**
+	 * @param {esbuild.PluginBuild} build
+	 */
+	return function setup(build) {
+		// This overwrites the building of all files with a path that matches the regex.
+		build.onLoad({ filter: /entities/ }, async (args) => {
+			const ts = await readFile(args.path, 'utf8');
+			const program = typescript.transpileModule(ts, { compilerOptions: parsedTsConfig.options });
+			return { contents: program.outputText };
+		});
+	};
 }

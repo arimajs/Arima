@@ -25,6 +25,7 @@ ___________                   .__          __           __________        __
 
   ${magenta(version)}
   [${green('+')}] Gateway
+  [${green('+')}] Database
   ${magenta('<')}${magentaBright('/')}${magenta('>')} ${bold(`${env.isProduction ? 'DEV' : 'PROD'} MODE`)}
   
 ${this.storeDebugInformation()}

@@ -9,7 +9,8 @@
 			"#lib/*": ["lib/*"],
 			"#types/*": ["lib/types/*"],
 			"#structures/*": ["lib/structures/*"],
-			"#utils/*": ["lib/utils/*"]
+			"#utils/*": ["lib/utils/*"],
+			"#database/*": ["lib/database/*"]
 		}
 	},
 	"include": ["."]

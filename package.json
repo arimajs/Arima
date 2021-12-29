@@ -12,7 +12,8 @@
 		"#root/*": "./dist/*.js",
 		"#lib/*": "./dist/lib/*.js",
 		"#structures/*": "./dist/lib/structures/*.js",
-		"#utils/*": "./dist/lib/utils/*.js"
+		"#utils/*": "./dist/lib/utils/*.js",
+		"#database/*": "./dist/lib/database/*.js"
 	},
 	"scripts": {
 		"pm2": "pm2 start pm2.ecosystem.yml",
@@ -30,6 +31,8 @@
 	},
 	"dependencies": {
 		"@discordjs/builders": "0.9.0",
+		"@mikro-orm/core": "^4.5.10",
+		"@mikro-orm/mongodb": "^4.5.10",
 		"@sapphire/decorators": "^3.1.4",
 		"@sapphire/discord.js-utilities": "^4.1.5",
 		"@sapphire/framework": "2.3.0-pr-293.67baf15.0",
@@ -43,6 +46,7 @@
 		"dotenv": "^10.0.0",
 		"envalid": "^7.2.2",
 		"fuse.js": "^6.5.0",
+		"reflect-metadata": "^0.1.13",
 		"tslib": "^2.3.1"
 	},
 	"devDependencies": {
