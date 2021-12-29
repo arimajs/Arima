@@ -1,7 +1,7 @@
 import { cleanEnv, str } from 'envalid';
-import process from 'node:process';
+import { env } from 'node:process';
 
-export const env = cleanEnv(process.env, {
+export const config = cleanEnv(env, {
 	TOKEN: str({ desc: 'The discord bot token' }),
 	MONGODB_URI: str({ desc: 'The mongo connection string' })
 });

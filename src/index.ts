@@ -5,7 +5,7 @@ import { SapphireClient, ApplicationCommandRegistries, RegisterBehavior, contain
 import { GatewayIntentBits } from 'discord-api-types/v9';
 import { DatabaseManager } from '#database/DatabaseManager';
 import { Constants } from 'discord.js';
-import { env } from '#root/config';
+import { config } from '#root/config';
 import process from 'node:process';
 
 const client = new SapphireClient({
@@ -23,7 +23,7 @@ ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior
 
 try {
 	container.db = await DatabaseManager.connect();
-	await client.login(env.TOKEN);
+	await client.login(config.TOKEN);
 } catch (error) {
 	client.logger.fatal(error);
 	client.destroy();

@@ -4,7 +4,7 @@ import { Listener, Events } from '@sapphire/framework';
 import { ApplyOptions } from '@sapphire/decorators';
 import { readFile } from 'node:fs/promises';
 import { rootURL } from '#utils/constants';
-import { env } from '#root/config';
+import { config } from '#root/config';
 import { URL } from 'node:url';
 
 @ApplyOptions<Listener.Options>({ once: true })
@@ -26,7 +26,7 @@ ___________                   .__          __           __________        __
   ${magenta(version)}
   [${green('+')}] Gateway
   [${green('+')}] Database
-  ${magenta('<')}${magentaBright('/')}${magenta('>')} ${bold(`${env.isProduction ? 'DEV' : 'PROD'} MODE`)}
+  ${magenta('<')}${magentaBright('/')}${magenta('>')} ${bold(`${config.isProduction ? 'DEV' : 'PROD'} MODE`)}
   
 ${this.storeDebugInformation()}
 `

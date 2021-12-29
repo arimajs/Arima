@@ -3,7 +3,7 @@ import type { EntityManager } from '@mikro-orm/core';
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { MikroORM } from '@mikro-orm/core';
 import { User } from '#database/entities/User';
-import { env } from '#root/config';
+import { config } from '#root/config';
 
 export class DatabaseManager {
 	public readonly users: EntityRepository<User>;
@@ -17,7 +17,7 @@ export class DatabaseManager {
 
 		const orm = await MikroORM.init<MongoDriver>({
 			context: () => storage.getStore(),
-			clientUrl: env.MONGODB_URI,
+			clientUrl: config.MONGODB_URI,
 			type: 'mongo',
 
 			// File discovery does not support ESM, so all entities must be imported manually.
