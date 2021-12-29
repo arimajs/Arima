@@ -71,6 +71,7 @@ export class UserCommand extends ArimaCommand {
 			(builder) =>
 				builder
 					.setName(this.name)
+					.setDescription('[owner only] Reload a piece, or a store, or all of both')
 					.addSubcommand((builder) =>
 						builder
 							.setName('piece')
