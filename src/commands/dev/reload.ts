@@ -9,7 +9,8 @@ import { Piece } from '@sapphire/framework';
 import Fuse from 'fuse.js/dist/fuse.basic.min.js';
 
 @ApplyOptions<ArimaCommand.Options>({
-	preconditions: ['OwnerOnly']
+	preconditions: ['OwnerOnly'],
+	description: '[owner only] Reload a piece, or a store, or all of both'
 })
 export class UserCommand extends ArimaCommand {
 	public override async chatInputRun(interaction: CommandInteraction) {
@@ -71,7 +72,7 @@ export class UserCommand extends ArimaCommand {
 			(builder) =>
 				builder
 					.setName(this.name)
-					.setDescription('[owner only] Reload a piece, or a store, or all of both')
+					.setDescription(this.description)
 					.addSubcommand((builder) =>
 						builder
 							.setName('piece')

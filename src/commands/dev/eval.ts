@@ -1,11 +1,11 @@
 import type { ApplicationCommandRegistry } from '@sapphire/framework';
 import type { CommandInteraction } from 'discord.js';
-import { codeBlock, inlineCode } from '@discordjs/builders';
 import { ApplyOptions } from '@sapphire/decorators';
 import { ArimaCommand } from '#structures/ArimaCommand';
 import { createEmbed } from '#utils/responses';
 import { isThenable } from '@sapphire/utilities';
 import { Stopwatch } from '@sapphire/stopwatch';
+import { codeBlock } from '@discordjs/builders';
 import { inspect } from 'node:util';
 import { Buffer } from 'node:buffer';
 import { Type } from '@sapphire/type';
@@ -14,15 +14,8 @@ import { Type } from '@sapphire/type';
 // interaction. That way, users could naturally send multiline code. Or, modals
 // could be used instead (when they're released).
 @ApplyOptions<ArimaCommand.Options>({
-	description: 'Evaluate any JavaScript code',
-	detailedDescription: [
-		'Evaluate any JavaScript code and send the result, or error accompanied by a return type.',
-		`${inlineCode('await')} can only be used with the ${inlineCode('async')} flag,`,
-		'for which the result to show must be returned.'
-	].join(' '),
-	preconditions: ['OwnerOnly'],
-	flags: ['async', 'ephemeral'],
-	options: ['depth', 'decimals']
+	description: '[owner only] Evaluate any JavaScript code',
+	preconditions: ['OwnerOnly']
 })
 export class UserCommand extends ArimaCommand {
 	public override async chatInputRun(interaction: CommandInteraction) {
@@ -53,7 +46,7 @@ export class UserCommand extends ArimaCommand {
 			(builder) =>
 				builder
 					.setName(this.name)
-					.setDescription('[owner only] Evaluate any JavaScript code')
+					.setDescription(this.description)
 					.addStringOption((builder) =>
 						builder //
 							.setName('code')
