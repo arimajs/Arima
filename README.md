@@ -17,6 +17,7 @@ We pride ourselves on keeping Arima 100% open source, so please feel free open a
 - Setting up a system to use Docker in production
 - Setting up Sentry to catch errors
 - Setting up a way to collect statistics (Grafana & Prometheus, InfluxDB, or something else)
+- Add more tests (if needed)
 
 ## Contributors ✨
 
