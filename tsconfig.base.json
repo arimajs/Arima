@@ -6,6 +6,7 @@
 		"importHelpers": true,
 		"noEmitHelpers": true,
 		"noImplicitOverride": true,
-		"importsNotUsedAsValues": "error"
+		"importsNotUsedAsValues": "error",
+		"emitDecoratorMetadata": true
 	}
 }

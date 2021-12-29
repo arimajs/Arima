@@ -1,11 +1,9 @@
 /**
- * @type {import('ts-jest/dist/types').InitialOptionsTsJest}
+ * @type {import('ts-jest').InitialOptionsTsJest}
  */
-const config = {
+export default {
 	testEnvironment: 'node',
 	transform: {
 		'^.+\\.tsx?$': 'esbuild-jest'
 	}
 };
-
-export default config;
