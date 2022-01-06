@@ -2,5 +2,15 @@
 	"extends": "@sapphire",
 	"rules": {
 		"curly": "error"
-	}
+	},
+	"overrides": [
+		{
+			"files": ["**/entities/*.ts"],
+			"rules": {
+				// Mikro-orm requires explicit typing due to the limitations of
+				// decorator metadata emitted
+				"@typescript-eslint/no-inferrable-types": "off"
+			}
+		}
+	]
 }

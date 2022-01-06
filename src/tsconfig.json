@@ -10,6 +10,7 @@
 			"#lib/*": ["lib/*"],
 			"#types/*": ["lib/types/*"],
 			"#structures/*": ["lib/structures/*"],
+			"#game/*": ["lib/structures/game/*"],
 			"#utils/*": ["lib/utils/*"],
 			"#database/*": ["lib/database/*"]
 		}

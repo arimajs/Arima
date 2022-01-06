@@ -1,15 +1,20 @@
 import type { Piece, Store } from '@sapphire/framework';
 import { blue, gray, green, magenta, magentaBright, bold } from 'colorette';
+import { createAudioOptions, env } from '#root/config';
 import { Listener, Events } from '@sapphire/framework';
 import { ApplyOptions } from '@sapphire/decorators';
+import { Collection } from 'discord.js';
 import { readFile } from 'node:fs/promises';
 import { rootURL } from '#utils/constants';
-import { env } from '#root/config';
+import { Queue } from '#game/Queue';
+import { Node } from '@skyra/audio';
 import { URL } from 'node:url';
 
 @ApplyOptions<Listener.Options>({ once: true })
 export class UserEvent extends Listener<typeof Events.ClientReady> {
 	public async run() {
+		await this.createQueueClient();
+
 		const raw = await readFile(new URL('../package.json', rootURL), 'utf8');
 		const { version } = JSON.parse(raw);
 
@@ -25,11 +30,28 @@ export class UserEvent extends Listener<typeof Events.ClientReady> {
   ${magenta(version)}
   [${green('+')}] Gateway
   [${green('+')}] Database
+  [${green('+')}] Audio
   ${magenta('<')}${magentaBright('/')}${magenta('>')} ${bold(`${env.isProduction ? 'DEV' : 'PROD'} MODE`)}
   
 ${this.storeDebugInformation()}
 `
 		);
+	}
+
+	private async createQueueClient() {
+		this.container.games = new Collection();
+		this.container.audio = new Node(createAudioOptions(this.container.client), (guildId, packet) => {
+			// https://github.com/skyra-project/audio#usage
+			const guild = this.container.client.guilds.cache.get(guildId);
+			return guild?.shard.send(packet);
+		});
+
+		// If the bot stayed in a voice channel through a restart, leave.
+		for (const guild of this.container.client.guilds.cache.values()) {
+			if (guild.me!.voice.channelId) {
+				await Queue.getPlayer(guild.id).leave();
+			}
+		}
 	}
 
 	private storeDebugInformation() {

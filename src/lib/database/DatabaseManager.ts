@@ -1,29 +1,25 @@
 import type { EntityRepository, MongoDriver } from '@mikro-orm/mongodb';
 import type { EntityManager } from '@mikro-orm/core';
-import { AsyncLocalStorage } from 'node:async_hooks';
 import { MikroORM } from '@mikro-orm/core';
+import { Member } from '#database/entities/Member';
 import { env } from '#root/config';
-import { User } from '#database/entities/User';
 
 export class DatabaseManager {
-	public readonly users: EntityRepository<User>;
+	public readonly members: EntityRepository<Member>;
 
-	private constructor(public readonly em: EntityManager, public readonly storage: AsyncLocalStorage<EntityManager>) {
-		this.users = em.getRepository(User);
+	private constructor(public readonly em: EntityManager) {
+		this.members = em.getRepository(Member);
 	}
 
 	public static async connect() {
-		const storage = new AsyncLocalStorage<EntityManager>();
-
 		const orm = await MikroORM.init<MongoDriver>({
-			context: () => storage.getStore(),
 			clientUrl: env.MONGODB_URI,
 			type: 'mongo',
 
 			// File discovery does not support ESM, so all entities must be imported manually.
-			entities: [User]
+			entities: [Member]
 		});
 
-		return new DatabaseManager(orm.em, storage);
+		return new DatabaseManager(orm.em);
 	}
 }
