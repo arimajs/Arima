@@ -7,12 +7,12 @@ import { Precondition } from '@sapphire/framework';
 // specific user, you must restrict it in *every* single guild the bot is in.
 export class UserPrecondition extends Precondition {
 	public override async chatInputRun(interaction: CommandInteraction) {
-		if (!this.container.client.application!.owner) {
-			await this.container.client.application!.fetch();
+		if (!this.client.application!.owner) {
+			await this.client.application!.fetch();
 		}
 
 		// `application.owner` is guarranteed to be populated after the above fetch.
-		const owner = this.container.client.application!.owner!;
+		const owner = this.client.application!.owner!;
 
 		// It will be a (partial) user or a team, and if it's a team, we should allow
 		// access to every member.

@@ -8,6 +8,6 @@ import { container, Listener } from '@sapphire/framework';
 @ApplyOptions<Listener.Options>({ emitter: container.audio, event: 'event' })
 export class UserAudioListener extends Listener {
 	public run(payload: IncomingEventPayload) {
-		this.container.client.emit(payload.type, payload);
+		this.client.emit(payload.type, payload);
 	}
 }

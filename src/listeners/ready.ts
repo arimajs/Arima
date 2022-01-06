@@ -39,14 +39,14 @@ ${this.storeDebugInformation()}
 
 	private async createQueueClient() {
 		this.container.games = new Collection();
-		this.container.audio = new Node(createAudioOptions(this.container.client), (guildId, packet) => {
+		this.container.audio = new Node(createAudioOptions(this.client), (guildId, packet) => {
 			// https://github.com/skyra-project/audio#usage
-			const guild = this.container.client.guilds.cache.get(guildId);
+			const guild = this.client.guilds.cache.get(guildId);
 			return guild?.shard.send(packet);
 		});
 
 		// If the bot stayed in a voice channel through a restart, leave.
-		for (const guild of this.container.client.guilds.cache.values()) {
+		for (const guild of this.client.guilds.cache.values()) {
 			if (guild.me!.voice.channelId) {
 				await Queue.getPlayer(guild.id).leave();
 			}
@@ -54,7 +54,7 @@ ${this.storeDebugInformation()}
 	}
 
 	private storeDebugInformation() {
-		const stores = [...this.container.client.stores.values()];
+		const stores = [...this.client.stores.values()];
 		return stores //
 			.reverse()
 			.reduce((list, store) => `${this.styleStore(store, false)}\n${list}`, this.styleStore(stores.pop()!, true));

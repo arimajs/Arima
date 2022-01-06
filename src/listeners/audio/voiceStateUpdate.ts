@@ -49,7 +49,7 @@ export class UserAudioListener extends Listener<typeof Events.VoiceStateUpdate> 
 		// If the new channel is nonexistent, the user left the voice channel.
 		// If it's the bot that left, a different course of behavior should be
 		// taken.
-		if (!newState.channelId && member.id !== this.container.client.user!.id) {
+		if (!newState.channelId && member.id !== this.client.user!.id) {
 			if (member.id === game.hostUser.id) {
 				// If the user who left was the host, end the game, as the host
 				// is the only one who can use the leave command. This behavior
