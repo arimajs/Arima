@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-invalid-void-type */
-import type { ColorResolvable, CommandInteraction } from 'discord.js';
+import { MessageEmbed, type ColorResolvable, type CommandInteraction } from 'discord.js';
 import { BrandingColors } from '#utils/constants';
-import { MessageEmbed } from 'discord.js';
 
 /**
  * Creates an embed.

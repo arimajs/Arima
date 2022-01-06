@@ -1,5 +1,4 @@
-import type { Args, Piece } from '@sapphire/framework';
-import { Command, UserError } from '@sapphire/framework';
+import { Command, UserError, type Args, type Piece } from '@sapphire/framework';
 import { PermissionFlagsBits } from 'discord-api-types/v9';
 import { Permissions } from 'discord.js';
 

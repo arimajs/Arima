@@ -1,6 +1,5 @@
-import type { Snowflake } from 'discord.js';
 import { ordinal, prefixAndPluralize } from '#utils/common';
-import { Collection } from 'discord.js';
+import { Collection, type Snowflake } from 'discord.js';
 
 export class Leaderboard extends Collection<Snowflake, number> {
 	public get leader() {

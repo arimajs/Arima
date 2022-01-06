@@ -1,7 +1,6 @@
-import type { Piece, Store } from '@sapphire/framework';
 import { blue, gray, green, magenta, magentaBright, bold } from 'colorette';
+import { Listener, Events, type Piece, type Store } from '@sapphire/framework';
 import { createAudioOptions, env } from '#root/config';
-import { Listener, Events } from '@sapphire/framework';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Collection } from 'discord.js';
 import { readFile } from 'node:fs/promises';

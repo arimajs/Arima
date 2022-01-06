@@ -1,5 +1,4 @@
-import type { GatewayVoiceState } from 'discord-api-types/v9';
-import { GatewayDispatchEvents } from 'discord-api-types/v9';
+import { GatewayDispatchEvents, type GatewayVoiceState } from 'discord-api-types/v9';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Listener } from '@sapphire/framework';
 

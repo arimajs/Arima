@@ -1,8 +1,8 @@
 import type { IncomingEventTrackEndPayload } from '@skyra/audio';
 import { BrandingColors } from '#utils/constants';
-import { GameEndReason } from '#root/lib/structures/game/Game';
+import { GameEndReason } from '#game/Game';
 import { ApplyOptions } from '@sapphire/decorators';
-import { createEmbed } from '#root/lib/utils/responses';
+import { createEmbed } from '#utils/responses';
 import { Listener } from '@sapphire/framework';
 
 @ApplyOptions<Listener.Options>({ event: 'TrackEndEvent' })

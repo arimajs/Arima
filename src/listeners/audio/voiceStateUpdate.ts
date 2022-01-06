@@ -1,6 +1,5 @@
 import type { VoiceState } from 'discord.js';
-import type { Events } from '@sapphire/framework';
-import { Listener } from '@sapphire/framework';
+import { Listener, type Events } from '@sapphire/framework';
 import { GameEndReason } from '#root/lib/structures/game/Game';
 
 // This event is run on voice channel joins, moves, or disconnects of any person

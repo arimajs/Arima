@@ -1,8 +1,7 @@
 import type { TrackInfo } from '@skyra/audio';
 import type { Snowflake } from 'discord.js';
-import type { Game } from '#game/Game';
 import { getRandomThirtySecondWindow } from '#utils/audio';
-import { GameEndReason } from '#game/Game';
+import { GameEndReason, type Game } from '#game/Game';
 import { container } from '@sapphire/framework';
 
 export class Queue {

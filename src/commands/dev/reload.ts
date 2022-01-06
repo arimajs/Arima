@@ -1,11 +1,9 @@
-import type { ApplicationCommandRegistry, Store } from '@sapphire/framework';
-import type { AutocompleteInteraction, CommandInteraction } from 'discord.js';
+import { Collection, type AutocompleteInteraction, type CommandInteraction } from 'discord.js';
+import { Piece, type Store, type ApplicationCommandRegistry } from '@sapphire/framework';
 import { ApplyOptions } from '@sapphire/decorators';
 import { ArimaCommand } from '#structures/ArimaCommand';
 import { createEmbed } from '#utils/responses';
-import { Collection } from 'discord.js';
 import { Stopwatch } from '@sapphire/stopwatch';
-import { Piece } from '@sapphire/framework';
 import Fuse from 'fuse.js/dist/fuse.basic.min.js';
 
 @ApplyOptions<ArimaCommand.Options>({
