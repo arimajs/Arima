@@ -3,7 +3,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 import { Listener } from '@sapphire/framework';
 
 @ApplyOptions<Listener.Options>({ event: GatewayDispatchEvents.VoiceStateUpdate, emitter: 'ws' })
-export class UserAudioListener extends Listener {
+export class UserListener extends Listener {
 	public async run(data: GatewayVoiceState) {
 		try {
 			await this.container.audio.voiceStateUpdate(data);

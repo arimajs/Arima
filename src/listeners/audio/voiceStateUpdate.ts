@@ -4,7 +4,7 @@ import { GameEndReason } from '#root/lib/structures/game/Game';
 
 // This event is run on voice channel joins, moves, or disconnects of any person
 // in a guild channel.
-export class UserAudioListener extends Listener<typeof Events.VoiceStateUpdate> {
+export class UserListener extends Listener<typeof Events.VoiceStateUpdate> {
 	public async run(oldState: VoiceState, newState: VoiceState) {
 		const game = this.container.games.get(newState.guild.id);
 

@@ -10,7 +10,7 @@ import { Node } from '@skyra/audio';
 import { URL } from 'node:url';
 
 @ApplyOptions<Listener.Options>({ once: true })
-export class UserEvent extends Listener<typeof Events.ClientReady> {
+export class UserListener extends Listener<typeof Events.ClientReady> {
 	public async run() {
 		await this.createQueueClient();
 

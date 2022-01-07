@@ -8,7 +8,7 @@ import { Listener } from '@sapphire/framework';
 // way to continue (either you wouldn't have a channel to guess in or a channel
 // to listen to in)
 @ApplyOptions<Listener.Options>({ event: GatewayDispatchEvents.ChannelDelete, emitter: 'ws' })
-export class UserAudioListener extends Listener {
+export class UserListener extends Listener {
 	public async run(data: GatewayChannelDeleteDispatchData) {
 		// Exit early if it's a DM channel.
 		if (!data.guild_id) {

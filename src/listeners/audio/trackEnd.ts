@@ -6,7 +6,7 @@ import { createEmbed } from '#utils/responses';
 import { Listener } from '@sapphire/framework';
 
 @ApplyOptions<Listener.Options>({ event: 'TrackEndEvent' })
-export class UserAudioListener extends Listener {
+export class UserListener extends Listener {
 	public async run(payload: IncomingEventTrackEndPayload) {
 		// Only proceed if the track wasn't stopped because the player had
 		// stopped, or because another track started playing while the current

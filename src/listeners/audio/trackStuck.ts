@@ -5,7 +5,7 @@ import { Listener } from '@sapphire/framework';
 import { Time } from '@sapphire/time-utilities';
 
 @ApplyOptions<Listener.Options>({ event: 'TrackStuckEvent' })
-export class UserAudioListener extends Listener {
+export class UserListener extends Listener {
 	public async run(payload: IncomingEventTrackStuckPayload) {
 		if (payload.thresholdMs < 1000) {
 			return;

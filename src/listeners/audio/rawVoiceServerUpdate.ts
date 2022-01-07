@@ -4,7 +4,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 import { Listener } from '@sapphire/framework';
 
 @ApplyOptions<Listener.Options>({ event: GatewayDispatchEvents.VoiceServerUpdate, emitter: 'ws' })
-export class UserAudioListener extends Listener {
+export class UserListener extends Listener {
 	public async run(data: VoiceServerUpdate) {
 		try {
 			await this.container.audio.voiceServerUpdate(data);

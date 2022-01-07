@@ -7,7 +7,7 @@ import { Listener } from '@sapphire/framework';
 // outage from Discord. This listener is attached directly on `ws` because the
 // game should end regardless of whether the guild is cached.
 @ApplyOptions<Listener.Options>({ event: GatewayDispatchEvents.GuildDelete, emitter: 'ws' })
-export class UserAudioListener extends Listener {
+export class UserListener extends Listener {
 	public async run(data: GatewayGuildDeleteDispatchData) {
 		const game = this.container.games.get(data.id);
 		await game?.end(GameEndReason.GuildInaccessible);
