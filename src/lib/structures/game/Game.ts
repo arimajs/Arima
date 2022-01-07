@@ -108,9 +108,12 @@ export class Game {
 			: `song ${italic(this.acceptedAnswer === AcceptedAnswer.Both ? 'and' : 'or')} artist`;
 
 		const embed = createEmbed(`The game has begun! You have ${inlineCode('30')} seconds to guess the name of the ${answerType} name`)
-			.setAuthor(`Hosted by ${this.hostUser.tag}`, this.hostUser.displayAvatarURL({ size: 128, dynamic: true }))
-			.setTitle(`🎶 Playing the playlist "${this.playlistName}"`)
-			.setFooter(this.goal ? `Playing to ${this.goal} points` : '');
+			.setAuthor({ name: `Hosted by ${this.hostUser.tag}`, iconURL: this.hostUser.displayAvatarURL({ size: 128, dynamic: true }) })
+			.setTitle(`🎶 Playing the playlist "${this.playlistName}"`);
+
+		if (this.goal) {
+			embed.setFooter({ text: `Playing to ${this.goal} points` });
+		}
 
 		await interaction.reply({ embeds: [embed] });
 		return this.queue.next();
@@ -164,7 +167,7 @@ export class Game {
 				.addField('Time Elapsed', timeElapsed, true)
 				.addField('Tracks Played', inlineCode(this.queue.tracksPlayed.toString()), true)
 				.addField('Leaderboard (Top 10)', this.leaderboard.compute())
-				.setFooter('Nice job! Play again sometime :)');
+				.setFooter({ text: 'Nice job! Play again sometime :)' });
 
 			await this.textChannel.send({ embeds: [embed] });
 		}

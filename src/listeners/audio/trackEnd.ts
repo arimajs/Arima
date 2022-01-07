@@ -45,7 +45,7 @@ export class UserAudioListener extends Listener {
 		const embed = createEmbed(guesser ? `${guesser} guessed it! 🎉` : 'Nobody got it! 🙁', BrandingColors.Secondary)
 			.setTitle(`That was "${title}" by ${author}`)
 			.addField('Leaderboard', game.leaderboard.compute())
-			.setFooter(footerText);
+			.setFooter({ text: footerText });
 
 		await game.textChannel.send({ embeds: [embed] });
 
