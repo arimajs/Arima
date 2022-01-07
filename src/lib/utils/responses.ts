@@ -13,7 +13,7 @@ export const createEmbed = (description: string, color: ColorResolvable = Brandi
  * Sends an error response from an interaction.
  */
 export const sendError = (interaction: CommandInteraction, description: string) => {
-	// Core sapphire errors end in ".", so that needs to be accounted for
+	// Core sapphire errors end in ".", so that needs to be accounted for.
 	const parsedDescription = `❌ ${description.endsWith('.') ? description.slice(0, -1) : description}!`;
 	return interaction.reply({
 		embeds: [createEmbed(parsedDescription, BrandingColors.Error)],

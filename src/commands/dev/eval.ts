@@ -1,5 +1,6 @@
 import type { ApplicationCommandRegistry } from '@sapphire/framework';
 import type { CommandInteraction } from 'discord.js';
+import { BrandingColors } from '#utils/constants';
 import { ApplyOptions } from '@sapphire/decorators';
 import { ArimaCommand } from '#structures/ArimaCommand';
 import { createEmbed } from '#utils/responses';
@@ -28,15 +29,15 @@ export class UserCommand extends ArimaCommand {
 		const output = success ? codeBlock('js', result) : codeBlock('bash', result);
 
 		const embedLimitReached = output.length > 4096;
-		const embed = createEmbed(embedLimitReached ? 'Output was too long! The result has been sent as a file.' : output)
+		const embed = createEmbed(
+			embedLimitReached ? 'Output was too long! The result has been sent as a file.' : output,
+			success ? BrandingColors.Primary : BrandingColors.Error
+		);
+
+		embed
+			.setTitle(success ? 'Eval Result ✨' : 'Eval Error 💀')
 			.addField('Type 📝', codeBlock('ts', type), true)
 			.addField('Elapsed ⏱', elapsed, true);
-
-		if (success) {
-			embed.setTitle('Eval Result ✨');
-		} else {
-			embed.setColor('RED').setTitle('Eval Error 💀');
-		}
 
 		return interaction.reply({ embeds: [embed], files: embedLimitReached ? [Buffer.from(output)] : [], ephemeral });
 	}
