@@ -2,7 +2,11 @@ import type { Client, ClientOptions } from 'discord.js';
 import type { NodeOptions } from '@skyra/audio';
 import { cleanEnv, str, port } from 'envalid';
 import { GatewayIntentBits } from 'discord-api-types/v9';
+import { LogLevel } from '@sapphire/framework';
 import process from 'node:process';
+
+// Unless explicitly defined, set NODE_ENV to development.
+process.env.NODE_ENV ??= 'development';
 
 export const env = cleanEnv(process.env, {
 	TOKEN: str({ desc: 'The discord bot token' }),
@@ -20,5 +24,6 @@ export const createAudioOptions = (client: Client): NodeOptions => ({
 
 export const clientOptions: ClientOptions = {
 	// Intents dictate what events the client will receive.
-	intents: GatewayIntentBits.Guilds | GatewayIntentBits.GuildVoiceStates
+	intents: GatewayIntentBits.Guilds | GatewayIntentBits.GuildVoiceStates,
+	logger: { level: env.isProduction ? LogLevel.Info : LogLevel.Debug }
 };
