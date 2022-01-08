@@ -1,4 +1,5 @@
 import type { CommandInteraction, Guild, Snowflake, TextChannel, User, VoiceChannel } from 'discord.js';
+import type { Playlist } from '#utils/audio';
 import { bold, inlineCode, italic, time, userMention } from '@discordjs/builders';
 import { DurationFormatter, Time } from '@sapphire/time-utilities';
 import { StreakCounter } from '#game/StreakCounter';
@@ -6,7 +7,6 @@ import { jaroWinkler } from '@skyra/jaro-winkler';
 import { Leaderboard } from '#game/Leaderboard';
 import { createEmbed } from '#utils/responses';
 import { container } from '@sapphire/framework';
-import { shuffle } from '#utils/common';
 import { Queue } from '#game/Queue';
 
 // This setting will be configured per-game by the user, and defaults to
@@ -32,9 +32,8 @@ export interface GameData {
 	textChannel: TextChannel;
 	voiceChannel: VoiceChannel;
 	hostUser: User;
-	tracks: string[];
+	playlist: Playlist;
 	acceptedAnswer?: AcceptedAnswer;
-	playlistName: string;
 	goal?: number;
 }
 
@@ -80,7 +79,6 @@ export class Game {
 
 	private readonly startTime = Date.now();
 	private readonly acceptedAnswer: AcceptedAnswer;
-	private readonly playlistName: string;
 
 	public constructor(data: GameData) {
 		this.textChannel = data.textChannel;
@@ -89,8 +87,7 @@ export class Game {
 		this.acceptedAnswer = data.acceptedAnswer ?? AcceptedAnswer.Either;
 		this.goal = data.goal;
 		this.guild = this.textChannel.guild;
-		this.playlistName = data.playlistName;
-		this.queue = new Queue(this, shuffle(data.tracks));
+		this.queue = new Queue(this, data.playlist);
 		this.leaderboard = new Leaderboard();
 		this.streaks = new StreakCounter();
 
@@ -109,7 +106,7 @@ export class Game {
 
 		const embed = createEmbed(`The game has begun! You have ${inlineCode('30')} seconds to guess the name of the ${answerType} name`)
 			.setAuthor({ name: `Hosted by ${this.hostUser.tag}`, iconURL: this.hostUser.displayAvatarURL({ size: 128, dynamic: true }) })
-			.setTitle(`🎶 Playing the playlist "${this.playlistName}"`);
+			.setTitle(`🎶 Playing the playlist "${this.queue.playlist.name}"`);
 
 		if (this.goal) {
 			embed.setFooter({ text: `Playing to ${this.goal} points` });
@@ -279,7 +276,7 @@ export class Game {
 	private validateSong(guess: string) {
 		const song = this.queue.currentlyPlaying!.title.toLowerCase();
 
-		// "Blank Space  -  Taylor Swift" -> "Blank Space"
+		// "Blank Space - Taylor Swift" -> "Blank Space"
 		// "Blank Space (Lyric Video)" -> "Blank Space"
 		const songWithoutSuffix = song.replace(/\s*\(.*|\s*- .*/, '');
 

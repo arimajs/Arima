@@ -1,14 +1,12 @@
 /**
- * Shuffles an array in place and returns it.
+ * Shuffles an array in place
  */
-export const shuffle = <T>(array: T[]): T[] => {
+export const shuffle = (array: unknown[]) => {
 	let m = array.length;
 	while (m) {
 		const i = Math.floor(Math.random() * m--);
 		[array[m], array[i]] = [array[i], array[m]];
 	}
-
-	return array;
 };
 
 /**

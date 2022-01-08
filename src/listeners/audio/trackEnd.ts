@@ -1,11 +1,12 @@
 import type { IncomingEventTrackEndPayload } from '@skyra/audio';
 import { BrandingColors } from '#utils/constants';
+import { LavalinkEvent } from '#utils/audio';
 import { GameEndReason } from '#game/Game';
 import { ApplyOptions } from '@sapphire/decorators';
 import { createEmbed } from '#utils/responses';
 import { Listener } from '@sapphire/framework';
 
-@ApplyOptions<Listener.Options>({ event: 'TrackEndEvent' })
+@ApplyOptions<Listener.Options>({ event: LavalinkEvent.TrackEnd })
 export class UserListener extends Listener {
 	public async run(payload: IncomingEventTrackEndPayload) {
 		// Only proceed if the track wasn't stopped because the player had

@@ -1,11 +1,12 @@
 import type { IncomingEventTrackExceptionPayload } from '@skyra/audio';
+import { bold, redBright } from 'colorette';
 import { BrandingColors } from '#utils/constants';
+import { LavalinkEvent } from '#utils/audio';
 import { ApplyOptions } from '@sapphire/decorators';
 import { createEmbed } from '#utils/responses';
 import { Listener } from '@sapphire/framework';
-import { bold, redBright } from 'colorette';
 
-@ApplyOptions<Listener.Options>({ event: 'TrackExceptionEvent' })
+@ApplyOptions<Listener.Options>({ event: LavalinkEvent.TrackException })
 export class UserListener extends Listener {
 	public async run(payload: IncomingEventTrackExceptionPayload) {
 		const game = this.container.games.get(payload.guildId);
@@ -21,8 +22,12 @@ export class UserListener extends Listener {
 			);
 		}
 
-		const embed = createEmbed(`❌ Something went wrong whilst playing "${payload.track}"! Skipping...`, BrandingColors.Error);
+		const embed = createEmbed(`❌ Something went wrong whilst playing a track! Skipping...`, BrandingColors.Error);
 		await game.textChannel.send({ embeds: [embed] });
+
+		// Decrement the playlist length, as it is used to calculate how many
+		// songs were played, and this song wasn't.
+		game.queue.playlistLength--;
 		await game.queue.next();
 	}
 }
