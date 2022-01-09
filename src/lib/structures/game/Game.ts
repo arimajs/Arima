@@ -6,6 +6,7 @@ import { StreakCounter } from '#game/StreakCounter';
 import { jaroWinkler } from '@skyra/jaro-winkler';
 import { Leaderboard } from '#game/Leaderboard';
 import { createEmbed } from '#utils/responses';
+import { UseForkedEm } from '#utils/decorators';
 import { container } from '@sapphire/framework';
 import { Queue } from '#game/Queue';
 
@@ -134,6 +135,7 @@ export class Game {
 		return true;
 	}
 
+	@UseForkedEm
 	public async end(reason: GameEndReason) {
 		await this.queue.end();
 		container.games.delete(this.guild.id);
