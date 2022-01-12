@@ -58,7 +58,7 @@ export class Queue {
 		if (nextTrack) {
 			// Reset round-specific properties.
 			this.game.guessedThisRound = undefined;
-			this.game.guesserThisRound = undefined;
+			this.game.guessersThisRound = [];
 
 			if (typeof nextTrack !== 'string') {
 				// This is what will be searched on Youtube to try to get the

@@ -22,20 +22,30 @@ export class UserListener extends Listener {
 			return;
 		}
 
-		const guesser = game.guesserThisRound;
-		let streak: number | null = null;
+		const guessers = game.guessersThisRound;
 
 		// If there is no guesser, it means the track ended because time ran out.
-		if (guesser) {
+		if (guessers.length) {
 			// TODO: give multiple people streaks and points for `AcceptedAnswer.Both`
-			game.leaderboard.inc(guesser.id);
-			streak = game.streaks.inc(guesser.id);
+			if (guessers.length === 1) {
+				game.leaderboard.inc(guessers[0].id);
+			} else {
+				game.leaderboard.inc(guessers[0].id, 0.5);
+				game.leaderboard.inc(guessers[1].id, 0.5);
+			}
+
+			game.streaks.incStreak(...guessers.map(({ id }) => id));
 		}
 
 		const { tracksPlayed, playlistLength } = game.queue;
 		let footerText = `${tracksPlayed}/${playlistLength}`;
-		if (streak ?? 0 > 2) {
-			footerText += ` • ${guesser!.tag} has a streak of ${streak} 🔥`;
+
+		const [streakLeaderId, streak] = game.streaks.leader;
+
+		// If there is a streak leader, it must be one of the guessers.
+		const streakLeader = streak !== 0 && guessers.find(({ id }) => id === streakLeaderId);
+		if (streakLeader) {
+			footerText += ` • ${streakLeader.tag} has a streak of ${streak} 🔥`;
 		}
 
 		if (game.goal) {
@@ -43,7 +53,8 @@ export class UserListener extends Listener {
 		}
 
 		const { title, author } = game.queue.currentlyPlaying!;
-		const embed = createEmbed(guesser ? `${guesser} guessed it! 🎉` : 'Nobody got it! 🙁', BrandingColors.Secondary)
+
+		const embed = createEmbed(guessers.length ? `${guessers.join(' and ')} guessed it! 🎉` : 'Nobody got it! 🙁', BrandingColors.Secondary)
 			.setTitle(`That was "${title}" by ${author}`)
 			.addField('Leaderboard', game.leaderboard.compute())
 			.setFooter({ text: footerText });

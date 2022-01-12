@@ -73,10 +73,10 @@ export class Game {
 	public guessedThisRound?: AcceptedAnswer.Song | AcceptedAnswer.Artist;
 
 	/**
-	 * The person who guessed correctly this round, if any. Will probably be
-	 * refactored to fit multiple users in the future for `AcceptedAnswer.Both`.
+	 * The person(s) who guessed correctly this round, if any. Will be multiple
+	 * for `AcceptedAnswer.Both`.
 	 */
-	public guesserThisRound?: User;
+	public guessersThisRound: User[] = [];
 
 	private readonly startTime = Date.now();
 	private readonly acceptedAnswer: AcceptedAnswer;
@@ -131,7 +131,7 @@ export class Game {
 			return false;
 		}
 
-		this.guesserThisRound = user;
+		this.guessersThisRound.push(user);
 		return true;
 	}
 
