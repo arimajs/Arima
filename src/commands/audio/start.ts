@@ -7,6 +7,7 @@ import { PermissionFlagsBits } from 'discord-api-types/v9';
 import { ArimaCommand } from '#structures/ArimaCommand';
 import { ApplyOptions } from '@sapphire/decorators';
 import { sendError } from '#utils/responses';
+import { env } from '#root/config';
 
 @ApplyOptions<ArimaCommand.Options>({
 	description: 'Start a new music quiz game!',
@@ -19,7 +20,7 @@ export class UserCommand extends ArimaCommand {
 		[PlaylistResolutionError.NotEnoughTracks]: 'There must be at least 5 tracks over 30 seconds long',
 		[PlaylistResolutionError.NotFound]: "I couldn't find that playlist. Please make sure you entered a valid URL",
 		[PlaylistResolutionError.NotPlaylist]: "The link you sent didn't lead to a playlist",
-		[PlaylistResolutionError.NotSuccessful]: `Something went wrong when finding that playlist. Please try again later, or submit a bug report on my [support server](${process.env.SUPPORT_SERVER_INVITE})`
+		[PlaylistResolutionError.NotSuccessful]: `Something went wrong when finding that playlist. Please try again later, or submit a bug report on my [support server](<${env.SUPPORT_SERVER_INVITE}>)`
 	};
 
 	public override async chatInputRun(interaction: CommandInteraction<'cached'>) {

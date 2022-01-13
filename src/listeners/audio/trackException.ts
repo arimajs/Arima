@@ -5,6 +5,8 @@ import { LavalinkEvent } from '#utils/audio';
 import { ApplyOptions } from '@sapphire/decorators';
 import { createEmbed } from '#utils/responses';
 import { Listener } from '@sapphire/framework';
+import { italic } from '@discordjs/builders';
+import { env } from '#root/config';
 
 @ApplyOptions<Listener.Options>({ event: LavalinkEvent.TrackException })
 export class UserListener extends Listener {
@@ -22,7 +24,13 @@ export class UserListener extends Listener {
 			);
 		}
 
-		const embed = createEmbed(`❌ Something went wrong whilst playing a track! Skipping...`, BrandingColors.Error);
+		const embed = createEmbed(
+			`❌ Something went wrong whilst playing a track! Skipping...\n${italic(
+				`Want to report the issue? Join my [support server](<${env.SUPPORT_SERVER_INVITE}>)!`
+			)}`,
+			BrandingColors.Error
+		);
+
 		await game.textChannel.send({ embeds: [embed] });
 
 		// Decrement the playlist length, as it is used to calculate how many

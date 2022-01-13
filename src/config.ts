@@ -13,7 +13,8 @@ export const env = cleanEnv(process.env, {
 	MONGODB_URI: str({ desc: 'The mongo connection string' }),
 	LAVALINK_HOST: str({ desc: 'The http and ws host of your Lavalink instance' }),
 	LAVALINK_PORT: port({ desc: 'The http and ws port of your Lavalink instance' }),
-	LAVALINK_PASSWORD: str({ desc: 'The password of your Lavalink instance' })
+	LAVALINK_PASSWORD: str({ desc: 'The password of your Lavalink instance' }),
+	SUPPORT_SERVER_INVITE: str({ default: '' })
 });
 
 export const createAudioOptions = (client: Client): NodeOptions => ({
