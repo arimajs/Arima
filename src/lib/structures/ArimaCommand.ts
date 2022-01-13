@@ -1,4 +1,4 @@
-import { Command, UserError, type Args, type Piece } from '@sapphire/framework';
+import { Command, type Args, type Piece } from '@sapphire/framework';
 import { PermissionFlagsBits } from 'discord-api-types/v9';
 import { Permissions } from 'discord.js';
 
@@ -10,10 +10,6 @@ export abstract class ArimaCommand<O extends ArimaCommand.Options = ArimaCommand
 			generateDashLessAliases: true,
 			...options
 		});
-	}
-
-	public error(message: string | UserError, context?: unknown): never {
-		throw typeof message === 'string' ? new UserError({ message, context, identifier: 'CustomUserError' }) : message;
 	}
 }
 

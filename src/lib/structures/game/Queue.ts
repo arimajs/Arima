@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/member-ordering */
 import type { Snowflake } from 'discord.js';
 import { LoadType, type Track, type TrackInfo, type IncomingEventTrackExceptionPayload } from '@skyra/audio';
 import { getRandomThirtySecondWindow, LavalinkEvent, type Playlist } from '#utils/audio';
@@ -7,14 +8,14 @@ import { shuffle } from '#utils/common';
 import { Time } from '@sapphire/time-utilities';
 import NodeCache from 'node-cache';
 
-/**
- * A cache between spotify track titles and the encoded track string found from
- * Youtube. Usage of node-cache might be refactored to redis if there becomes a
- * need.
- */
-const spotifySongCache = new NodeCache({ stdTTL: Time.Day * Time.Second });
-
 export class Queue {
+	/**
+	 * A cache between spotify track titles and the encoded track string found from
+	 * Youtube. Usage of node-cache might be refactored to redis if there becomes a
+	 * need.
+	 */
+	private static spotifySongCache = new NodeCache({ stdTTL: Time.Day * Time.Second });
+
 	/**
 	 * A constant number that represents the original length of the playlist.
 	 * This is useful when determining how many tracks have been played so far.
@@ -64,7 +65,7 @@ export class Queue {
 				// This is what will be searched on Youtube to try to get the
 				// most accurate results.
 				const displayName = `${nextTrack.name} - ${nextTrack.artist}`;
-				const cachedTrack = spotifySongCache.get<string>(displayName);
+				const cachedTrack = Queue.spotifySongCache.get<string>(displayName);
 
 				if (cachedTrack) {
 					nextTrack = cachedTrack;
@@ -72,7 +73,7 @@ export class Queue {
 					const response = await this.player.node.load(`ytsearch: ${displayName}`);
 					if (response.loadType === LoadType.SearchResult) {
 						[nextTrackFull] = response.tracks;
-						spotifySongCache.set(displayName, nextTrackFull.track);
+						Queue.spotifySongCache.set(displayName, nextTrackFull.track);
 					} else {
 						// No matches, or the search failed.
 						container.client.emit(LavalinkEvent.TrackException, { guildId: this.game.guild.id } as IncomingEventTrackExceptionPayload);

@@ -1,4 +1,4 @@
-import type { CommandInteraction, Guild, Snowflake, TextChannel, User, VoiceChannel } from 'discord.js';
+import type { CommandInteraction, Guild, Snowflake, GuildTextBasedChannel, User, VoiceChannel } from 'discord.js';
 import type { Playlist } from '#utils/audio';
 import { bold, inlineCode, italic, time, userMention } from '@discordjs/builders';
 import { DurationFormatter, Time } from '@sapphire/time-utilities';
@@ -30,7 +30,7 @@ export enum GameEndReason {
 }
 
 export interface GameData {
-	textChannel: TextChannel;
+	textChannel: GuildTextBasedChannel;
 	voiceChannel: VoiceChannel;
 	hostUser: User;
 	playlist: Playlist;
@@ -55,9 +55,10 @@ export class Game {
 	public readonly leaderboard: Leaderboard;
 	public readonly streaks: StreakCounter;
 	public readonly voiceChannel: VoiceChannel;
-	public readonly textChannel: TextChannel;
+	public readonly textChannel: GuildTextBasedChannel;
 	public readonly hostUser: User;
 	public readonly guild: Guild;
+	public readonly acceptedAnswer: AcceptedAnswer;
 
 	/**
 	 * The number of points to play to. Optionally provided by the user
@@ -79,7 +80,6 @@ export class Game {
 	public guessersThisRound: User[] = [];
 
 	private readonly startTime = Date.now();
-	private readonly acceptedAnswer: AcceptedAnswer;
 
 	public constructor(data: GameData) {
 		this.textChannel = data.textChannel;
@@ -102,7 +102,7 @@ export class Game {
 
 	public async start(interaction: CommandInteraction) {
 		const answerType = [AcceptedAnswer.Song, AcceptedAnswer.Artist].includes(this.acceptedAnswer)
-			? this.acceptedAnswer
+			? this.acceptedAnswer.toLowerCase()
 			: `song ${italic(this.acceptedAnswer === AcceptedAnswer.Both ? 'and' : 'or')} artist`;
 
 		const embed = createEmbed(`The game has begun! You have ${inlineCode('30')} seconds to guess the name of the ${answerType} name`)
@@ -117,14 +117,6 @@ export class Game {
 		return this.queue.next();
 	}
 
-	// In the eventual guess command, the bot will store a variable representing
-	// whether the answer was "half" guessed (if `guessedThisRound` is
-	// populated). Then, after calling this function, respond publicly:
-	//  - 'You got it! **"__guess__"** is the song's __type__. You're halfway there! ✅'
-	//     if `true` is returned and there was previously no `guessedThisRound`
-	//     but now there is.
-	//  - 'Correct! ✅' and skip the song if `true` is returned.
-	//  - 'Sorry, **"__guess__"** is incorrect! ❌' if `false` is returned.
 	public guess(user: User, guess: string) {
 		const isValid = this.validateAnswer(guess);
 		if (!isValid) {

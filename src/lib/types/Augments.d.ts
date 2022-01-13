@@ -19,5 +19,6 @@ declare module '@sapphire/pieces' {
 declare module '@sapphire/framework' {
 	interface Preconditions {
 		OwnerOnly: never;
+		PlayingGame: { shouldBePlaying: boolean };
 	}
 }
