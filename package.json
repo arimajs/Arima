@@ -35,7 +35,7 @@
 		"@mikro-orm/mongodb": "next",
 		"@sapphire/decorators": "^3.1.4",
 		"@sapphire/discord.js-utilities": "^4.1.5",
-		"@sapphire/framework": "2.3.0",
+		"@sapphire/framework": "next",
 		"@sapphire/plugin-logger": "^2.1.1",
 		"@sapphire/stopwatch": "^1.2.4",
 		"@sapphire/time-utilities": "^1.5.0",
