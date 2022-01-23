@@ -6,7 +6,7 @@ import { createEmbed } from '#utils/responses';
 import { inlineCode } from '@discordjs/builders';
 
 @ApplyOptions<ArimaCommand.Options>({
-	description: 'View my latency',
+	description: 'View my latency!',
 	chatInputCommand: {
 		register: true,
 		idHints: ['919288852131217419']

@@ -36,3 +36,23 @@ export const ordinal = (num: number) => {
 	const suffix = suffixes[rule];
 	return `${num}${suffix}`;
 };
+
+const medals: Readonly<Record<number, string>> = {
+	1: '🥇',
+	2: '🥈',
+	3: '🥉'
+};
+
+/**
+ * Converts a rank number to a string to be used for a leaderboard.
+ */
+export const rankToString = (rank: number) => {
+	return medals[rank] ?? `${rank}.`;
+};
+
+/**
+ * Converts a decimal to a percent.
+ */
+export const toPercent = (decimal: number) => {
+	return `${(decimal * 100).toFixed(2)}%`;
+};

@@ -11,7 +11,6 @@ import { env } from '#root/config';
 
 @ApplyOptions<ArimaCommand.Options>({
 	description: 'Start a new music quiz game!',
-	requiredClientPermissions: PermissionFlagsBits.Connect | PermissionFlagsBits.Speak,
 	runIn: [CommandOptionsRunTypeEnum.GuildText],
 	preconditions: [{ name: 'PlayingGame', context: { shouldBePlaying: false } }]
 })
@@ -24,8 +23,25 @@ export class UserCommand extends ArimaCommand {
 	};
 
 	public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
-		if (interaction.member.voice.channel?.type !== 'GUILD_VOICE') {
+		const { channel } = interaction.member.voice;
+		if (channel?.type !== 'GUILD_VOICE') {
 			return sendError(interaction, 'You must be in a voice channel to start a game');
+		}
+
+		// Check that Arima has sufficient permissions.
+		const permissions = channel.permissionsFor(interaction.guild.me!)!;
+
+		// Administrators can join voice channels even if they are full.
+		if (channel.full && !permissions.has(PermissionFlagsBits.Administrator)) {
+			return sendError(interaction, 'Your voice channel is full');
+		}
+
+		if (!permissions.has(PermissionFlagsBits.Connect)) {
+			return sendError(interaction, "I don't have permissions to join your voice channel");
+		}
+
+		if (!permissions.has(PermissionFlagsBits.Speak)) {
+			return sendError(interaction, "I don't have permissions to speak in your voice channel");
 		}
 
 		const goal = interaction.options.getInteger('goal');
@@ -34,6 +50,8 @@ export class UserCommand extends ArimaCommand {
 		}
 
 		const url = interaction.options.getString('url', true);
+
+		await interaction.deferReply();
 		const result = await resolvePlaylist(url);
 
 		if (isErr(result)) {
@@ -44,43 +62,48 @@ export class UserCommand extends ArimaCommand {
 			hostUser: interaction.user,
 			playlist: result.value,
 			textChannel: interaction.channel!,
-			voiceChannel: interaction.member.voice.channel,
+			voiceChannel: channel,
 			acceptedAnswer: (interaction.options.getString('answers') as AcceptedAnswer) ?? undefined,
 			goal: goal ?? undefined
 		});
 
+		await game.queue.player.join(channel.id, { deaf: true });
 		await game.start(interaction);
+
+		this.container.games.set(interaction.guild.id, game);
 	}
 
 	public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-		registry.registerChatInputCommand((builder) =>
-			builder
-				.setName(this.name)
-				.setDescription(this.description)
-				.addStringOption((builder) =>
-					builder
-						.setName('url')
-						.setDescription('The URL of the Youtube/Soundcloud/Bandcamp/Spotify playlist to play! (Or Spotify album/artist)')
-						.setRequired(true)
-				)
-				.addIntegerOption((builder) =>
-					builder //
-						.setName('goal')
-						.setDescription('The amount of points to play to! (Optional)')
-						.setRequired(false)
-				)
-				.addStringOption((builder) =>
-					builder
-						.setName('answers')
-						.setDescription('The type of answer to accept! (Optional)')
-						.addChoices([
-							['Song Name Only', AcceptedAnswer.Song],
-							['Artist Name Only', AcceptedAnswer.Artist],
-							['Either (Default)', AcceptedAnswer.Either],
-							['Both', AcceptedAnswer.Both]
-						])
-						.setRequired(false)
-				)
+		registry.registerChatInputCommand(
+			(builder) =>
+				builder
+					.setName(this.name)
+					.setDescription(this.description)
+					.addStringOption((builder) =>
+						builder
+							.setName('url')
+							.setDescription('The URL of the Youtube/Soundcloud/Bandcamp/Spotify playlist, album, or artist to play!')
+							.setRequired(true)
+					)
+					.addIntegerOption((builder) =>
+						builder //
+							.setName('goal')
+							.setDescription('The amount of points to play to! (Optional)')
+							.setRequired(false)
+					)
+					.addStringOption((builder) =>
+						builder
+							.setName('answers')
+							.setDescription('The type of answer to accept! (Optional)')
+							.addChoices([
+								['Song Name Only', AcceptedAnswer.Song],
+								['Artist Name Only', AcceptedAnswer.Artist],
+								['Either (Default)', AcceptedAnswer.Either],
+								['Both', AcceptedAnswer.Both]
+							])
+							.setRequired(false)
+					),
+			{ idHints: ['931014505121595422'] }
 		);
 	}
 }

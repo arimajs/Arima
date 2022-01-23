@@ -26,5 +26,6 @@ export const createAudioOptions = (client: Client): NodeOptions => ({
 export const clientOptions: ClientOptions = {
 	// Intents dictate what events the client will receive.
 	intents: GatewayIntentBits.Guilds | GatewayIntentBits.GuildVoiceStates,
-	logger: { level: env.isProduction ? LogLevel.Info : LogLevel.Debug }
+	logger: { level: env.isProduction ? LogLevel.Info : LogLevel.Debug },
+	loadDefaultErrorListeners: false
 };

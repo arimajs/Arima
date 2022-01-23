@@ -1,6 +1,6 @@
-import type { CommandInteraction, Guild, Snowflake, GuildTextBasedChannel, User, VoiceChannel } from 'discord.js';
+import type { CommandInteraction, Guild, Snowflake, GuildTextBasedChannel, User, VoiceChannel, MessageOptions } from 'discord.js';
 import type { Playlist } from '#utils/audio';
-import { bold, inlineCode, italic, time, userMention } from '@discordjs/builders';
+import { bold, inlineCode, italic, userMention } from '@discordjs/builders';
 import { DurationFormatter, Time } from '@sapphire/time-utilities';
 import { StreakCounter } from '#game/StreakCounter';
 import { jaroWinkler } from '@skyra/jaro-winkler';
@@ -92,10 +92,12 @@ export class Game {
 		this.leaderboard = new Leaderboard();
 		this.streaks = new StreakCounter();
 
-		const players = this.voiceChannel.members.map<[Snowflake, Player]>((member) => [
-			member.id,
-			{ id: member.id, lastGameEntryTime: Date.now(), totalPlayTime: 0, songsListenedTo: 0 }
-		]);
+		const players = this.voiceChannel.members
+			.filter(({ user }) => !user.bot)
+			.map<[Snowflake, Player]>((member) => [
+				member.id,
+				{ id: member.id, lastGameEntryTime: Date.now(), totalPlayTime: 0, songsListenedTo: 0 }
+			]);
 
 		this.players = new Map(players);
 	}
@@ -105,7 +107,11 @@ export class Game {
 			? this.acceptedAnswer.toLowerCase()
 			: `song ${italic(this.acceptedAnswer === AcceptedAnswer.Both ? 'and' : 'or')} artist`;
 
-		const embed = createEmbed(`The game has begun! You have ${inlineCode('30')} seconds to guess the name of the ${answerType} name`)
+		const description = `The game has begun! You have ${inlineCode('30')} seconds to ${bold(
+			inlineCode('/guess')
+		)} the name of the ${answerType} name`;
+
+		const embed = createEmbed(description)
 			.setAuthor({ name: `Hosted by ${this.hostUser.tag}`, iconURL: this.hostUser.displayAvatarURL({ size: 128, dynamic: true }) })
 			.setTitle(`🎶 Playing the playlist "${this.queue.playlist.name}"`);
 
@@ -113,7 +119,7 @@ export class Game {
 			embed.setFooter({ text: `Playing to ${this.goal} points` });
 		}
 
-		await interaction.reply({ embeds: [embed] });
+		await interaction.editReply({ embeds: [embed] });
 		return this.queue.next();
 	}
 
@@ -128,9 +134,9 @@ export class Game {
 	}
 
 	@UseForkedEm
-	public async end(reason: GameEndReason) {
-		await this.queue.end();
+	public async end(reason: GameEndReason, sendFn: (options: MessageOptions) => Promise<unknown> = this.textChannel.send.bind(this.textChannel)) {
 		container.games.delete(this.guild.id);
+		await this.queue.end();
 
 		if (reason === GameEndReason.GuildInaccessible) {
 			return;
@@ -145,22 +151,20 @@ export class Game {
 		if (reason !== GameEndReason.TextChannelDeleted) {
 			const descriptions = {
 				[GameEndReason.GoalMet]: `The goal of **${this.goal}** 🥅 was hit!`,
-				[GameEndReason.HostLeft]: `The host left the voice channel 😓`,
+				[GameEndReason.HostLeft]: `The game ended because the host left the voice channel 😓`,
 				[GameEndReason.PlaylistEnded]: `We ran through every song in the playlist! 🎶`,
 				[GameEndReason.Other]: `Good game! 🥳`
 			};
 
-			const timeElapsed = `${durationFormatter.format(Date.now() - this.startTime)} (started ${time(this.startTime * Time.Second)})`;
-
 			const embed = createEmbed(descriptions[reason])
 				.setThumbnail(leader?.displayAvatarURL({ dynamic: true, size: 256 }) ?? '')
 				.setTitle(this.leaderboard.leader ? `🎉 ${leader?.tag ?? 'An unknown user'} won 🎉` : '😔 Nobody won')
-				.addField('Time Elapsed', timeElapsed, true)
+				.addField('Time Elapsed', durationFormatter.format(Date.now() - this.startTime).toString(), true)
 				.addField('Tracks Played', inlineCode(this.queue.tracksPlayed.toString()), true)
 				.addField('Leaderboard (Top 10)', this.leaderboard.compute())
 				.setFooter({ text: 'Nice job! Play again sometime :)' });
 
-			await this.textChannel.send({ embeds: [embed] });
+			await sendFn({ embeds: [embed] });
 		}
 
 		// If one or less song was played, it's not worth making database calls.
@@ -182,7 +186,9 @@ export class Game {
 
 				const isWinner = player.id === leader?.id;
 				const multiplier = isWinner ? 1500 : 1000;
-				const points = Math.round((songsGuessedCorrectly / player.songsListenedTo) * (timePlayed * Time.Minute) * multiplier);
+
+				console.log({ songsGuessedCorrectly, l: player.songsListenedTo, t: timePlayed / Time.Minute });
+				const points = Math.round((songsGuessedCorrectly / player.songsListenedTo) * (timePlayed / Time.Minute) * multiplier);
 
 				const existingMember = existingMembers.find(({ _id }) => _id === player.id);
 				const member = existingMember ?? container.db.members.create({ _id: player.id, guildId: this.guild.id });
@@ -201,7 +207,8 @@ export class Game {
 					container.db.em.persist(member);
 				}
 
-				if (reason !== GameEndReason.TextChannelDeleted) {
+				const rankedUp = originalRank !== member.rank;
+				if (reason !== GameEndReason.TextChannelDeleted && (songsGuessedCorrectly || rankedUp)) {
 					let content = `${userMention(player.id)}, thanks for playing! You listened to ${
 						player.songsListenedTo
 					} songs, guessed ${songsGuessedCorrectly} of them correctly, `;
@@ -209,10 +216,10 @@ export class Game {
 					if (originalLevel === member.level) {
 						content += `and earned ${points} points.`;
 					} else {
-						content += `earned ${points} points, and are now level ${member.level}! 🥳`;
+						content += `earned ${points} points, and have reached level ${member.level}! 🥳`;
 					}
 
-					if (originalRank !== member.rank) {
+					if (rankedUp) {
 						content += ` You also ranked up from ${originalRank} musician to ${bold(
 							`${member.rank} musician`
 						)} thanks to your epic song-guessing skills!`;
@@ -263,12 +270,12 @@ export class Game {
 	}
 
 	private validateArtist(guess: string) {
-		const author = this.queue.currentlyPlaying!.author.toLowerCase();
+		const author = this.queue.currentlyPlaying!.info.author.toLowerCase();
 		return guess === author || jaroWinkler(guess, author) >= kGuessThreshold;
 	}
 
 	private validateSong(guess: string) {
-		const song = this.queue.currentlyPlaying!.title.toLowerCase();
+		const song = this.queue.currentlyPlaying!.info.title.toLowerCase();
 
 		// "Blank Space - Taylor Swift" -> "Blank Space"
 		// "Blank Space (Lyric Video)" -> "Blank Space"

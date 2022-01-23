@@ -15,7 +15,7 @@ import { Type } from '@sapphire/type';
 // interaction. That way, users could naturally send multiline code. Or, modals
 // could be used instead (when they're released).
 @ApplyOptions<ArimaCommand.Options>({
-	description: '[owner only] Evaluate any JavaScript code',
+	description: '[owner only] Evaluate any JavaScript code!',
 	preconditions: ['OwnerOnly']
 })
 export class UserCommand extends ArimaCommand {
@@ -24,6 +24,8 @@ export class UserCommand extends ArimaCommand {
 		const depth = interaction.options.getInteger('depth');
 		const isAsync = interaction.options.getBoolean('async');
 		const ephemeral = interaction.options.getBoolean('ephemeral') ?? false;
+
+		await interaction.deferReply({ ephemeral });
 
 		const { result, success, type, elapsed } = await this.eval(interaction, code, { isAsync, depth });
 		const output = success ? codeBlock('js', result) : codeBlock('bash', result);
@@ -39,7 +41,7 @@ export class UserCommand extends ArimaCommand {
 			.addField('Type 📝', codeBlock('ts', type), true)
 			.addField('Elapsed ⏱', elapsed, true);
 
-		return interaction.reply({ embeds: [embed], files: embedLimitReached ? [Buffer.from(output)] : [], ephemeral });
+		return interaction.editReply({ embeds: [embed], files: embedLimitReached ? [Buffer.from(output)] : [] });
 	}
 
 	public override registerApplicationCommands(registry: ApplicationCommandRegistry) {

@@ -1,7 +1,7 @@
 import type { IncomingEventTrackEndPayload } from '@skyra/audio';
+import { AcceptedAnswer, GameEndReason } from '#game/Game';
 import { BrandingColors } from '#utils/constants';
 import { LavalinkEvent } from '#utils/audio';
-import { GameEndReason } from '#game/Game';
 import { ApplyOptions } from '@sapphire/decorators';
 import { createEmbed } from '#utils/responses';
 import { Listener } from '@sapphire/framework';
@@ -9,13 +9,7 @@ import { Listener } from '@sapphire/framework';
 @ApplyOptions<Listener.Options>({ event: LavalinkEvent.TrackEnd })
 export class UserListener extends Listener {
 	public async run(payload: IncomingEventTrackEndPayload) {
-		// Only proceed if the track wasn't stopped because the player had
-		// stopped, or because another track started playing while the current
-		// had not finished.
-		if (['REPLACED', 'STOPPED'].includes(payload.reason)) {
-			return;
-		}
-
+		console.log({ payload });
 		const game = this.container.games.get(payload.guildId);
 
 		if (!game) {
@@ -23,10 +17,10 @@ export class UserListener extends Listener {
 		}
 
 		const guessers = game.guessersThisRound;
+		const requiredBoth = game.acceptedAnswer === AcceptedAnswer.Both;
+		const guessed = guessers.length === 2 ?? (guessers.length && !requiredBoth);
 
-		// If there is no guesser, it means the track ended because time ran out.
-		if (guessers.length) {
-			// TODO: give multiple people streaks and points for `AcceptedAnswer.Both`
+		if (guessed) {
 			if (guessers.length === 1) {
 				game.leaderboard.inc(guessers[0].id);
 			} else {
@@ -40,10 +34,10 @@ export class UserListener extends Listener {
 		const { tracksPlayed, playlistLength } = game.queue;
 		let footerText = `${tracksPlayed}/${playlistLength}`;
 
-		const [streakLeaderId, streak] = game.streaks.leader;
+		const [streakLeaderId, streak] = game.streaks.leader ?? [];
 
 		// If there is a streak leader, it must be one of the guessers.
-		const streakLeader = streak !== 0 && guessers.find(({ id }) => id === streakLeaderId);
+		const streakLeader = streak && guessers.find(({ id }) => id === streakLeaderId);
 		if (streakLeader) {
 			footerText += ` • ${streakLeader.tag} has a streak of ${streak} 🔥`;
 		}
@@ -52,9 +46,13 @@ export class UserListener extends Listener {
 			footerText += ` • Playing to ${game.goal} points`;
 		}
 
-		const { title, author } = game.queue.currentlyPlaying!;
+		const { title, author, uri } = game.queue.currentlyPlaying!.info;
+		const embedTitle = guessed
+			? `${guessers.join(' and ')} guessed it! 🎉`
+			: `${game.guessedThisRound ? `Only the ${game.guessedThisRound} was guessed` : `Nobody got it`}! 🙁`;
 
-		const embed = createEmbed(guessers.length ? `${guessers.join(' and ')} guessed it! 🎉` : 'Nobody got it! 🙁', BrandingColors.Secondary)
+		const embed = createEmbed(embedTitle, BrandingColors.Secondary)
+			.setURL(uri)
 			.setTitle(`That was "${title}" by ${author}`)
 			.addField('Leaderboard', game.leaderboard.compute())
 			.setFooter({ text: footerText });
@@ -71,6 +69,7 @@ export class UserListener extends Listener {
 
 		const points = game.leaderboard.leader?.[1];
 		if (points && game.goal && points === game.goal) {
+			console.log(15);
 			await game.end(GameEndReason.GoalMet);
 		}
 

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import type { Snowflake } from 'discord.js';
-import { LoadType, type Track, type TrackInfo, type IncomingEventTrackExceptionPayload } from '@skyra/audio';
+import { LoadType, type Track, type IncomingEventTrackExceptionPayload } from '@skyra/audio';
 import { getRandomThirtySecondWindow, LavalinkEvent, type Playlist } from '#utils/audio';
 import { GameEndReason, type Game } from '#game/Game';
 import { container } from '@sapphire/framework';
@@ -27,7 +27,7 @@ export class Queue {
 	 * The track that is currently playing. This is undefined if there is no
 	 * track playing, obviously, and is reassigned each time a new track starts.
 	 */
-	public currentlyPlaying?: TrackInfo;
+	public currentlyPlaying?: Track;
 
 	// `tracks` should be an array of strings, each representing a track encoded
 	// by Lavalink.
@@ -56,6 +56,7 @@ export class Queue {
 		// later in the code.
 		let nextTrackFull: Track | undefined;
 
+		console.log({ nextTrack, l: this.playlistLength });
 		if (nextTrack) {
 			// Reset round-specific properties.
 			this.game.guessedThisRound = undefined;
@@ -73,6 +74,11 @@ export class Queue {
 					const response = await this.player.node.load(`ytsearch: ${displayName}`);
 					if (response.loadType === LoadType.SearchResult) {
 						[nextTrackFull] = response.tracks;
+
+						// Keep the original artist and track name.
+						nextTrackFull.info.author = nextTrack.artist;
+						nextTrackFull.info.title = nextTrack.name;
+
 						Queue.spotifySongCache.set(displayName, nextTrackFull.track);
 					} else {
 						// No matches, or the search failed.
@@ -81,13 +87,11 @@ export class Queue {
 				}
 			}
 
-			this.currentlyPlaying = nextTrackFull?.info ?? (await this.player.node.decode(nextTrack as string));
-
-			await this.player.play(
-				nextTrackFull ?? { track: nextTrack as string, info: this.currentlyPlaying },
-				getRandomThirtySecondWindow(this.currentlyPlaying.length)
-			);
+			this.currentlyPlaying = nextTrackFull ?? { track: nextTrack as string, info: await this.player.node.decode(nextTrack as string) };
+			console.log({ c: this.currentlyPlaying });
+			await this.player.play(this.currentlyPlaying, getRandomThirtySecondWindow(this.currentlyPlaying.info.length));
 		} else {
+			console.log('test');
 			await this.game.end(GameEndReason.PlaylistEnded);
 		}
 	}
@@ -96,7 +100,8 @@ export class Queue {
 		this.currentlyPlaying = undefined;
 
 		// Stops the player and leaves the voice channel.
-		await this.player.destroy();
+		await this.player.leave();
+		await this.player.stop();
 	}
 
 	public static getPlayer(guildId: Snowflake) {

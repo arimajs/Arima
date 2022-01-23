@@ -85,7 +85,7 @@ export const resolvePlaylist = async (url: string): Promise<Result<Playlist, Pla
 
 		const tracks = resolveSpotifyTracks(spotifyData);
 
-		const filteredTracks = tracks.filter(({ duration_ms }) => duration_ms * Time.Second < 30);
+		const filteredTracks = tracks.filter(({ duration_ms }) => duration_ms * Time.Second > 30);
 		if (filteredTracks.length < 5) {
 			return err(PlaylistResolutionError.NotEnoughTracks);
 		}
@@ -109,7 +109,7 @@ export const resolvePlaylist = async (url: string): Promise<Result<Playlist, Pla
 			return err(PlaylistResolutionError.NotPlaylist);
 		}
 
-		const filteredTracks = response.tracks.filter(({ info }) => info.length * Time.Second < 30);
+		const filteredTracks = response.tracks.filter(({ info }) => info.length * Time.Second > 30);
 		if (filteredTracks.length < 5) {
 			return err(PlaylistResolutionError.NotEnoughTracks);
 		}

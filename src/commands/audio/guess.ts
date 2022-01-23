@@ -31,20 +31,22 @@ export class UserCommand extends ArimaCommand {
 		);
 
 		await interaction.reply({ embeds: [embed] });
-		await game.queue.next();
+		await game.queue.player.stop();
 	}
 
 	public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-		registry.registerChatInputCommand((builder) =>
-			builder
-				.setName(this.name)
-				.setDescription(this.description)
-				.addStringOption((builder) =>
-					builder
-						.setName('guess')
-						.setDescription('Your guess! It will be case insensitive and typos will be forgiven using a fancy algorithm 🤓')
-						.setRequired(true)
-				)
+		registry.registerChatInputCommand(
+			(builder) =>
+				builder
+					.setName(this.name)
+					.setDescription(this.description)
+					.addStringOption((builder) =>
+						builder
+							.setName('guess')
+							.setDescription('Your guess! It will be case insensitive and typos will be forgiven using a fancy algorithm 🤓')
+							.setRequired(true)
+					),
+			{ idHints: ['931014505276792923'] }
 		);
 	}
 }

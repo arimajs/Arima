@@ -12,7 +12,7 @@ import { URL } from 'node:url';
 @ApplyOptions<Listener.Options>({ once: true })
 export class UserListener extends Listener<typeof Events.ClientReady> {
 	public async run() {
-		await this.createQueueClient();
+		await this.createAudioNode();
 
 		const raw = await readFile(new URL('../package.json', rootURL), 'utf8');
 		const { version } = JSON.parse(raw);
@@ -30,14 +30,14 @@ export class UserListener extends Listener<typeof Events.ClientReady> {
   [${green('+')}] Gateway
   [${green('+')}] Database
   [${green('+')}] Audio
-  ${magenta('<')}${magentaBright('/')}${magenta('>')} ${bold(`${env.isProduction ? 'DEV' : 'PROD'} MODE`)}
+  ${magenta('<')}${magentaBright('/')}${magenta('>')} ${bold(`${env.isProduction ? 'PROD' : 'DEV'} MODE`)}
   
 ${this.storeDebugInformation()}
 `
 		);
 	}
 
-	private async createQueueClient() {
+	private async createAudioNode() {
 		this.container.games = new Collection();
 		this.container.audio = new Node(createAudioOptions(this.client), (guildId, packet) => {
 			// https://github.com/skyra-project/audio#usage
@@ -45,10 +45,20 @@ ${this.storeDebugInformation()}
 			return guild?.shard.send(packet);
 		});
 
+		// All events from `Node` should be rerouted through `client`. This is a
+		// workaround because listeners are registered before `container.audio`
+		// is populated, so we can't use it as an emitter.
+		this.container.audio.emit = this.client.emit.bind(this.client);
+
+		await this.container.audio.connect();
+
 		// If the bot stayed in a voice channel through a restart, leave.
 		for (const guild of this.client.guilds.cache.values()) {
 			if (guild.me!.voice.channelId) {
-				await Queue.getPlayer(guild.id).leave();
+				console.log('testy');
+				const player = Queue.getPlayer(guild.id);
+				await player.leave();
+				await player.stop();
 			}
 		}
 	}

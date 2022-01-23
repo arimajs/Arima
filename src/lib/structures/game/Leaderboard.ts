@@ -20,6 +20,6 @@ export class Leaderboard extends Collection<Snowflake, number> {
 			.map(([id, points], idx) => `${ordinal(idx + 1)} Place • <@${id}> • ${prefixAndPluralize('point', points)}`)
 			.join('\n');
 
-		return display ?? "Nobody's on the leaderboard yet!";
+		return display || "Nobody's on the leaderboard!";
 	}
 }
