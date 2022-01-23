@@ -33,7 +33,7 @@
 		"@discordjs/builders": "0.11.0",
 		"@mikro-orm/core": "next",
 		"@mikro-orm/mongodb": "next",
-		"@sapphire/decorators": "^3.1.6",
+		"@sapphire/decorators": "^4.0.2",
 		"@sapphire/discord.js-utilities": "^4.2.0",
 		"@sapphire/framework": "next",
 		"@sapphire/plugin-logger": "^2.1.2",
