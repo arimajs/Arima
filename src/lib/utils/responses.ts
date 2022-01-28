@@ -20,7 +20,9 @@ export const sendError = (interaction: CommandInteraction, description: string, 
 		ephemeral
 	};
 
-	return interaction.replied ? interaction.followUp(payload) : interaction.deferred ? interaction.editReply(payload) : interaction.reply(payload);
+	// eslint-disable-next-line @typescript-eslint/unbound-method
+	const replyFn = interaction.replied ? interaction.followUp : interaction.deferred ? interaction.editReply : interaction.reply;
+	return replyFn.call(interaction, payload);
 };
 
 // This method of resolving `Message` instances from interaction replies should

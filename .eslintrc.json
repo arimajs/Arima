@@ -7,6 +7,7 @@
 		"unicorn/no-unsafe-regex": "error",
 		"unicorn/prefer-at": "error",
 		"unicorn/prefer-top-level-await": "error",
-		"unicorn/prevent-abbreviations": "off"
+		"unicorn/prevent-abbreviations": "off",
+		"unicorn/no-nested-ternary": "off"
 	}
 }
