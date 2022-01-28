@@ -1,7 +1,6 @@
 import type { ApplicationCommandRegistry } from '@sapphire/framework';
 import type { CommandInteraction } from 'discord.js';
 import { BrandingColors } from '#utils/constants';
-import { ApplyOptions } from '@sapphire/decorators';
 import { ArimaCommand } from '#structures/ArimaCommand';
 import { createEmbed } from '#utils/responses';
 import { isThenable } from '@sapphire/utilities';
@@ -10,14 +9,11 @@ import { codeBlock } from '@discordjs/builders';
 import { inspect } from 'node:util';
 import { Buffer } from 'node:buffer';
 import { Type } from '@sapphire/type';
+import { env } from '#root/config';
 
 // In the future, this may be converted to/accompanied with a context menu
 // interaction. That way, users could naturally send multiline code. Or, modals
 // could be used instead (when they're released).
-@ApplyOptions<ArimaCommand.Options>({
-	description: '[owner only] Evaluate any JavaScript code!',
-	preconditions: ['OwnerOnly']
-})
 export class UserCommand extends ArimaCommand {
 	public override async chatInputRun(interaction: CommandInteraction) {
 		const code = interaction.options.getString('code', true);
@@ -49,7 +45,7 @@ export class UserCommand extends ArimaCommand {
 			(builder) =>
 				builder
 					.setName(this.name)
-					.setDescription(this.description)
+					.setDescription('[owner only] Evaluate any JavaScript code!')
 					.addStringOption((builder) =>
 						builder //
 							.setName('code')
@@ -74,7 +70,7 @@ export class UserCommand extends ArimaCommand {
 							.setDescription('The depth of the displayed return type')
 							.setRequired(false)
 					),
-			{ idHints: ['919288851674050590'] }
+			{ idHints: ['936381437370839080'], guildIds: [env.DEV_SERVER_ID] }
 		);
 	}
 
