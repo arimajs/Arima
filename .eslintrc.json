@@ -3,11 +3,11 @@
 	"rules": {
 		"curly": "error",
 		"no-restricted-globals": ["error", "Buffer", "process", "setTimeout", "setInterval", "setImmediate", "clearTimeout", "clearInterval"], // nodejs/node#26334
-		"unicorn/filename-case": ["error", { "case": "camelCase" }],
 		"unicorn/no-unsafe-regex": "error",
 		"unicorn/prefer-at": "error",
 		"unicorn/prefer-top-level-await": "error",
 		"unicorn/prevent-abbreviations": "off",
-		"unicorn/no-nested-ternary": "off"
+		"unicorn/no-nested-ternary": "off",
+		"unicorn/filename-case": "off"
 	}
 }
