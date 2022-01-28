@@ -1304,16 +1304,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mikro-orm/core@npm:^5.0.0-dev.655":
-  version: 5.0.0-dev.655
-  resolution: "@mikro-orm/core@npm:5.0.0-dev.655"
+"@mikro-orm/core@npm:^5.0.0-dev.656":
+  version: 5.0.0-dev.656
+  resolution: "@mikro-orm/core@npm:5.0.0-dev.656"
   dependencies:
     clone: 2.1.2
     dotenv: 14.2.0
     escaya: 0.0.61
     fs-extra: 10.0.0
     globby: 11.0.4
-    mikro-orm: ^5.0.0-dev.655+14449576ce
+    mikro-orm: ^5.0.0-dev.656+cc1185971d
     reflect-metadata: 0.1.13
   peerDependencies:
     "@mikro-orm/entity-generator": ^4.0.0||^5.0.0-dev.0
@@ -1341,13 +1341,13 @@ __metadata:
       optional: true
     "@mikro-orm/sqlite":
       optional: true
-  checksum: 3be095670e6d7a7bda1a3ef57c01bfdcdb434d8fae21300a8a0763fe798c9aa1d4e105e3618ddff7a6664228e65314814008cd0ba44735d93b81f28f7e74a908
+  checksum: 72be9286e04383a096260ad106262f6b14c803c9c57967c19f2c3331ccd34d997667d275978a0b7f418e324f62abf71045f79c8de0bac089f321dcc422fa675c
   languageName: node
   linkType: hard
 
-"@mikro-orm/mongodb@npm:^5.0.0-dev.655":
-  version: 5.0.0-dev.655
-  resolution: "@mikro-orm/mongodb@npm:5.0.0-dev.655"
+"@mikro-orm/mongodb@npm:^5.0.0-dev.656":
+  version: 5.0.0-dev.656
+  resolution: "@mikro-orm/mongodb@npm:5.0.0-dev.656"
   dependencies:
     bson: ^4.6.0
     mongodb: 4.3.1
@@ -1363,7 +1363,7 @@ __metadata:
       optional: true
     "@mikro-orm/seeder":
       optional: true
-  checksum: 9e227b455aeab7e7cd33568b177b962c6b182ed97e93b49ff08ce29cff044e94156804fadbd9897501c58dd622148be3089db8868b189efcb4509ea359e64ee0
+  checksum: 916b1d1f12a1ce9441a8bff9a75750902d79cddb5f28c6a15d61100b7d646048dcca1f6689a5ce4d24b2d890fb542d6d9c03e1bf831322ba3222055f6fe07d55
   languageName: node
   linkType: hard
 
@@ -1563,9 +1563,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sapphire/framework@npm:^3.0.0-next.1269305.0":
-  version: 3.0.0-next.1269305.0
-  resolution: "@sapphire/framework@npm:3.0.0-next.1269305.0"
+"@sapphire/framework@npm:^3.0.0-next.6c86aca.0":
+  version: 3.0.0-next.6c86aca.0
+  resolution: "@sapphire/framework@npm:3.0.0-next.6c86aca.0"
   dependencies:
     "@sapphire/discord-utilities": ^2.5.0
     "@sapphire/discord.js-utilities": ^4.3.0
@@ -1575,7 +1575,7 @@ __metadata:
     "@sapphire/utilities": ^3.2.0
     lexure: ^0.17.0
     tslib: ^2.3.1
-  checksum: fae36d5c91dea96ded90243eb62841403ce1326f88d4acbf5d167025b8dcc5de7915e279893ec58f36b9b7dcabbc09cadde106a51c0f21efafbbd398cefbf1dd
+  checksum: 6dadaa66611b41da2f98d50dfdabc52343815a15a9b434d867ce9bc556ce7b3b06334d2985212dffcc2786a382bcb62f1286342b2cbc5545f55750e753d3da76
   languageName: node
   linkType: hard
 
@@ -2480,12 +2480,12 @@ __metadata:
     "@commitlint/cli": ^16.1.0
     "@commitlint/config-conventional": ^16.0.0
     "@discordjs/builders": 0.11.0
-    "@mikro-orm/core": ^5.0.0-dev.655
-    "@mikro-orm/mongodb": ^5.0.0-dev.655
+    "@mikro-orm/core": ^5.0.0-dev.656
+    "@mikro-orm/mongodb": ^5.0.0-dev.656
     "@sapphire/decorators": ^4.0.2
     "@sapphire/discord.js-utilities": ^4.4.0
     "@sapphire/eslint-config": ^4.0.11
-    "@sapphire/framework": ^3.0.0-next.1269305.0
+    "@sapphire/framework": ^3.0.0-next.6c86aca.0
     "@sapphire/plugin-logger": ^2.1.2
     "@sapphire/prettier-config": ^1.2.9
     "@sapphire/stopwatch": ^1.2.5
@@ -2512,7 +2512,7 @@ __metadata:
     fuse.js: ^6.5.3
     husky: ^7.0.4
     jest: ^27.4.7
-    lint-staged: ^12.2.2
+    lint-staged: ^12.3.0
     node-cache: ^5.1.2
     npm-run-all: ^4.1.5
     pm2: ^5.1.2
@@ -6859,9 +6859,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lint-staged@npm:^12.2.2":
-  version: 12.2.2
-  resolution: "lint-staged@npm:12.2.2"
+"lint-staged@npm:^12.3.0":
+  version: 12.3.0
+  resolution: "lint-staged@npm:12.3.0"
   dependencies:
     cli-truncate: ^3.1.0
     colorette: ^2.0.16
@@ -6878,7 +6878,7 @@ __metadata:
     yaml: ^1.10.2
   bin:
     lint-staged: bin/lint-staged.js
-  checksum: 27db9c9e88d2c0835c16679de9a98a0909ea09b90f5be3179c7d0ae21e85547e7776349df9654e61c71833d18a0162833cd726df3a70022ba10708ccec08b17d
+  checksum: 6cf29325dd37068e8f0db2a18657ee2d8cd6f586560297d9a8f781f88444b9b1dfea9e718b5bbb7428c6b2fac41859e0df1b72298e30e1fd783e507888385687
   languageName: node
   linkType: hard
 
@@ -7148,10 +7148,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mikro-orm@npm:^5.0.0-dev.655+14449576ce":
-  version: 5.0.0-dev.655
-  resolution: "mikro-orm@npm:5.0.0-dev.655"
-  checksum: 0a02dc1e185f6d50a8e571f3e8b962a43df4601296072cfa6ab70088bc602fdc5b1f7b92ad672e18ac804f22be547043f891036b65606b88c721191bd35c421b
+"mikro-orm@npm:^5.0.0-dev.656+cc1185971d":
+  version: 5.0.0-dev.656
+  resolution: "mikro-orm@npm:5.0.0-dev.656"
+  checksum: 566902fc0ed510e89953c836e24cb62a09dc7e5dbd66da337367c241bed903f2bc68917697b7a7166abdec2d97e29f7b9d2a219ed2f8f6f0873cef78618b1c4a
   languageName: node
   linkType: hard
 
