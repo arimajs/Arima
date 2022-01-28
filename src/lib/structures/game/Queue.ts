@@ -56,7 +56,6 @@ export class Queue {
 		// later in the code.
 		let nextTrackFull: Track | undefined;
 
-		console.log({ nextTrack, l: this.playlistLength });
 		if (nextTrack) {
 			// Reset round-specific properties.
 			this.game.guessedThisRound = undefined;
@@ -88,10 +87,8 @@ export class Queue {
 			}
 
 			this.currentlyPlaying = nextTrackFull ?? { track: nextTrack as string, info: await this.player.node.decode(nextTrack as string) };
-			console.log({ c: this.currentlyPlaying });
 			await this.player.play(this.currentlyPlaying, getRandomThirtySecondWindow(this.currentlyPlaying.info.length));
 		} else {
-			console.log('test');
 			await this.game.end(GameEndReason.PlaylistEnded);
 		}
 	}

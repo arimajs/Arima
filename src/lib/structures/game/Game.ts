@@ -187,7 +187,6 @@ export class Game {
 				const isWinner = player.id === leader?.id;
 				const multiplier = isWinner ? 1500 : 1000;
 
-				console.log({ songsGuessedCorrectly, l: player.songsListenedTo, t: timePlayed / Time.Minute });
 				const points = Math.round((songsGuessedCorrectly / player.songsListenedTo) * (timePlayed / Time.Minute) * multiplier);
 
 				const existingMember = existingMembers.find(({ _id }) => _id === player.id);

@@ -24,7 +24,6 @@ export class UserListener extends Listener<typeof Events.VoiceStateUpdate> {
 		// If the old channel is nonexistent or not the game voice channel, the
 		// user joined or moved to the channel.
 		if (oldState.channelId !== game.voiceChannel.id && member.id !== this.client.user!.id) {
-			console.log(17);
 			const player = game.players.get(member.id);
 
 			if (player) {
@@ -78,7 +77,6 @@ export class UserListener extends Listener<typeof Events.VoiceStateUpdate> {
 		const wasDisconnected = !newState.channelId;
 
 		if (isAlone || wasDisconnected) {
-			console.log(25);
 			await game.end(GameEndReason.Other);
 		}
 	}

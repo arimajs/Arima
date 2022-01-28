@@ -63,7 +63,6 @@ export class UserListener extends Listener<typeof Events.ClientReady> {
 		// If the bot stayed in a voice channel through a restart, leave.
 		for (const guild of this.client.guilds.cache.values()) {
 			if (guild.me!.voice.channelId) {
-				console.log('testy');
 				const player = Queue.getPlayer(guild.id);
 				await player.leave();
 				await player.stop();

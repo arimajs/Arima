@@ -9,7 +9,6 @@ import { Listener } from '@sapphire/framework';
 @ApplyOptions<Listener.Options>({ event: LavalinkEvent.TrackEnd })
 export class UserListener extends Listener {
 	public async run(payload: IncomingEventTrackEndPayload) {
-		console.log({ payload });
 		const game = this.container.games.get(payload.guildId);
 
 		if (!game) {
@@ -69,7 +68,6 @@ export class UserListener extends Listener {
 
 		const points = game.leaderboard.leader?.[1];
 		if (points && game.goal && points === game.goal) {
-			console.log(15);
 			await game.end(GameEndReason.GoalMet);
 		}
 
