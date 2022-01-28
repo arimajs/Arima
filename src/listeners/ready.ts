@@ -31,10 +31,18 @@ export class UserListener extends Listener<typeof Events.ClientReady> {
   [${green('+')}] Database
   [${green('+')}] Audio
   ${magenta('<')}${magentaBright('/')}${magenta('>')} ${bold(`${env.isProduction ? 'PROD' : 'DEV'} MODE`)}
-  
-${this.storeDebugInformation()}
+
 `
 		);
+
+		const stores = [...this.client.stores.values()];
+		const last = stores.pop()!;
+
+		for (const store of stores) {
+			this.container.logger.info(this.styleStore(store, false));
+		}
+
+		this.container.logger.info(this.styleStore(last, true));
 	}
 
 	private async createAudioNode() {
@@ -61,17 +69,6 @@ ${this.storeDebugInformation()}
 				await player.stop();
 			}
 		}
-	}
-
-	private storeDebugInformation() {
-		const stores = [...this.client.stores.values()];
-		const last = stores.pop()!;
-
-		for (const store of stores) {
-			this.container.logger.info(this.styleStore(store, false));
-		}
-
-		this.container.logger.info(this.styleStore(last, true));
 	}
 
 	private styleStore(store: Store<Piece>, last: boolean) {
