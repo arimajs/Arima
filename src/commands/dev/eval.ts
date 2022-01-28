@@ -84,7 +84,7 @@ export class UserCommand extends ArimaCommand {
 		}
 
 		let success = true;
-		let result = null;
+		let result;
 
 		const stopwatch = new Stopwatch();
 		let elapsed = '';

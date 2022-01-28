@@ -65,9 +65,13 @@ ${this.storeDebugInformation()}
 
 	private storeDebugInformation() {
 		const stores = [...this.client.stores.values()];
-		return stores //
-			.reverse()
-			.reduce((list, store) => `${this.styleStore(store, false)}\n${list}`, this.styleStore(stores.pop()!, true));
+		const last = stores.pop()!;
+
+		for (const store of stores) {
+			this.container.logger.info(this.styleStore(store, false));
+		}
+
+		this.container.logger.info(this.styleStore(last, true));
 	}
 
 	private styleStore(store: Store<Piece>, last: boolean) {

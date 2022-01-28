@@ -3,6 +3,5 @@
 // faster.
 declare module 'fuse.js/dist/fuse.basic.min.js' {
 	// All types are the same.
-	import Fuse from 'fuse.js';
-	export default Fuse;
+	export { default } from 'fuse.js';
 }

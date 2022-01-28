@@ -1,3 +1,7 @@
+/* eslint-disable unicorn/prefer-spread */
+// The lint rule should only apply when concatenating arrays, but instead flags
+// down Collection#concat.
+
 import { Collection, type AutocompleteInteraction, type CommandInteraction } from 'discord.js';
 import { Piece, type Store, type ApplicationCommandRegistry } from '@sapphire/framework';
 import { ApplyOptions } from '@sapphire/decorators';

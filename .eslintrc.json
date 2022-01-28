@@ -1,16 +1,12 @@
 {
-	"extends": "@sapphire",
+	"extends": ["@sapphire", "plugin:unicorn/recommended"],
 	"rules": {
-		"curly": "error"
-	},
-	"overrides": [
-		{
-			"files": ["**/entities/*.ts"],
-			"rules": {
-				// Mikro-orm requires explicit typing due to the limitations of
-				// decorator metadata emitted
-				"@typescript-eslint/no-inferrable-types": "off"
-			}
-		}
-	]
+		"curly": "error",
+		"no-restricted-globals": ["error", "Buffer", "process", "setTimeout", "setInterval", "setImmediate", "clearTimeout", "clearInterval"], // nodejs/node#26334
+		"unicorn/filename-case": ["error", { "case": "camelCase" }],
+		"unicorn/no-unsafe-regex": "error",
+		"unicorn/prefer-at": "error",
+		"unicorn/prefer-top-level-await": "error",
+		"unicorn/prevent-abbreviations": "off"
+	}
 }
