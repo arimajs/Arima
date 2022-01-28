@@ -213,11 +213,10 @@ export class Game {
 						player.songsListenedTo
 					} songs, guessed ${songsGuessedCorrectly} of them correctly, `;
 
-					if (originalLevel === member.level) {
-						content += `and earned ${points} points.`;
-					} else {
-						content += `earned ${points} points, and have reached level ${member.level}! 🥳`;
-					}
+					content +=
+						originalLevel === member.level
+							? `and earned ${points} points.`
+							: `earned ${points} points, and have reached level ${member.level}! 🥳`;
 
 					if (rankedUp) {
 						content += ` You also ranked up from ${originalRank} musician to ${bold(

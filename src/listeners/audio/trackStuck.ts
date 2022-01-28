@@ -2,6 +2,7 @@ import type { IncomingEventTrackStuckPayload } from '@skyra/audio';
 import { LavalinkEvent } from '#utils/audio';
 import { ApplyOptions } from '@sapphire/decorators';
 import { createEmbed } from '#utils/responses';
+import { setTimeout } from 'node:timers';
 import { Listener } from '@sapphire/framework';
 import { Time } from '@sapphire/time-utilities';
 

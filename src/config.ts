@@ -9,7 +9,7 @@ import process from 'node:process';
 process.env.NODE_ENV ??= 'development';
 
 export const env = cleanEnv(process.env, {
-	TOKEN: str({ desc: 'The discord bot token' }),
+	DISCORD_TOKEN: str({ desc: 'The discord bot token' }),
 	MONGODB_URI: str({ desc: 'The mongo connection string' }),
 	LAVALINK_HOST: str({ desc: 'The http and ws host of your Lavalink instance' }),
 	LAVALINK_PORT: port({ desc: 'The http and ws port of your Lavalink instance' }),

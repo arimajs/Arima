@@ -83,7 +83,7 @@ export class UserCommand extends ArimaCommand {
 			});
 		}
 
-		await paginatedMessage.run(interaction);
+		return paginatedMessage.run(interaction);
 	}
 
 	public override registerApplicationCommands(registry: ApplicationCommandRegistry) {

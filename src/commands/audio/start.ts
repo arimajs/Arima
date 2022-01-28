@@ -70,7 +70,7 @@ export class UserCommand extends ArimaCommand {
 		await game.queue.player.join(channel.id, { deaf: true });
 		await game.start(interaction);
 
-		this.container.games.set(interaction.guild.id, game);
+		return this.container.games.set(interaction.guild.id, game);
 	}
 
 	public override registerApplicationCommands(registry: ApplicationCommandRegistry) {

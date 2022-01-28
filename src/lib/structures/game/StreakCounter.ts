@@ -6,11 +6,15 @@ export class StreakCounter extends Leaderboard {
 		// Iterate through each player in the leaderboard, and remove their
 		// streak if they are not `key`. If another player's streak is
 		// incremented, the others obviously don't have a streak anymore.
-		this.forEach((points, id) => this.inc(id, keys.includes(id) ? -points : 1));
+		for (const [id, points] of this.entries()) {
+			this.inc(id, keys.includes(id) ? -points : 1);
+		}
 	}
 
 	public removeAll(): void {
 		// If nobody guesses correctly, everybody's streak is ruined.
-		this.forEach((points, id) => this.inc(id, -points));
+		for (const [id, points] of this.entries()) {
+			this.inc(id, -points);
+		}
 	}
 }

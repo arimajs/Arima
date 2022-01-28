@@ -31,7 +31,7 @@ export class UserListener extends Listener {
 			game.streaks.incStreak(...guessers.map(({ id }) => id));
 		}
 
-		const { tracksPlayed, playlistLength } = game.queue;
+		const { tracksPlayed, playlistLength, currentlyPlaying } = game.queue;
 		let footerText = `${tracksPlayed}/${playlistLength}`;
 
 		const [streakLeaderId, streak] = game.streaks.leader ?? [];
@@ -46,7 +46,7 @@ export class UserListener extends Listener {
 			footerText += ` • Playing to ${game.goal} points`;
 		}
 
-		const { title, author, uri } = game.queue.currentlyPlaying!.info;
+		const { title, author, uri } = currentlyPlaying!.info;
 		const embedTitle = guessed
 			? `${guessers.join(' and ')} guessed it! 🎉`
 			: `${game.guessedThisRound ? `Only the ${game.guessedThisRound} was guessed` : `Nobody got it`}! 🙁`;
@@ -59,13 +59,13 @@ export class UserListener extends Listener {
 
 		await game.textChannel.send({ embeds: [embed] });
 
-		game.players.forEach((player) => {
+		for (const player of game.players.values()) {
 			// If the player is still in the voice channel (this property is
 			// turned to undefined when they leave).
 			if (player.lastGameEntryTime) {
 				player.songsListenedTo++;
 			}
-		});
+		}
 
 		const points = game.leaderboard.leader?.[1];
 		if (points && game.goal && points === game.goal) {

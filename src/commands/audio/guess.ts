@@ -31,7 +31,7 @@ export class UserCommand extends ArimaCommand {
 		);
 
 		await interaction.reply({ embeds: [embed] });
-		await game.queue.player.stop();
+		return game.queue.player.stop();
 	}
 
 	public override registerApplicationCommands(registry: ApplicationCommandRegistry) {

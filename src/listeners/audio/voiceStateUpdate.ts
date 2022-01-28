@@ -74,7 +74,7 @@ export class UserListener extends Listener<typeof Events.VoiceStateUpdate> {
 		}
 
 		// If the bot is playing to nobody... stop.
-		const isAlone = !game.voiceChannel.members.filter((member) => !member.user.bot).size;
+		const isAlone = !game.voiceChannel.members.some((member) => !member.user.bot);
 		const wasDisconnected = !newState.channelId;
 
 		if (isAlone || wasDisconnected) {
