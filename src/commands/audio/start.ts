@@ -2,9 +2,9 @@
 import type { CommandInteraction } from 'discord.js';
 import { CommandOptionsRunTypeEnum, isErr, type ApplicationCommandRegistry } from '@sapphire/framework';
 import { PlaylistResolutionError, resolvePlaylist } from '#utils/audio';
+import { hideLinkEmbed, hyperlink } from '@discordjs/builders';
 import { AcceptedAnswer, Game } from '#game/Game';
 import { PermissionFlagsBits } from 'discord-api-types/v9';
-import { hideLinkEmbed } from '@discordjs/builders';
 import { ArimaCommand } from '#structures/ArimaCommand';
 import { ApplyOptions } from '@sapphire/decorators';
 import { sendError } from '#utils/responses';
@@ -20,9 +20,10 @@ export class UserCommand extends ArimaCommand {
 		[PlaylistResolutionError.NotEnoughTracks]: 'There must be at least 5 tracks over 30 seconds long',
 		[PlaylistResolutionError.NotFound]: "I couldn't find that playlist. Please make sure you entered a valid URL",
 		[PlaylistResolutionError.NotPlaylist]: "The link you sent didn't lead to a playlist",
-		[PlaylistResolutionError.NotSuccessful]: `Something went wrong when finding that playlist. Please try again later, or submit a bug report on my [support server](${hideLinkEmbed(
-			env.SUPPORT_SERVER_INVITE
-		)})`
+		[PlaylistResolutionError.NotSuccessful]: `Something went wrong when finding that playlist. Please try again later, or submit a bug report on my ${hyperlink(
+			'support server',
+			hideLinkEmbed(env.SUPPORT_SERVER_INVITE)
+		)}`
 	};
 
 	public override async chatInputRun(interaction: CommandInteraction<'cached'>) {

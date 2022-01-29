@@ -1,5 +1,5 @@
 import type { IncomingEventTrackExceptionPayload } from '@skyra/audio';
-import { hideLinkEmbed, italic } from '@discordjs/builders';
+import { hideLinkEmbed, hyperlink, italic } from '@discordjs/builders';
 import { bold, redBright } from 'colorette';
 import { BrandingColors } from '#utils/constants';
 import { LavalinkEvent } from '#utils/audio';
@@ -26,7 +26,7 @@ export class UserListener extends Listener {
 
 		const embed = createEmbed(
 			`❌ Something went wrong whilst playing a track! Skipping...\n${italic(
-				`Want to report the issue? Join my [support server](${hideLinkEmbed(env.SUPPORT_SERVER_INVITE)})!`
+				`Want to report the issue? Join my ${hyperlink('support server', hideLinkEmbed(env.SUPPORT_SERVER_INVITE))}!`
 			)}`,
 			BrandingColors.Error
 		);
