@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import type { CommandInteraction } from 'discord.js';
 import type { Member } from '#database/entities/Member';
-import { CommandOptionsRunTypeEnum, type ApplicationCommandRegistry } from '@sapphire/framework';
 import { QueryOrder, type FilterQuery, type FindOptions } from '@mikro-orm/core';
+import { CommandOptionsRunTypeEnum } from '@sapphire/framework';
 import { rankToString, toPercent } from '#utils/common';
 import { createEmbed, sendError } from '#utils/responses';
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
@@ -14,7 +14,11 @@ import { chunk } from '@sapphire/utilities';
 
 @ApplyOptions<ArimaCommand.Options>({
 	description: "View this guild's leaderboard!",
-	runIn: [CommandOptionsRunTypeEnum.GuildText]
+	runIn: [CommandOptionsRunTypeEnum.GuildText],
+	chatInputCommand: {
+		register: true,
+		idHints: ['934653798058721360']
+	}
 })
 export class UserCommand extends ArimaCommand {
 	@UseForkedEm
@@ -84,11 +88,5 @@ export class UserCommand extends ArimaCommand {
 		}
 
 		return paginatedMessage.run(interaction);
-	}
-
-	public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-		registry.registerChatInputCommand((builder) => builder.setName(this.name).setDescription(this.description), {
-			idHints: ['934653798058721360']
-		});
 	}
 }
