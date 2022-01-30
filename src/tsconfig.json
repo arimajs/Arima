@@ -12,7 +12,8 @@
 			"#structures/*": ["lib/structures/*"],
 			"#game/*": ["lib/structures/game/*"],
 			"#utils/*": ["lib/utils/*"],
-			"#database/*": ["lib/database/*"]
+			"#database/*": ["lib/database/*"],
+			"#entities/*": ["lib/database/entities/*"]
 		}
 	},
 	"include": ["."]

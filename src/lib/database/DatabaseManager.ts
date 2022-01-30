@@ -1,6 +1,6 @@
 import type { EntityRepository, MongoDriver } from '@mikro-orm/mongodb';
 import { MikroORM, type EntityManager } from '@mikro-orm/core';
-import { Member } from '#database/entities/Member';
+import { Member } from '#entities/Member';
 import { env } from '#root/config';
 
 export class DatabaseManager {

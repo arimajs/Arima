@@ -14,7 +14,8 @@
 		"#structures/*": "./dist/lib/structures/*.js",
 		"#game/*": "./dist/lib/structures/game/*.js",
 		"#utils/*": "./dist/lib/utils/*.js",
-		"#database/*": "./dist/lib/database/*.js"
+		"#database/*": "./dist/lib/database/*.js",
+		"#entities/*": "./dist/lib/database/entities/*.js"
 	},
 	"scripts": {
 		"pm2": "pm2 start pm2.ecosystem.yml",

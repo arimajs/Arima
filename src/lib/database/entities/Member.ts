@@ -2,11 +2,11 @@ import type { Snowflake } from 'discord.js';
 import { PrimaryKey, Entity, Property } from '@mikro-orm/core';
 
 export enum Rank {
-	Beginner = 'beginner',
-	Experienced = 'experienced',
-	Master = 'master',
-	Divine = 'divine',
-	Legendary = 'legendary'
+	Beginner,
+	Experienced,
+	Master,
+	Divine,
+	Legendary
 }
 
 const ranks = new Map([

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import type { CommandInteraction } from 'discord.js';
-import type { Member } from '#database/entities/Member';
+import type { Member } from '#entities/Member';
 import { QueryOrder, type FilterQuery, type FindOptions } from '@mikro-orm/core';
 import { CommandOptionsRunTypeEnum } from '@sapphire/framework';
 import { rankToString, toPercent } from '#utils/common';
