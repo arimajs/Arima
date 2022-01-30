@@ -16,7 +16,7 @@ export class UserCommand extends ArimaCommand {
 		const guess = interaction.options.getString('guess', true);
 
 		const wasAlreadyHalfGuessed = Boolean(game.guessedThisRound);
-		const wasCorrect = game.guess(interaction.user, guess);
+		const wasCorrect = game.guess(interaction.user, guess.toLowerCase());
 
 		if (!wasCorrect) {
 			return sendError(interaction, `Sorry, **"${guess}"** is incorrect`, false);
