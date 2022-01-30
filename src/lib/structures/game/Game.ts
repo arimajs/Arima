@@ -107,10 +107,7 @@ export class Game {
 			? this.acceptedAnswer.toLowerCase()
 			: `song ${italic(this.acceptedAnswer === AcceptedAnswer.Both ? 'and' : 'or')} artist`;
 
-		const description = `The game has begun! You have ${inlineCode('30')} seconds to ${bold(
-			inlineCode('/guess')
-		)} the name of the ${answerType} name`;
-
+		const description = `The game has begun! You have ${inlineCode('30')} seconds to ${bold(inlineCode('/guess'))} the name of the ${answerType}`;
 		const embed = createEmbed(description)
 			.setAuthor({ name: `Hosted by ${this.hostUser.tag}`, iconURL: this.hostUser.displayAvatarURL({ size: 128, dynamic: true }) })
 			.setTitle(`🎶 Playing the playlist "${this.queue.playlist.name}"`);
