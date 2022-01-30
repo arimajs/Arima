@@ -9,7 +9,7 @@ import { inlineCode } from '@discordjs/builders';
 	description: 'View my latency!',
 	chatInputCommand: {
 		register: true,
-		idHints: ['919288852131217419']
+		idHints: ['937409132519129088']
 	}
 })
 export class UserCommand extends ArimaCommand {

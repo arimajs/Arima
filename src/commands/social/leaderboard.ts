@@ -17,7 +17,7 @@ import { chunk } from '@sapphire/utilities';
 	runIn: [CommandOptionsRunTypeEnum.GuildText],
 	chatInputCommand: {
 		register: true,
-		idHints: ['934653798058721360']
+		idHints: ['937411028780736642']
 	}
 })
 export class UserCommand extends ArimaCommand {

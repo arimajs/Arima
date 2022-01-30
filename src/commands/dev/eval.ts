@@ -70,7 +70,7 @@ export class UserCommand extends ArimaCommand {
 							.setDescription('The depth of the displayed return type')
 							.setRequired(false)
 					),
-			{ idHints: ['936381437370839080'], guildIds: [env.DEV_SERVER_ID] }
+			{ idHints: ['937409132879831061'], guildIds: [env.DEV_SERVER_ID] }
 		);
 	}
 

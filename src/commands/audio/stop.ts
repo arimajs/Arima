@@ -11,7 +11,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 	preconditions: [{ name: 'PlayingGame', context: { shouldBePlaying: true } }],
 	chatInputCommand: {
 		register: true,
-		idHints: ['932795359787356160']
+		idHints: ['937411030118694923']
 	}
 })
 export class UserCommand extends ArimaCommand {

@@ -100,7 +100,7 @@ export class UserCommand extends ArimaCommand {
 							.setName('all')
 							.setDescription('[owner only] Reload all stores and pieces')
 					),
-			{ idHints: ['936381437370839080'], guildIds: [env.DEV_SERVER_ID] }
+			{ idHints: ['937409133563478087'], guildIds: [env.DEV_SERVER_ID] }
 		);
 	}
 }

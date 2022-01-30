@@ -107,7 +107,7 @@ export class UserCommand extends ArimaCommand {
 							])
 							.setRequired(false)
 					),
-			{ idHints: ['931014505121595422'] }
+			{ idHints: ['937409133890633738'] }
 		);
 	}
 }

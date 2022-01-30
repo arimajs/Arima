@@ -52,7 +52,7 @@ export class UserCommand extends ArimaCommand {
 							.setDescription('The player to view info of (defaults to the command executor)')
 							.setRequired(false)
 					),
-			{ idHints: ['937190189913235497'] }
+			{ idHints: ['937411028063514735'] }
 		);
 	}
 }

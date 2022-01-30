@@ -46,7 +46,7 @@ export class UserCommand extends ArimaCommand {
 							.setDescription('Your guess! It will be case insensitive and typos will be forgiven using a fancy algorithm 🤓')
 							.setRequired(true)
 					),
-			{ idHints: ['931014505276792923'] }
+			{ idHints: ['937409134192648192'] }
 		);
 	}
 }
