@@ -37,7 +37,8 @@ export class UserCommand extends ArimaCommand {
 			.addField('Type 📝', codeBlock('ts', type), true)
 			.addField('Elapsed ⏱', elapsed, true);
 
-		return interaction.editReply({ embeds: [embed], files: embedLimitReached ? [Buffer.from(output)] : [] });
+		const files = embedLimitReached ? [{ attachment: Buffer.from(output), name: 'output.txt' }] : [];
+		return interaction.editReply({ embeds: [embed], files });
 	}
 
 	public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
