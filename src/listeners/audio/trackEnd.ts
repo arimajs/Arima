@@ -17,7 +17,7 @@ export class UserListener extends Listener {
 
 		const guessers = game.guessersThisRound;
 		const requiredBoth = game.acceptedAnswer === AcceptedAnswer.Both;
-		const guessed = guessers.length === 2 ?? (guessers.length && !requiredBoth);
+		const guessed = guessers.length === 2 || (guessers.length && !requiredBoth);
 
 		if (guessed) {
 			if (guessers.length === 1) {
