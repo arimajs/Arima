@@ -36,6 +36,6 @@ export class UserListener extends Listener {
 		// Decrement the playlist length, as it is used to calculate how many
 		// songs were played, and this song wasn't.
 		game.queue.playlistLength--;
-		await game.queue.next();
+		return game.queue.player.stop();
 	}
 }
