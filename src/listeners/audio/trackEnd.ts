@@ -19,15 +19,19 @@ export class UserListener extends Listener {
 		const requiredBoth = game.acceptedAnswer === AcceptedAnswer.Both;
 		const guessed = guessers.length === 2 || (guessers.length && !requiredBoth);
 
+		// If both guesses were by the same person
+		const doubleGuesser = requiredBoth && guessed && guessers[0].id === guessers[1]?.id;
+
 		if (guessed) {
-			if (guessers.length === 1) {
+			if (guessers.length === 1 || doubleGuesser) {
 				game.leaderboard.inc(guessers[0].id);
 			} else {
 				game.leaderboard.inc(guessers[0].id, 0.5);
 				game.leaderboard.inc(guessers[1].id, 0.5);
 			}
 
-			game.streaks.incStreak(...guessers.map(({ id }) => id));
+			// If both guessers were the same person, only increment their streak once
+			game.streaks.incStreak(...new Set(guessers.map(({ id }) => id)));
 		}
 
 		const { tracksPlayed, playlistLength, currentlyPlaying } = game.queue;
@@ -47,7 +51,7 @@ export class UserListener extends Listener {
 
 		const { title, author, uri } = currentlyPlaying!.info;
 		const embedTitle = guessed
-			? `${guessers.join(' and ')} guessed it! 🎉`
+			? `${doubleGuesser ? guessers[0] : guessers.join(' and ')} guessed it! 🎉`
 			: `${game.guessedThisRound ? `Only the ${game.guessedThisRound} was guessed` : `Nobody got it`}! 🙁`;
 
 		const embed = createEmbed(embedTitle, BrandingColors.Secondary)
