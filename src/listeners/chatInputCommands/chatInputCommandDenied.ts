@@ -3,7 +3,8 @@ import { sendError } from '#utils/responses';
 
 export class UserListener extends Listener<typeof Events.ChatInputCommandDenied> {
 	public run(error: UserError, { interaction }: ChatInputCommandDeniedPayload) {
-		if (Reflect.get(error.context as Record<string, unknown>, 'silent')) {
+		// eslint-disable-next-line no-new-object
+		if (Reflect.get(new Object(error.context), 'silent')) {
 			return;
 		}
 
