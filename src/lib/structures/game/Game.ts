@@ -167,7 +167,7 @@ export class Game {
 		// If one or less song was played, it's not worth making database calls.
 		if (this.queue.tracksPlayed > 1) {
 			const existingMembers = await container.db.members.find(
-				{ _id: { $in: [...this.players.keys()] }, guildId: this.guild.id },
+				{ userId: { $in: [...this.players.keys()] }, guildId: this.guild.id },
 				{ fields: ['gamesPlayed', 'gamesWon', 'points'] }
 			);
 
@@ -186,8 +186,8 @@ export class Game {
 
 				const points = Math.round((songsGuessedCorrectly / player.songsListenedTo) * (timePlayed / Time.Minute) * multiplier);
 
-				const existingMember = existingMembers.find(({ _id }) => _id === player.id);
-				const member = existingMember ?? container.db.members.create({ _id: player.id, guildId: this.guild.id });
+				const existingMember = existingMembers.find(({ userId }) => userId === player.id);
+				const member = existingMember ?? container.db.members.create({ userId: player.id, guildId: this.guild.id });
 
 				const originalLevel = member.level;
 				member.points += points;

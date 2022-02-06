@@ -20,7 +20,7 @@ const ranks = new Map([
 @Entity()
 export class Member {
 	@PrimaryKey({ type: 'string' })
-	public _id!: Snowflake;
+	public userId!: Snowflake;
 
 	@PrimaryKey({ type: 'string' })
 	public guildId!: Snowflake;

@@ -17,7 +17,7 @@ export class UserCommand extends ArimaCommand {
 	@UseForkedEm
 	public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
 		const user = interaction.options.getUser('player') ?? interaction.user;
-		const player = await this.container.db.members.findOne({ _id: user.id, guildId: interaction.guild.id });
+		const player = await this.container.db.members.findOne({ userId: user.id, guildId: interaction.guild.id });
 
 		if (!player) {
 			return sendError(interaction, `${user} has not played any games in this guild yet`);
