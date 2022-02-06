@@ -1,3 +1,4 @@
+import type { Client as StatcordClient } from 'statcord.js';
 import type { Collection, Snowflake } from 'discord.js';
 import type { DatabaseManager } from '#database/DatabaseManager';
 import type { SapphireClient } from '@sapphire/framework';
@@ -6,6 +7,7 @@ import type { Game } from '#game/Game';
 
 declare module '@sapphire/pieces' {
 	interface Container {
+		stats: StatcordClient;
 		audio: Node;
 		db: DatabaseManager;
 		games: Collection<Snowflake, Game>;

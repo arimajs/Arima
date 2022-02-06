@@ -15,7 +15,8 @@ export const env = cleanEnv(process.env, {
 	LAVALINK_PORT: port({ desc: 'The http and ws port of your Lavalink instance' }),
 	LAVALINK_PASSWORD: str({ desc: 'The password of your Lavalink instance' }),
 	SUPPORT_SERVER_INVITE: str({ default: '' }),
-	DEV_SERVER_ID: str({ default: '' })
+	DEV_SERVER_ID: str({ default: '' }),
+	STATCORD_API_KEY: str({ default: '' })
 });
 
 export const createAudioOptions = (client: Client): NodeOptions => ({

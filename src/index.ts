@@ -2,9 +2,9 @@ import '@sapphire/plugin-logger/register';
 import 'dotenv/config';
 
 import { SapphireClient, ApplicationCommandRegistries, RegisterBehavior, Piece, container } from '@sapphire/framework';
-import { clientOptions } from '#root/config';
-import { DatabaseManager } from '#database/DatabaseManager';
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
+import { DatabaseManager } from '#database/DatabaseManager';
+import { clientOptions } from '#root/config';
 import process from 'node:process';
 
 const client = new SapphireClient(clientOptions);

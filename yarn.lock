@@ -2725,6 +2725,7 @@ __metadata:
     prettier: ^2.5.1
     pretty-quick: ^3.1.3
     spotify-url-info: ^2.2.5
+    statcord.js: ^3.4.1
     ts-jest: ^27.1.3
     tslib: ^2.3.1
     tsup: ^5.11.13
@@ -7722,6 +7723,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"node-fetch@npm:^2.6.7":
+  version: 2.6.7
+  resolution: "node-fetch@npm:2.6.7"
+  dependencies:
+    whatwg-url: ^5.0.0
+  peerDependencies:
+    encoding: ^0.1.0
+  peerDependenciesMeta:
+    encoding:
+      optional: true
+  checksum: 8d816ffd1ee22cab8301c7756ef04f3437f18dace86a1dae22cf81db8ef29c0bf6655f3215cb0cdb22b420b6fe141e64b26905e7f33f9377a7fa59135ea3e10b
+  languageName: node
+  linkType: hard
+
 "node-gyp@npm:latest":
   version: 8.4.1
   resolution: "node-gyp@npm:8.4.1"
@@ -9401,6 +9416,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"statcord.js@npm:^3.4.1":
+  version: 3.4.1
+  resolution: "statcord.js@npm:3.4.1"
+  dependencies:
+    node-fetch: ^2.6.7
+    systeminformation: ^5.7.12
+  checksum: 277bb725cfc0cdd3c813b967c71bf64f0caef16ca7fd8982a948b24455116372fd13fd81fd402999fb8dc1b816d1ba53ad693f1eabec483fe4546c7360efa9f3
+  languageName: node
+  linkType: hard
+
 "static-extend@npm:^0.1.1":
   version: 0.1.2
   resolution: "static-extend@npm:0.1.2"
@@ -9659,6 +9684,16 @@ __metadata:
   bin:
     systeminformation: lib/cli.js
   conditions: (os=darwin | os=linux | os=win32 | os=freebsd | os=openbsd | os=netbsd | os=sunos)
+  languageName: node
+  linkType: hard
+
+"systeminformation@npm:^5.7.12":
+  version: 5.11.2
+  resolution: "systeminformation@npm:5.11.2"
+  bin:
+    systeminformation: lib/cli.js
+  checksum: faee59044c257f42a7d31eaf1e91aded767292d2de0db76426ecb31b8575376ec68ab7540d20dadecdfc82f6c52a035db7f677f13808ac3976b6c0906a19d760
+  conditions: (os=darwin | os=linux | os=win32 | os=freebsd | os=openbsd | os=netbsd | os=sunos | os=android)
   languageName: node
   linkType: hard
 

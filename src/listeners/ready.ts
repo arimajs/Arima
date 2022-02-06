@@ -1,5 +1,6 @@
 import { blue, gray, green, magenta, magentaBright, bold } from 'colorette';
 import { Listener, Events, type Piece, type Store } from '@sapphire/framework';
+import { Client as StatcordClient } from 'statcord.js';
 import { createAudioOptions, env } from '#root/config';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Collection } from 'discord.js';
@@ -13,6 +14,7 @@ import { URL } from 'node:url';
 export class UserListener extends Listener<typeof Events.ClientReady> {
 	public async run() {
 		await this.createAudioNode();
+		await this.initStatTracker();
 
 		const raw = await readFile(new URL('../package.json', rootURL), 'utf8');
 		const { version } = JSON.parse(raw);
@@ -68,6 +70,21 @@ export class UserListener extends Listener<typeof Events.ClientReady> {
 				await player.stop();
 			}
 		}
+	}
+
+	private async initStatTracker() {
+		if (!env.STATCORD_API_KEY) {
+			return;
+		}
+
+		this.container.stats = new StatcordClient({ client: this.client, key: env.STATCORD_API_KEY });
+
+		// Register a custom counter for the amount of games being played at once.
+		// The typings require the return type to be a promise.
+		await this.container.stats.registerCustomFieldHandler(1, () => Promise.resolve(this.container.games.size.toString()));
+
+		// Automatically post stats every minute.
+		await this.container.stats.autopost();
 	}
 
 	private styleStore(store: Store<Piece>, last: boolean) {

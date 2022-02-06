@@ -52,6 +52,7 @@
 		"fuse.js": "^6.5.3",
 		"node-cache": "^5.1.2",
 		"spotify-url-info": "^2.2.5",
+		"statcord.js": "^3.4.1",
 		"tslib": "^2.3.1"
 	},
 	"devDependencies": {
