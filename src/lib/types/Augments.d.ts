@@ -7,7 +7,7 @@ import type { Game } from '#game/Game';
 
 declare module '@sapphire/pieces' {
 	interface Container {
-		stats: StatcordClient;
+		stats?: StatcordClient;
 		audio: Node;
 		db: DatabaseManager;
 		games: Collection<Snowflake, Game>;
