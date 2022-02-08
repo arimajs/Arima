@@ -1,20 +1,39 @@
 {
-	"files": ["README.md"],
-	"imageSize": 100,
-	"commit": false,
-	"contributors": [
-		{
-			"login": "Lioness100",
-			"name": "Lioness100",
-			"avatar_url": "https://avatars.githubusercontent.com/u/65814829?v=4",
-			"profile": "https://github.com/Lioness100",
-			"contributions": ["bug", "code", "doc", "ideas", "maintenance", "projectManagement", "test"]
-		}
-	],
-	"contributorsPerLine": 7,
-	"projectName": "Arima",
-	"projectOwner": "arimajs",
-	"repoType": "github",
-	"repoHost": "https://github.com",
-	"skipCi": true
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "Lioness100",
+      "name": "Lioness100",
+      "avatar_url": "https://avatars.githubusercontent.com/u/65814829?v=4",
+      "profile": "https://github.com/Lioness100",
+      "contributions": [
+        "bug",
+        "code",
+        "doc",
+        "ideas",
+        "maintenance",
+        "projectManagement",
+        "test"
+      ]
+    },
+    {
+      "login": "nathanvdh",
+      "name": "nathanvdh",
+      "avatar_url": "https://avatars.githubusercontent.com/u/55475809?v=4",
+      "profile": "https://github.com/nathanvdh",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "Arima",
+  "projectOwner": "arimajs",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
 }
