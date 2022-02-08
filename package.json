@@ -19,7 +19,7 @@
 	},
 	"scripts": {
 		"pm2": "pm2 start pm2.ecosystem.yml",
-		"start": "node --enable-source-maps .",
+		"start": "node --enable-source-maps --experimental-json-modules .",
 		"lint": "eslint src tests --ext js,ts --fix",
 		"format": "prettier --write \"{src,tests}/**/*.[jt]s\"",
 		"update": "yarn upgrade-interactive",
@@ -32,8 +32,8 @@
 	},
 	"dependencies": {
 		"@discordjs/builders": "0.12.0",
-		"@mikro-orm/core": "^5.0.0-rc.0",
-		"@mikro-orm/mongodb": "^5.0.0-rc.0",
+		"@mikro-orm/core": "^5.0.0",
+		"@mikro-orm/mongodb": "^5.0.0",
 		"@sapphire/decorators": "^4.2.1",
 		"@sapphire/discord.js-utilities": "^4.6.1",
 		"@sapphire/framework": "^3.0.0-next.6c86aca.0",

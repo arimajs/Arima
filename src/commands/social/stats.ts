@@ -2,10 +2,10 @@
 import type { CommandInteraction } from 'discord.js';
 import { CommandOptionsRunTypeEnum, type ApplicationCommandRegistry } from '@sapphire/framework';
 import { createEmbed, sendError } from '#utils/responses';
+import { inlineCode, underscore } from '@discordjs/builders';
+import { UseRequestContext } from '#utils/decorators';
 import { ArimaCommand } from '#structures/ArimaCommand';
 import { ApplyOptions } from '@sapphire/decorators';
-import { UseForkedEm } from '#utils/decorators';
-import { inlineCode, underscore } from '@discordjs/builders';
 import { toPercent } from '#utils/common';
 import { Rank } from '#entities/Member';
 
@@ -14,7 +14,7 @@ import { Rank } from '#entities/Member';
 	runIn: [CommandOptionsRunTypeEnum.GuildText]
 })
 export class UserCommand extends ArimaCommand {
-	@UseForkedEm
+	@UseRequestContext()
 	public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
 		const user = interaction.options.getUser('player') ?? interaction.user;
 		const player = await this.container.db.members.findOne({ userId: user.id, guildId: interaction.guild.id });

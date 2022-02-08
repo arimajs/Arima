@@ -2,11 +2,11 @@ import type { CommandInteraction, Guild, Snowflake, GuildTextBasedChannel, User,
 import type { Playlist } from '#utils/audio';
 import { bold, inlineCode, italic, userMention } from '@discordjs/builders';
 import { DurationFormatter, Time } from '@sapphire/time-utilities';
+import { UseRequestContext } from '#utils/decorators';
 import { StreakCounter } from '#game/StreakCounter';
 import { jaroWinkler } from '@skyra/jaro-winkler';
 import { Leaderboard } from '#game/Leaderboard';
 import { createEmbed } from '#utils/responses';
-import { UseForkedEm } from '#utils/decorators';
 import { container } from '@sapphire/framework';
 import { Queue } from '#game/Queue';
 
@@ -130,7 +130,7 @@ export class Game {
 		return true;
 	}
 
-	@UseForkedEm
+	@UseRequestContext()
 	public async end(reason: GameEndReason, sendFn: (options: MessageOptions) => Promise<unknown> = this.textChannel.send.bind(this.textChannel)) {
 		container.games.delete(this.guild.id);
 		await this.queue.end();

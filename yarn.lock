@@ -1330,26 +1330,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mikro-orm/core@npm:^5.0.0-rc.0":
-  version: 5.0.0-rc.0
-  resolution: "@mikro-orm/core@npm:5.0.0-rc.0"
+"@mikro-orm/core@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "@mikro-orm/core@npm:5.0.0"
   dependencies:
     clone: 2.1.2
-    dotenv: 14.2.0
+    dotenv: 16.0.0
     escaya: 0.0.61
     fs-extra: 10.0.0
     globby: 11.0.4
-    mikro-orm: ^5.0.0-rc.0
+    mikro-orm: ^5.0.0
     reflect-metadata: 0.1.13
   peerDependencies:
-    "@mikro-orm/entity-generator": ^5.0.0-rc.0
-    "@mikro-orm/mariadb": ^5.0.0-rc.0
-    "@mikro-orm/migrations": ^5.0.0-rc.0
-    "@mikro-orm/mongodb": ^5.0.0-rc.0
-    "@mikro-orm/mysql": ^5.0.0-rc.0
-    "@mikro-orm/postgresql": ^5.0.0-rc.0
-    "@mikro-orm/seeder": ^5.0.0-rc.0
-    "@mikro-orm/sqlite": ^5.0.0-rc.0
+    "@mikro-orm/entity-generator": ^5.0.0
+    "@mikro-orm/mariadb": ^5.0.0
+    "@mikro-orm/migrations": ^5.0.0
+    "@mikro-orm/mongodb": ^5.0.0
+    "@mikro-orm/mysql": ^5.0.0
+    "@mikro-orm/postgresql": ^5.0.0
+    "@mikro-orm/seeder": ^5.0.0
+    "@mikro-orm/sqlite": ^5.0.0
   peerDependenciesMeta:
     "@mikro-orm/entity-generator":
       optional: true
@@ -1367,21 +1367,21 @@ __metadata:
       optional: true
     "@mikro-orm/sqlite":
       optional: true
-  checksum: b1ec4631936dbfc5fc25ebccb744b91cdf33a9e36b7b85c31ca60e6ebf3b28fb5b29f4628181792a325cee6f88437f0db5b105f7a872d9592b03ec4804c54660
+  checksum: c6c76b098c33b300c20c5492529ebb283d89fe402c5e4c67630abc188bcbc23495c7a1e5798913330520e82683c8176e16af0873a9d33fe42a98449dfd19eadd
   languageName: node
   linkType: hard
 
-"@mikro-orm/mongodb@npm:^5.0.0-rc.0":
-  version: 5.0.0-rc.0
-  resolution: "@mikro-orm/mongodb@npm:5.0.0-rc.0"
+"@mikro-orm/mongodb@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "@mikro-orm/mongodb@npm:5.0.0"
   dependencies:
     bson: ^4.6.0
     mongodb: 4.3.1
   peerDependencies:
-    "@mikro-orm/core": ^5.0.0-rc.0
-    "@mikro-orm/entity-generator": ^5.0.0-rc.0
-    "@mikro-orm/migrations": ^5.0.0-rc.0
-    "@mikro-orm/seeder": ^5.0.0-rc.0
+    "@mikro-orm/core": ^5.0.0
+    "@mikro-orm/entity-generator": ^5.0.0
+    "@mikro-orm/migrations": ^5.0.0
+    "@mikro-orm/seeder": ^5.0.0
   peerDependenciesMeta:
     "@mikro-orm/entity-generator":
       optional: true
@@ -1389,7 +1389,7 @@ __metadata:
       optional: true
     "@mikro-orm/seeder":
       optional: true
-  checksum: cedbe4377b9869c73e1803bea44409a811f8ca5c4b9591547464f0c203a432ad11f2fb4b6a1fdbe26cdbfc58b891bf93b7119b93a080bca0775fd7d5255f0bc3
+  checksum: 4fc0f7fefddf0dc66a6cdd90049f191c31bd1dea8eebbb87af89512e20376df6f5f7875b2f0bbab8e86fc290496d8e7b315112bc3786f556dd751cdc076ad1f0
   languageName: node
   linkType: hard
 
@@ -2581,8 +2581,8 @@ __metadata:
     "@commitlint/cli": ^16.1.0
     "@commitlint/config-conventional": ^16.0.0
     "@discordjs/builders": 0.12.0
-    "@mikro-orm/core": ^5.0.0-rc.0
-    "@mikro-orm/mongodb": ^5.0.0-rc.0
+    "@mikro-orm/core": ^5.0.0
+    "@mikro-orm/mongodb": ^5.0.0
     "@sapphire/decorators": ^4.2.1
     "@sapphire/discord.js-utilities": ^4.6.1
     "@sapphire/eslint-config": ^4.2.0
@@ -3973,14 +3973,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:14.2.0":
-  version: 14.2.0
-  resolution: "dotenv@npm:14.2.0"
-  checksum: 85a0e44918ef49e64c278f757dab50a156b9a6ca67f708876fd81d265e575e35b67387fc681d910df99368d6c1edca66cd546edeb0f7db3b499cb876c999233e
-  languageName: node
-  linkType: hard
-
-"dotenv@npm:^16.0.0":
+"dotenv@npm:16.0.0, dotenv@npm:^16.0.0":
   version: 16.0.0
   resolution: "dotenv@npm:16.0.0"
   checksum: 664cebb51f0a9a1d1b930f51f0271e72e26d62feaecc9dc03df39453dd494b4e724809ca480fb3ec3213382b1ed3f791aaeb83569a137f9329ce58efd4853dbf
@@ -7253,10 +7246,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mikro-orm@npm:^5.0.0-rc.0":
-  version: 5.0.0-rc.0
-  resolution: "mikro-orm@npm:5.0.0-rc.0"
-  checksum: c7a077216ef6d2e40910192b5974e6e1a92ce51753b7ea689209ce7acd95f9524b4801dc4a1d3d7ab661105f718b5573ed1295a46503ee5180d00370fcc98092
+"mikro-orm@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "mikro-orm@npm:5.0.0"
+  checksum: 6394605146555495e8c41bd70e6061b820740da7327287b8f897c94e8c232e7f2de2328a296c49ad6a232195b8c724328e3dc0eb00d19a89193970b9b71f6e08
   languageName: node
   linkType: hard
 

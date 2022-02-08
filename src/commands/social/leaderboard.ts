@@ -2,14 +2,14 @@
 import type { CommandInteraction } from 'discord.js';
 import type { Member } from '#entities/Member';
 import { QueryOrder, type FilterQuery, type FindOptions } from '@mikro-orm/core';
+import { bold, inlineCode, userMention } from '@discordjs/builders';
 import { CommandOptionsRunTypeEnum } from '@sapphire/framework';
 import { rankToString, toPercent } from '#utils/common';
 import { createEmbed, sendError } from '#utils/responses';
+import { UseRequestContext } from '#utils/decorators';
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import { ArimaCommand } from '#structures/ArimaCommand';
 import { ApplyOptions } from '@sapphire/decorators';
-import { UseForkedEm } from '#utils/decorators';
-import { bold, inlineCode, userMention } from '@discordjs/builders';
 import { chunk } from '@sapphire/utilities';
 
 @ApplyOptions<ArimaCommand.Options>({
@@ -21,7 +21,7 @@ import { chunk } from '@sapphire/utilities';
 	}
 })
 export class UserCommand extends ArimaCommand {
-	@UseForkedEm
+	@UseRequestContext()
 	public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
 		const { members } = this.container.db;
 
