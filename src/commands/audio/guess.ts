@@ -22,16 +22,20 @@ export class UserCommand extends ArimaCommand {
 			return sendError(interaction, `Sorry, **"${guess}"** is incorrect`, false);
 		}
 
-		const embed = createEmbed(
-			`✅ You got it!${
-				!wasAlreadyHalfGuessed && game.guessedThisRound
-					? ` **"${guess}"** is the ${game.acceptedAnswer.toLowerCase()}'s name. You're halfway there!`
-					: ''
-			}`
-		);
+		const isHalfGuessed = !wasAlreadyHalfGuessed && Boolean(game.guessedThisRound);
+
+		let halfGuessedString = '';
+		if (isHalfGuessed) {
+			halfGuessedString = ` **"${guess}"** is the ${game.guessedThisRound!.toLowerCase()}'s name. You're halfway there!`;
+		}
+
+		const embed = createEmbed(`✅ You got it!${halfGuessedString}`);
 
 		await interaction.reply({ embeds: [embed] });
-		return game.queue.player.stop();
+
+		if (!isHalfGuessed) {
+			return game.queue.player.stop();
+		}
 	}
 
 	public override registerApplicationCommands(registry: ApplicationCommandRegistry) {

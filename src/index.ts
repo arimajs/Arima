@@ -2,9 +2,9 @@ import '@sapphire/plugin-logger/register';
 import 'dotenv/config';
 
 import { SapphireClient, ApplicationCommandRegistries, RegisterBehavior, Piece, container } from '@sapphire/framework';
+import { clientOptions, dbOptions } from '#root/config';
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import { DatabaseManager } from '#database/DatabaseManager';
-import { clientOptions } from '#root/config';
 import process from 'node:process';
 
 const client = new SapphireClient(clientOptions);
@@ -18,7 +18,7 @@ PaginatedMessage.wrongUserInteractionReply = (user) => `❌ Only ${user} can use
 Object.defineProperty(Piece.prototype, 'client', { get: () => container.client });
 
 try {
-	container.db = await DatabaseManager.connect();
+	container.db = (await DatabaseManager.init(dbOptions)) as unknown as DatabaseManager;
 	await client.login();
 } catch (error) {
 	client.logger.fatal(error);

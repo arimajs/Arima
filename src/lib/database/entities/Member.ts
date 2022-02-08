@@ -1,6 +1,6 @@
 import type { Snowflake } from 'discord.js';
 import type { ObjectId } from '@mikro-orm/mongodb';
-import { SerializedPrimaryKey, PrimaryKey, Entity, Property } from '@mikro-orm/core';
+import { SerializedPrimaryKey, PrimaryKey, Entity, Property, OptionalProps } from '@mikro-orm/core';
 
 export enum Rank {
 	Beginner,
@@ -20,6 +20,8 @@ const ranks = new Map([
 
 @Entity()
 export class Member {
+	public [OptionalProps]?: Exclude<keyof Member, 'userId' | 'guildId'>;
+
 	@PrimaryKey()
 	public _id!: ObjectId;
 
