@@ -165,11 +165,7 @@ export class Game {
 
 		// If one or less song was played, it's not worth making database calls.
 		if (this.queue.tracksPlayed > 1) {
-			const existingMembers = await container.db.members.find(
-				{ userId: { $in: [...this.players.keys()] }, guildId: this.guild.id },
-				{ fields: ['gamesPlayed', 'gamesWon', 'points'] }
-			);
-
+			const existingMembers = await container.db.members.find({ userId: { $in: [...this.players.keys()] }, guildId: this.guild.id });
 			const promises: Promise<Message>[] = [];
 
 			for (const player of this.players.values()) {
