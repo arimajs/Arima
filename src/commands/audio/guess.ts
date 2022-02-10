@@ -30,12 +30,15 @@ export class UserCommand extends ArimaCommand {
 		}
 
 		const embed = createEmbed(`✅ You got it!${halfGuessedString}`);
+		const promises: Promise<unknown>[] = [];
 
-		await interaction.reply({ embeds: [embed] });
+		promises.push(interaction.reply({ embeds: [embed] }));
 
 		if (!isHalfGuessed) {
-			return game.queue.player.stop();
+			promises.push(game.queue.player.stop());
 		}
+
+		return Promise.all(promises);
 	}
 
 	public override registerApplicationCommands(registry: ApplicationCommandRegistry) {

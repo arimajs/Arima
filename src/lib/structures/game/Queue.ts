@@ -97,8 +97,7 @@ export class Queue {
 		this.currentlyPlaying = undefined;
 
 		// Stops the player and leaves the voice channel.
-		await this.player.leave();
-		await this.player.stop();
+		await Promise.all([this.player.leave(), this.player.stop()]);
 	}
 
 	public static getPlayer(guildId: Snowflake) {

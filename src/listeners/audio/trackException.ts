@@ -31,11 +31,9 @@ export class UserListener extends Listener {
 			BrandingColors.Error
 		);
 
-		await game.textChannel.send({ embeds: [embed] });
-
 		// Decrement the playlist length, as it is used to calculate how many
 		// songs were played, and this song wasn't.
 		game.queue.playlistLength--;
-		return game.queue.player.stop();
+		return Promise.all([game.queue.player.stop(), game.textChannel.send({ embeds: [embed] })]);
 	}
 }

@@ -13,9 +13,7 @@ import { URL } from 'node:url';
 @ApplyOptions<Listener.Options>({ once: true })
 export class UserListener extends Listener<typeof Events.ClientReady> {
 	public async run() {
-		await this.createAudioNode();
-		await this.initStatTracker();
-
+		await Promise.all([this.createAudioNode(), this.initStatTracker()]);
 		const raw = await readFile(new URL('../package.json', rootURL), 'utf8');
 		const { version } = JSON.parse(raw);
 
@@ -63,13 +61,14 @@ export class UserListener extends Listener<typeof Events.ClientReady> {
 		await this.container.audio.connect();
 
 		// If the bot stayed in a voice channel through a restart, leave.
-		for (const guild of this.client.guilds.cache.values()) {
+		const promises = this.client.guilds.cache.map(async (guild) => {
 			if (guild.me!.voice.channelId) {
 				const player = Queue.getPlayer(guild.id);
-				await player.leave();
-				await player.stop();
+				await Promise.all([player.leave(), player.stop()]);
 			}
-		}
+		});
+
+		await Promise.all(promises);
 	}
 
 	private async initStatTracker() {
