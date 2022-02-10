@@ -54,9 +54,7 @@ export class UserCommand extends ArimaCommand {
 		}
 
 		const url = interaction.options.getString('url', true);
-
-		await interaction.deferReply();
-		const result = await resolvePlaylist(url);
+		const [result] = await Promise.all([resolvePlaylist(url), interaction.deferReply()]);
 
 		if (isErr(result)) {
 			return sendError(interaction, UserCommand.errorDescriptors[result.error]);

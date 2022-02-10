@@ -1,4 +1,4 @@
-import type { CommandInteraction, Guild, Snowflake, GuildTextBasedChannel, User, VoiceChannel, MessageOptions } from 'discord.js';
+import type { CommandInteraction, Guild, Snowflake, GuildTextBasedChannel, User, VoiceChannel, MessageOptions, Message } from 'discord.js';
 import type { Playlist } from '#utils/audio';
 import { bold, inlineCode, italic, userMention } from '@discordjs/builders';
 import { DurationFormatter, Time } from '@sapphire/time-utilities';
@@ -102,7 +102,7 @@ export class Game {
 		this.players = new Map(players);
 	}
 
-	public async start(interaction: CommandInteraction) {
+	public start(interaction: CommandInteraction) {
 		const answerType = [AcceptedAnswer.Song, AcceptedAnswer.Artist].includes(this.acceptedAnswer)
 			? this.acceptedAnswer.toLowerCase()
 			: `song ${italic(this.acceptedAnswer === AcceptedAnswer.Both ? 'and' : 'or')} artist`;
@@ -116,8 +116,7 @@ export class Game {
 			embed.setFooter({ text: `Playing to ${this.goal} points` });
 		}
 
-		await interaction.editReply({ embeds: [embed] });
-		return this.queue.next();
+		return Promise.all([this.queue.next(), interaction.editReply({ embeds: [embed] })]);
 	}
 
 	public guess(user: User, guess: string) {
@@ -171,6 +170,8 @@ export class Game {
 				{ fields: ['gamesPlayed', 'gamesWon', 'points'] }
 			);
 
+			const promises: Promise<Message>[] = [];
+
 			for (const player of this.players.values()) {
 				const songsGuessedCorrectly = this.leaderboard.get(player.id) ?? 0;
 
@@ -220,11 +221,12 @@ export class Game {
 						)} thanks to your epic song-guessing skills!`;
 					}
 
-					await this.textChannel.send(content);
+					promises.push(this.textChannel.send(content));
 				}
 			}
 
-			await container.db.em.flush();
+			// Resolve/reject promises in parallel to boost performance.
+			await Promise.all([Promise.all(promises), container.db.em.flush()]);
 		}
 	}
 
