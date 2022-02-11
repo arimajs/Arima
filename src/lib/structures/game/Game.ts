@@ -226,6 +226,7 @@ export class Game {
 		}
 	}
 
+	// TODO: More inclusive regexes
 	public validateAnswer(guess: string) {
 		switch (this.acceptedAnswer) {
 			case AcceptedAnswer.Song: {
