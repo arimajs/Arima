@@ -107,7 +107,7 @@ export class Game {
 			? this.acceptedAnswer.toLowerCase()
 			: `song ${italic(this.acceptedAnswer === AcceptedAnswer.Both ? 'and' : 'or')} artist`;
 
-		const description = `The game has begun! You have ${inlineCode('30')} seconds to ${bold(inlineCode('/guess'))} the name of the ${answerType}`;
+		const description = `The game has begun! You have ${inlineCode('30')} seconds to guess the name of the ${answerType} in this channel.`;
 		const embed = createEmbed(description)
 			.setAuthor({ name: `Hosted by ${this.hostUser.tag}`, iconURL: this.hostUser.displayAvatarURL({ size: 128, dynamic: true }) })
 			.setTitle(`🎶 Playing the playlist "${this.queue.playlist.name}"`);
@@ -120,7 +120,7 @@ export class Game {
 	}
 
 	public guess(user: User, guess: string) {
-		const isValid = this.validateAnswer(guess);
+		const isValid = this.validateAnswer(guess.toLowerCase());
 		if (!isValid) {
 			return false;
 		}

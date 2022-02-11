@@ -30,9 +30,11 @@ export const createAudioOptions = (client: Client): NodeOptions => ({
 
 export const clientOptions: ClientOptions = {
 	// Intents dictate what events the client will receive.
-	intents: GatewayIntentBits.Guilds | GatewayIntentBits.GuildVoiceStates,
+	intents: GatewayIntentBits.Guilds | GatewayIntentBits.GuildMessages | GatewayIntentBits.GuildVoiceStates,
 	logger: { level: env.isProduction ? LogLevel.Info : LogLevel.Debug },
-	loadDefaultErrorListeners: false
+	loadDefaultErrorListeners: false,
+	// "Message Command" listeners include the one used to receive game guesses.
+	loadMessageCommandListeners: true
 };
 
 export const dbOptions: MikroOptions<MongoDriver> = {
