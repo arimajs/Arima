@@ -57,10 +57,6 @@ export class Queue {
 		let nextTrackFull: Track | undefined;
 
 		if (nextTrack) {
-			// Reset round-specific properties.
-			this.game.guessedThisRound = undefined;
-			this.game.guessersThisRound = [];
-
 			if (typeof nextTrack !== 'string') {
 				// This is what will be searched on Youtube to try to get the
 				// most accurate results.
@@ -85,8 +81,8 @@ export class Queue {
 					}
 				}
 			}
-
 			this.currentlyPlaying = nextTrackFull ?? { track: nextTrack as string, info: await this.player.node.decode(nextTrack as string) };
+			this.game.roundData.reset(this.currentlyPlaying.info.title, [this.currentlyPlaying.info.author]);
 			await this.player.play(this.currentlyPlaying, getRandomThirtySecondWindow(this.currentlyPlaying.info.length));
 		} else {
 			await this.game.end(GameEndReason.PlaylistEnded);
