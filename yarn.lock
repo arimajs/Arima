@@ -1330,11 +1330,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mikro-orm/core@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@mikro-orm/core@npm:5.0.0"
+"@mikro-orm/core@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "@mikro-orm/core@npm:5.0.1"
   dependencies:
-    clone: 2.1.2
     dotenv: 16.0.0
     escaya: 0.0.61
     fs-extra: 10.0.0
@@ -1367,13 +1366,13 @@ __metadata:
       optional: true
     "@mikro-orm/sqlite":
       optional: true
-  checksum: c6c76b098c33b300c20c5492529ebb283d89fe402c5e4c67630abc188bcbc23495c7a1e5798913330520e82683c8176e16af0873a9d33fe42a98449dfd19eadd
+  checksum: 921a6100777e9485aa4ec36c36d80ae30ce7c1411262fdfbdfa08fa6a8e3d360e2c147ffb9023b28860ff7b9469e9efaa31508e5749ca3f5d7fe81c3e9c1e03c
   languageName: node
   linkType: hard
 
-"@mikro-orm/mongodb@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@mikro-orm/mongodb@npm:5.0.0"
+"@mikro-orm/mongodb@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "@mikro-orm/mongodb@npm:5.0.1"
   dependencies:
     bson: ^4.6.0
     mongodb: 4.3.1
@@ -1389,7 +1388,7 @@ __metadata:
       optional: true
     "@mikro-orm/seeder":
       optional: true
-  checksum: 4fc0f7fefddf0dc66a6cdd90049f191c31bd1dea8eebbb87af89512e20376df6f5f7875b2f0bbab8e86fc290496d8e7b315112bc3786f556dd751cdc076ad1f0
+  checksum: 15f00710516c9700f8e897b3bfcede3b54e003321d8b344b2691234b93a797a8b66381a48ffa8f0912c1aebf3aa1832f68decbf0fae68a55774f9dc11ce421b1
   languageName: node
   linkType: hard
 
@@ -2588,8 +2587,8 @@ __metadata:
     "@commitlint/cli": ^16.1.0
     "@commitlint/config-conventional": ^16.0.0
     "@discordjs/builders": 0.12.0
-    "@mikro-orm/core": ^5.0.0
-    "@mikro-orm/mongodb": ^5.0.0
+    "@mikro-orm/core": ^5.0.1
+    "@mikro-orm/mongodb": ^5.0.1
     "@sapphire/async-queue": ^1.2.0
     "@sapphire/decorators": ^4.2.1
     "@sapphire/discord.js-utilities": ^4.6.1
@@ -3377,7 +3376,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"clone@npm:2.1.2, clone@npm:2.x":
+"clone@npm:2.x":
   version: 2.1.2
   resolution: "clone@npm:2.1.2"
   checksum: aaf106e9bc025b21333e2f4c12da539b568db4925c0501a1bf4070836c9e848c892fa22c35548ce0d1132b08bbbfa17a00144fe58fccdab6fa900fec4250f67d
