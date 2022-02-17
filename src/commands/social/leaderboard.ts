@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import type { CommandInteraction } from 'discord.js';
 import type { Member } from '#entities/Member';
-import { QueryOrder, type FilterQuery, type FindOptions } from '@mikro-orm/core';
+import { QueryOrder, type FilterQuery, type FindOptions, type EntityField } from '@mikro-orm/core';
 import { bold, inlineCode, userMention } from '@discordjs/builders';
 import { CommandOptionsRunTypeEnum } from '@sapphire/framework';
 import { rankToString, toPercent } from '#utils/common';
@@ -27,15 +27,16 @@ export class UserCommand extends ArimaCommand {
 
 		const baseQuery: FilterQuery<Member> = { guildId: interaction.guild.id };
 		const baseOptions: FindOptions<Member> = { limit: 30 };
+		const baseFields: EntityField<Member>[] = ['userId'];
 
 		const rankLeaderboardQuery = members.find(
 			{ ...baseQuery, gamesPlayed: { $gt: 0 } },
-			{ ...baseOptions, fields: ['gamesPlayed', 'gamesWon'], orderBy: { gamesWon: QueryOrder.DESC } }
+			{ ...baseOptions, fields: [...baseFields, 'gamesPlayed', 'gamesWon'], orderBy: { gamesWon: QueryOrder.DESC } }
 		);
 
 		const pointLeaderboardQuery = members.find(
 			{ ...baseQuery, points: { $gt: 0 } },
-			{ ...baseOptions, fields: ['points', 'level'], orderBy: { points: QueryOrder.DESC } }
+			{ ...baseOptions, fields: [...baseFields, 'points', 'level'], orderBy: { points: QueryOrder.DESC } }
 		);
 
 		const [rankLeaderboard, pointLeaderboard] = await Promise.all([rankLeaderboardQuery, pointLeaderboardQuery]);
