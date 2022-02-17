@@ -1,4 +1,5 @@
 import type { CommandInteraction, Guild, Snowflake, GuildTextBasedChannel, User, VoiceChannel, MessageOptions, Message } from 'discord.js';
+import type { RoundData } from '#game/RoundData';
 import type { Playlist } from '#utils/audio';
 import { bold, inlineCode, italic, userMention } from '@discordjs/builders';
 import { DurationFormatter, Time } from '@sapphire/time-utilities';
@@ -9,12 +10,9 @@ import { Leaderboard } from '#game/Leaderboard';
 import { createEmbed } from '#utils/responses';
 import { container } from '@sapphire/framework';
 import { Queue } from '#game/Queue';
-import { RoundData } from '#game/RoundData';
 
-// GameType.Any is intended to be used for checks only, not as a property of Game
 export enum GameType {
-	Standard = 'standard',
-	Any = 'any'
+	Standard = 'standard'
 }
 
 // This setting will be configured per-game by the user, and defaults to
@@ -23,8 +21,7 @@ export enum AcceptedAnswer {
 	Song = 'song',
 	Artist = 'artist',
 	Either = 'either',
-	Both = 'both',
-	Neither = 'neither'
+	Both = 'both'
 }
 
 // Descriptions for each reason are located where they are used to end the game.
@@ -67,8 +64,9 @@ export abstract class Game {
 	public readonly hostUser: User;
 	public readonly guild: Guild;
 	public readonly acceptedAnswer: AcceptedAnswer;
-	public readonly gameType: GameType;
-	public readonly roundData: RoundData;
+	public abstract readonly gameType: GameType;
+	public round!: RoundData;
+
 	/**
 	 * The number of points to play to. Optionally provided by the user
 	 * per-game.
@@ -78,14 +76,12 @@ export abstract class Game {
 
 	private readonly startTime = Date.now();
 
-	public constructor(data: GameData, gameType: GameType) {
+	public constructor(data: GameData) {
 		this.textChannel = data.textChannel;
 		this.voiceChannel = data.voiceChannel;
 		this.hostUser = data.hostUser;
 		this.acceptedAnswer = data.acceptedAnswer ?? AcceptedAnswer.Either;
 		this.goal = data.goal;
-		this.gameType = gameType;
-		this.roundData = new RoundData();
 		this.guild = this.textChannel.guild;
 		this.queue = new Queue(this, data.playlist);
 		this.leaderboard = new Leaderboard();
@@ -122,7 +118,7 @@ export abstract class Game {
 		return Promise.all([this.queue.next(), interaction.editReply({ embeds: [embed] })]);
 	}
 
-	// might change this later if the different modes should score differently
+	// This may become abstract later if the different modes should score differently
 	@UseRequestContext()
 	public async end(reason: GameEndReason, sendFn: (options: MessageOptions) => Promise<unknown> = this.textChannel.send.bind(this.textChannel)) {
 		container.games.delete(this.guild.id);
@@ -220,40 +216,50 @@ export abstract class Game {
 		}
 	}
 
-	// will potentially make these not abstract and put common behaviour here
-	public abstract guess(guessMessage: Message): void;
-	public abstract onTrackEnd(): void;
-	public abstract guessAnswer(guess: string, user: User): void;
+	// These might be changed from abstract if it turns out there is common behaviour between the sub classes
+	public abstract guess(guessMessage: Message): Promise<void>;
+	public abstract onTrackEnd(): Promise<void>;
+	protected abstract processGuess(guess: string, user: User): AcceptedAnswer.Artist | AcceptedAnswer.Song | null;
 
-	// returns true if new player guesses the artist
-	protected guessArtist(guess: string, user: User) {
-		for (const artist of Object.keys(this.roundData.trackArtistsGuessed)) {
-			if (this.roundData.trackArtistsGuessed[artist].has(user)) {
-				return false;
+	/**
+	 * Appends user to first guessedArtist list they haven't guessed
+	 * Returns true if a player guesses the primary artist
+	 */
+	protected processArtistGuess(guess: string, user: User) {
+		for (const [artist, guessers] of this.round.guessedArtists.entries()) {
+			if (guessers.includes(user.id)) {
+				continue;
 			}
+
 			const match = guess === artist || jaroWinkler(guess, artist) >= kGuessThreshold;
 			if (match) {
-				this.roundData.trackArtistsGuessed[artist].add(user);
-				return true;
+				this.round.guessedArtists.get(artist)!.push(user.id);
+				return artist === this.round.primaryArtist;
 			}
 		}
 		return false;
 	}
 
-	// returns true if new player guesses the song title
-	protected guessSong(guess: string, user: User) {
-		// don't process if they've already guessed it
-		if (this.roundData.playersGuessedTrackName.has(user)) {
+	/**
+	 * Appends user to guessedSong list if they haven't guessed it
+	 * Returns true if the player guesses the song name
+	 */
+	protected processSongGuess(guess: string, user: User) {
+		// Don't process if they've already guessed it
+		if (this.round.guessedSong.includes(user.id)) {
 			return false;
 		}
+
 		// Try a bunch of different variations to try to match the most accurate track name.
-		const validSongVariations = this.roundData.validTrackNames;
+		const { validSongVariations } = this.round;
 
 		// The guess is valid if it's an exact match or very close to any variation.
 		const match = validSongVariations.includes(guess) || validSongVariations.some((str) => jaroWinkler(guess, str) >= kGuessThreshold);
 		if (match) {
-			this.roundData.playersGuessedTrackName.add(user);
+			// eslint-disable-next-line unicorn/consistent-destructuring
+			this.round.guessedSong.push(user.id);
 		}
+
 		return match;
 	}
 }

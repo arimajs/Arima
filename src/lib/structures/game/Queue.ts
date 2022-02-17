@@ -4,6 +4,7 @@ import { LoadType, type Track, type IncomingEventTrackExceptionPayload } from '@
 import { getRandomThirtySecondWindow, LavalinkEvent, type Playlist } from '#utils/audio';
 import { GameEndReason, type Game } from '#game/Game';
 import { container } from '@sapphire/framework';
+import { RoundData } from '#game/RoundData';
 import { shuffle } from '#utils/common';
 import { Time } from '@sapphire/time-utilities';
 import NodeCache from 'node-cache';
@@ -82,7 +83,7 @@ export class Queue {
 				}
 			}
 			this.currentlyPlaying = nextTrackFull ?? { track: nextTrack as string, info: await this.player.node.decode(nextTrack as string) };
-			this.game.roundData.reset(this.currentlyPlaying.info.title, [this.currentlyPlaying.info.author]);
+			this.game.round = new RoundData(this.currentlyPlaying.info.title, [this.currentlyPlaying.info.author]);
 			await this.player.play(this.currentlyPlaying, getRandomThirtySecondWindow(this.currentlyPlaying.info.length));
 		} else {
 			await this.game.end(GameEndReason.PlaylistEnded);

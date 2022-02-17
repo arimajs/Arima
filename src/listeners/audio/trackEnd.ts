@@ -13,7 +13,7 @@ export class UserListener extends Listener {
 			return;
 		}
 
-		game.onTrackEnd();
+		await game.onTrackEnd();
 
 		for (const player of game.players.values()) {
 			// If the player is still in the voice channel (this property is

@@ -35,7 +35,7 @@ export class UserListener extends Listener<typeof Events.NonPrefixedMessage> {
 		// The following is encapsulated in a try...finally so that the queue
 		// won't get stuck forever if an error occurs.
 		try {
-			game.guess(message);
+			await game.guess(message);
 		} finally {
 			this.queue.shift();
 		}

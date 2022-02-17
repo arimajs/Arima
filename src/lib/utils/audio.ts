@@ -121,3 +121,33 @@ export const resolvePlaylist = async (url: string): Promise<Result<Playlist, Pla
 		});
 	}
 };
+
+/**
+ * Generate 3 variations of the song name:
+ * Stripped prefix, stripped suffix, stripped both
+ */
+export const cleanSongName = (songName: string): string[] => {
+	songName = songName.toLowerCase();
+	// "Blank Space - Taylor Swift" -> "Blank Space"
+	// "Blank Space (Lyric Video)" -> "Blank Space"
+	const songWithoutSuffix = songName.replace(/\s*\(.*|\s*- .*/, '');
+
+	// "Taylor Swift  -  Blank Space" -> "Blank Space"
+	const songWithoutPrefix = songName.replace(/.* -\s*/, '');
+
+	// Applies both of the above, one at a time.
+	// "Taylor Swift - Blank Space (Lyrics Video)" -> "Blank Space"
+	let songWithoutSuffixAndPrefix = songName;
+	songWithoutSuffixAndPrefix = songWithoutSuffixAndPrefix.replace(/.* -\s*/, '');
+	songWithoutSuffixAndPrefix = songWithoutSuffixAndPrefix.replace(/\s*\(.*|\s*- .*/, '');
+
+	// Try a bunch of different variations to try to match the most accurate track name.
+	const validSongVariations = [...[songWithoutSuffixAndPrefix, songWithoutPrefix, songWithoutSuffix].filter((str) => str !== songName), songName];
+
+	return validSongVariations;
+};
+
+// Not sure what kind of regex is appropriate for cleaning artist names yet
+export const cleanArtistName = (artistName: string) => {
+	return artistName.toLowerCase();
+};
