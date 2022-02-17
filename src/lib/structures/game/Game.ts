@@ -219,21 +219,21 @@ export abstract class Game {
 	// These might be changed from abstract if it turns out there is common behaviour between the sub classes
 	public abstract guess(guessMessage: Message): Promise<void>;
 	public abstract onTrackEnd(): Promise<void>;
-	protected abstract processGuess(guess: string, user: User): AcceptedAnswer.Artist | AcceptedAnswer.Song | null;
+	protected abstract processGuess(guess: string, user: Snowflake): AcceptedAnswer.Artist | AcceptedAnswer.Song | null;
 
 	/**
 	 * Appends user to first guessedArtist list they haven't guessed
 	 * Returns true if a player guesses the primary artist
 	 */
-	protected processArtistGuess(guess: string, user: User) {
+	protected processArtistGuess(guess: string, user: Snowflake) {
 		for (const [artist, guessers] of this.round.guessedArtists.entries()) {
-			if (guessers.includes(user.id)) {
+			if (guessers.includes(user)) {
 				continue;
 			}
 
 			const match = guess === artist || jaroWinkler(guess, artist) >= kGuessThreshold;
 			if (match) {
-				this.round.guessedArtists.get(artist)!.push(user.id);
+				this.round.guessedArtists.get(artist)!.push(user);
 				return artist === this.round.primaryArtist;
 			}
 		}
@@ -244,9 +244,9 @@ export abstract class Game {
 	 * Appends user to guessedSong list if they haven't guessed it
 	 * Returns true if the player guesses the song name
 	 */
-	protected processSongGuess(guess: string, user: User) {
+	protected processSongGuess(guess: string, user: Snowflake) {
 		// Don't process if they've already guessed it
-		if (this.round.guessedSong.includes(user.id)) {
+		if (this.round.guessedSong.includes(user)) {
 			return false;
 		}
 
@@ -257,7 +257,7 @@ export abstract class Game {
 		const match = validSongVariations.includes(guess) || validSongVariations.some((str) => jaroWinkler(guess, str) >= kGuessThreshold);
 		if (match) {
 			// eslint-disable-next-line unicorn/consistent-destructuring
-			this.round.guessedSong.push(user.id);
+			this.round.guessedSong.push(user);
 		}
 
 		return match;

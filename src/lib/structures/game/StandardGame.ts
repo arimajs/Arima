@@ -1,4 +1,4 @@
-import type { Message, User } from 'discord.js';
+import type { Message, Snowflake, User } from 'discord.js';
 import { Game, AcceptedAnswer, GameData, GameType } from '#game/Game';
 import { BrandingColors } from '#utils/constants';
 import { createEmbed } from '#utils/responses';
@@ -14,7 +14,7 @@ export class StandardGame extends Game {
 	public async guess(message: Message) {
 		const guess = message.content.toLowerCase();
 		const guessedBefore = this.guessedThisRound();
-		const guessedNow = this.processGuess(guess, message.author);
+		const guessedNow = this.processGuess(guess, message.author.id);
 		const promises: Promise<unknown>[] = [];
 
 		if (!guessedNow) {
@@ -97,7 +97,7 @@ export class StandardGame extends Game {
 		await this.textChannel.send({ embeds: [embed] });
 	}
 
-	protected processGuess(guess: string, user: User): AcceptedAnswer.Song | AcceptedAnswer.Artist | null {
+	protected processGuess(guess: string, user: Snowflake): AcceptedAnswer.Song | AcceptedAnswer.Artist | null {
 		switch (this.acceptedAnswer) {
 			case AcceptedAnswer.Song: {
 				return this.processSongGuess(guess, user) ? AcceptedAnswer.Song : null;
