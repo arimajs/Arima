@@ -2,7 +2,18 @@
 	"extends": ["@sapphire", "plugin:unicorn/recommended"],
 	"rules": {
 		"curly": "error",
-		"no-restricted-globals": ["error", "Buffer", "process", "setTimeout", "setInterval", "setImmediate", "clearTimeout", "clearInterval"], // nodejs/node#26334
+		"no-restricted-globals": [
+			"error",
+			"Buffer",
+			"process",
+			"setTimeout",
+			"setInterval",
+			"setImmediate",
+			"clearTimeout",
+			"clearInterval",
+			"URL",
+			"URLSearchParams"
+		], // nodejs/node#26334
 		"unicorn/no-unsafe-regex": "error",
 		"unicorn/prefer-at": "error",
 		"unicorn/prefer-top-level-await": "error",

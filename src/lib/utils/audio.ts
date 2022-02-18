@@ -2,6 +2,7 @@ import { container, Result, ok, err } from '@sapphire/framework';
 import { LoadType, type PlaylistInfo } from '@skyra/audio';
 import { getData, type Tracks } from 'spotify-url-info';
 import { Time } from '@sapphire/time-utilities';
+import { URL } from 'node:url';
 
 /**
  * Event types from the Lavalink `event` event we listen too (mouthful)
@@ -46,14 +47,8 @@ const resolveSpotifyTracks = (data: ResolvedSpotifyData) => {
 };
 
 export type Playlist = { name: string } & (
-	| {
-			type: PlaylistType.Spotify;
-			tracks: { name: string; artist: string }[];
-	  }
-	| {
-			type: PlaylistType.Lavalink;
-			tracks: string[];
-	  }
+	| { type: PlaylistType.Spotify; tracks: { name: string; artist: string }[] }
+	| { type: PlaylistType.Lavalink; tracks: string[] }
 );
 
 export enum PlaylistType {
@@ -96,6 +91,12 @@ export const resolvePlaylist = async (url: string): Promise<Result<Playlist, Pla
 			tracks: filteredTracks.map((track) => ({ name: track.name, artist: track.artists![0].name }))
 		});
 	} catch {
+		try {
+			new URL(url);
+		} catch {
+			return err(PlaylistResolutionError.NotFound);
+		}
+
 		const response = await container.audio.load(url);
 		if (response.loadType === LoadType.NoMatches) {
 			return err(PlaylistResolutionError.NotFound);
