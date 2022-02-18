@@ -3,7 +3,8 @@ import type { CommandInteraction } from 'discord.js';
 import { CommandOptionsRunTypeEnum, isErr, type ApplicationCommandRegistry } from '@sapphire/framework';
 import { PlaylistResolutionError, resolvePlaylist } from '#utils/audio';
 import { hideLinkEmbed, hyperlink } from '@discordjs/builders';
-import { AcceptedAnswer, Game } from '#game/Game';
+import { AcceptedAnswer } from '#game/Game';
+import { StandardGame } from '#game/StandardGame';
 import { PermissionFlagsBits } from 'discord-api-types/v9';
 import { ArimaCommand } from '#structures/ArimaCommand';
 import { ApplyOptions } from '@sapphire/decorators';
@@ -60,7 +61,7 @@ export class UserCommand extends ArimaCommand {
 			return sendError(interaction, UserCommand.errorDescriptors[result.error]);
 		}
 
-		const game = new Game({
+		const game = new StandardGame({
 			hostUser: interaction.user,
 			playlist: result.value,
 			textChannel: interaction.channel!,

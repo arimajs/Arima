@@ -1,7 +1,6 @@
 import type { Message } from 'discord.js';
 import { PermissionFlagsBits } from 'discord-api-types/v9';
 import { Events, Listener } from '@sapphire/framework';
-import { createEmbed } from '#utils/responses';
 import { AsyncQueue } from '@sapphire/async-queue';
 
 // The `nonPrefixedMessage` listener is used instead of the base `messageCreate`
@@ -36,30 +35,7 @@ export class UserListener extends Listener<typeof Events.NonPrefixedMessage> {
 		// The following is encapsulated in a try...finally so that the queue
 		// won't get stuck forever if an error occurs.
 		try {
-			const wasAlreadyHalfGuessed = Boolean(game.guessedThisRound);
-			const wasCorrect = game.guess(message.author, message.content);
-
-			if (!wasCorrect) {
-				return;
-			}
-
-			const isHalfGuessed = !wasAlreadyHalfGuessed && Boolean(game.guessedThisRound);
-
-			let halfGuessedString = '';
-			if (isHalfGuessed) {
-				halfGuessedString = ` **"${message.content}"** is the ${game.guessedThisRound!.toLowerCase()}'s name. You're halfway there!`;
-			}
-
-			const embed = createEmbed(`✅ You got it!${halfGuessedString}`);
-			const promises: Promise<unknown>[] = [];
-
-			promises.push(message.channel.send({ embeds: [embed] }));
-
-			if (!isHalfGuessed) {
-				promises.push(game.queue.player.stop());
-			}
-
-			await Promise.all(promises);
+			await game.guess(message);
 		} finally {
 			this.queue.shift();
 		}

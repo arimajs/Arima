@@ -1,4 +1,5 @@
 import type { CommandInteraction, Guild, Snowflake, GuildTextBasedChannel, User, VoiceChannel, MessageOptions, Message } from 'discord.js';
+import type { RoundData } from '#game/RoundData';
 import type { Playlist } from '#utils/audio';
 import { bold, inlineCode, italic, userMention } from '@discordjs/builders';
 import { DurationFormatter, Time } from '@sapphire/time-utilities';
@@ -10,6 +11,10 @@ import { createEmbed } from '#utils/responses';
 import { container } from '@sapphire/framework';
 import { Queue } from '#game/Queue';
 import { Rank } from '#root/lib/database/entities/Member';
+
+export enum GameType {
+	Standard = 'standard'
+}
 
 // This setting will be configured per-game by the user, and defaults to
 // `AcceptedAnswer.Either`.
@@ -51,7 +56,8 @@ export interface Player {
 const kGuessThreshold = 0.75 as const;
 const durationFormatter = new DurationFormatter();
 
-export class Game {
+export abstract class Game {
+	public abstract readonly gameType: GameType;
 	public readonly queue: Queue;
 	public readonly leaderboard: Leaderboard;
 	public readonly streaks: StreakCounter;
@@ -60,6 +66,7 @@ export class Game {
 	public readonly hostUser: User;
 	public readonly guild: Guild;
 	public readonly acceptedAnswer: AcceptedAnswer;
+	public round!: RoundData;
 
 	/**
 	 * The number of points to play to. Optionally provided by the user
@@ -67,18 +74,6 @@ export class Game {
 	 */
 	public readonly goal?: number;
 	public players: Map<Snowflake, Player>;
-
-	/**
-	 * When playing with `AcceptedAnswer.Both`, this property is used to store
-	 * which has been guessed this round, if any.
-	 */
-	public guessedThisRound?: AcceptedAnswer.Song | AcceptedAnswer.Artist;
-
-	/**
-	 * The person(s) who guessed correctly this round, if any. Will be multiple
-	 * for `AcceptedAnswer.Both`.
-	 */
-	public guessersThisRound: User[] = [];
 
 	private readonly startTime = Date.now();
 
@@ -104,11 +99,15 @@ export class Game {
 	}
 
 	public start(interaction: CommandInteraction) {
-		const answerType = [AcceptedAnswer.Song, AcceptedAnswer.Artist].includes(this.acceptedAnswer)
-			? this.acceptedAnswer.toLowerCase()
-			: `song ${italic(this.acceptedAnswer === AcceptedAnswer.Both ? 'and' : 'or')} artist`;
+		let answerTypeString = '';
+		if ([AcceptedAnswer.Song, AcceptedAnswer.Artist].includes(this.acceptedAnswer)) {
+			answerTypeString = this.acceptedAnswer;
+		} else {
+			const conjunction = this.acceptedAnswer === AcceptedAnswer.Both ? 'and' : 'or';
+			answerTypeString = `song ${italic(conjunction)} artist`;
+		}
 
-		const description = `The game has begun! You have ${inlineCode('30')} seconds to guess the name of the ${answerType} in this channel.`;
+		const description = `The game has begun! You have ${inlineCode('30')} seconds to guess the name of the ${answerTypeString} in this channel.`;
 		const embed = createEmbed(description)
 			.setAuthor({ name: `Hosted by ${this.hostUser.tag}`, iconURL: this.hostUser.displayAvatarURL({ size: 128, dynamic: true }) })
 			.setTitle(`🎶 Playing the playlist "${this.queue.playlist.name}"`);
@@ -120,16 +119,7 @@ export class Game {
 		return Promise.all([this.queue.next(), interaction.editReply({ embeds: [embed] })]);
 	}
 
-	public guess(user: User, guess: string) {
-		const isValid = this.validateAnswer(guess.toLowerCase());
-		if (!isValid) {
-			return false;
-		}
-
-		this.guessersThisRound.push(user);
-		return true;
-	}
-
+	// This may become abstract later if the different modes should score differently
 	@UseRequestContext()
 	public async end(reason: GameEndReason, sendFn: (options: MessageOptions) => Promise<unknown> = this.textChannel.send.bind(this.textChannel)) {
 		container.games.delete(this.guild.id);
@@ -227,68 +217,57 @@ export class Game {
 		}
 	}
 
-	// TODO: More inclusive regexes
-	public validateAnswer(guess: string) {
-		switch (this.acceptedAnswer) {
-			case AcceptedAnswer.Song: {
-				return this.validateSong(guess);
+	// These might be changed from abstract if it turns out there is common behaviour between the sub classes
+	/**
+	 * Handles a single guess in the form of a Message
+	 */
+	public abstract guess(guessMessage: Message): Promise<void>;
+
+	/**
+	 * Handles game-specific behaviour for when the track ends
+	 */
+	public abstract onTrackEnd(): Promise<void>;
+
+	/**
+	 * Appends user to first guessedArtist list they haven't guessed
+	 * Returns true if a player guesses the primary artist
+	 */
+	protected processArtistGuess(guess: string, user: Snowflake) {
+		for (const [artist, guessers] of this.round.artistGuessers.entries()) {
+			if (guessers.includes(user)) {
+				continue;
 			}
 
-			case AcceptedAnswer.Artist: {
-				return this.validateArtist(guess);
-			}
-
-			case AcceptedAnswer.Either: {
-				return this.validateArtist(guess) || this.validateSong(guess);
-			}
-
-			case AcceptedAnswer.Both: {
-				if (this.guessedThisRound) {
-					return this.guessedThisRound === AcceptedAnswer.Song ? this.validateArtist(guess) : this.validateSong(guess);
-				}
-
-				const guessedArtist = this.validateArtist(guess);
-				if (guessedArtist) {
-					this.guessedThisRound = AcceptedAnswer.Artist;
-					return true;
-				}
-
-				const guessedSong = this.validateSong(guess);
-				if (guessedSong) {
-					this.guessedThisRound = AcceptedAnswer.Song;
-					return true;
-				}
-
-				return false;
+			const match = guess === artist || jaroWinkler(guess, artist) >= kGuessThreshold;
+			if (match) {
+				guessers.push(user);
+				return artist === this.round.primaryArtist;
 			}
 		}
+
+		return false;
 	}
 
-	private validateArtist(guess: string) {
-		const author = this.queue.currentlyPlaying!.info.author.toLowerCase();
-		return guess === author || jaroWinkler(guess, author) >= kGuessThreshold;
-	}
-
-	private validateSong(guess: string) {
-		const song = this.queue.currentlyPlaying!.info.title.toLowerCase();
-
-		// "Blank Space - Taylor Swift" -> "Blank Space"
-		// "Blank Space (Lyric Video)" -> "Blank Space"
-		const songWithoutSuffix = song.replace(/\s*\(.*|\s*- .*/, '');
-
-		// "Taylor Swift  -  Blank Space" -> "Blank Space"
-		const songWithoutPrefix = song.replace(/.* -\s*/, '');
-
-		// Applies both of the above, one at a time.
-		// "Taylor Swift - Blank Space (Lyrics Video)" -> "Blank Space"
-		let songWithoutSuffixAndPrefix = song;
-		songWithoutSuffixAndPrefix = songWithoutSuffixAndPrefix.replace(/.* -\s*/, '');
-		songWithoutSuffixAndPrefix = songWithoutSuffixAndPrefix.replace(/\s*\(.*|\s*- .*/, '');
+	/**
+	 * Appends user to guessedSong list if they haven't guessed it
+	 * Returns true if the player guesses the song name
+	 */
+	protected processSongGuess(guess: string, user: Snowflake) {
+		// Don't process if they've already guessed it
+		if (this.round.songGuessers.includes(user)) {
+			return false;
+		}
 
 		// Try a bunch of different variations to try to match the most accurate track name.
-		const validSongVariations = [...[songWithoutSuffixAndPrefix, songWithoutPrefix, songWithoutSuffix].filter((str) => str !== song), song];
+		const { validSongVariations } = this.round;
 
 		// The guess is valid if it's an exact match or very close to any variation.
-		return validSongVariations.includes(guess) || validSongVariations.some((str) => jaroWinkler(guess, str) >= kGuessThreshold);
+		const match = validSongVariations.includes(guess) || validSongVariations.some((str) => jaroWinkler(guess, str) >= kGuessThreshold);
+		if (match) {
+			// eslint-disable-next-line unicorn/consistent-destructuring
+			this.round.songGuessers.push(user);
+		}
+
+		return match;
 	}
 }
