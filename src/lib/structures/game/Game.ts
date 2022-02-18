@@ -56,6 +56,7 @@ const kGuessThreshold = 0.75 as const;
 const durationFormatter = new DurationFormatter();
 
 export abstract class Game {
+	public abstract readonly gameType: GameType;
 	public readonly queue: Queue;
 	public readonly leaderboard: Leaderboard;
 	public readonly streaks: StreakCounter;
@@ -64,7 +65,6 @@ export abstract class Game {
 	public readonly hostUser: User;
 	public readonly guild: Guild;
 	public readonly acceptedAnswer: AcceptedAnswer;
-	public abstract readonly gameType: GameType;
 	public round!: RoundData;
 
 	/**
@@ -100,10 +100,10 @@ export abstract class Game {
 	public start(interaction: CommandInteraction) {
 		let answerTypeString = '';
 		if ([AcceptedAnswer.Song, AcceptedAnswer.Artist].includes(this.acceptedAnswer)) {
-			answerTypeString = this.acceptedAnswer.toLowerCase();
+			answerTypeString = this.acceptedAnswer;
 		} else {
-			const and_or = this.acceptedAnswer === AcceptedAnswer.Both ? 'and' : 'or';
-			answerTypeString = `song ${italic(and_or)} artist`;
+			const conjunction = this.acceptedAnswer === AcceptedAnswer.Both ? 'and' : 'or';
+			answerTypeString = `song ${italic(conjunction)} artist`;
 		}
 
 		const description = `The game has begun! You have ${inlineCode('30')} seconds to guess the name of the ${answerTypeString} in this channel.`;
@@ -217,26 +217,33 @@ export abstract class Game {
 	}
 
 	// These might be changed from abstract if it turns out there is common behaviour between the sub classes
+	/**
+	 * Handles a single guess in the form of a Message
+	 */
 	public abstract guess(guessMessage: Message): Promise<void>;
+
+	/**
+	 * Handles game-specific behaviour for when the track ends
+	 */
 	public abstract onTrackEnd(): Promise<void>;
-	protected abstract processGuess(guess: string, user: Snowflake): AcceptedAnswer.Artist | AcceptedAnswer.Song | null;
 
 	/**
 	 * Appends user to first guessedArtist list they haven't guessed
 	 * Returns true if a player guesses the primary artist
 	 */
 	protected processArtistGuess(guess: string, user: Snowflake) {
-		for (const [artist, guessers] of this.round.guessedArtists.entries()) {
+		for (const [artist, guessers] of this.round.artistGuessers.entries()) {
 			if (guessers.includes(user)) {
 				continue;
 			}
 
 			const match = guess === artist || jaroWinkler(guess, artist) >= kGuessThreshold;
 			if (match) {
-				this.round.guessedArtists.get(artist)!.push(user);
+				guessers.push(user);
 				return artist === this.round.primaryArtist;
 			}
 		}
+
 		return false;
 	}
 
@@ -246,7 +253,7 @@ export abstract class Game {
 	 */
 	protected processSongGuess(guess: string, user: Snowflake) {
 		// Don't process if they've already guessed it
-		if (this.round.guessedSong.includes(user)) {
+		if (this.round.songGuessers.includes(user)) {
 			return false;
 		}
 
@@ -257,7 +264,7 @@ export abstract class Game {
 		const match = validSongVariations.includes(guess) || validSongVariations.some((str) => jaroWinkler(guess, str) >= kGuessThreshold);
 		if (match) {
 			// eslint-disable-next-line unicorn/consistent-destructuring
-			this.round.guessedSong.push(user);
+			this.round.songGuessers.push(user);
 		}
 
 		return match;

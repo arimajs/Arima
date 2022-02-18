@@ -128,6 +128,7 @@ export const resolvePlaylist = async (url: string): Promise<Result<Playlist, Pla
  */
 export const cleanSongName = (songName: string): string[] => {
 	songName = songName.toLowerCase();
+
 	// "Blank Space - Taylor Swift" -> "Blank Space"
 	// "Blank Space (Lyric Video)" -> "Blank Space"
 	const songWithoutSuffix = songName.replace(/\s*\(.*|\s*- .*/, '');

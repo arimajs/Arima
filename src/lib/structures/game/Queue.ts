@@ -82,6 +82,7 @@ export class Queue {
 					}
 				}
 			}
+
 			this.currentlyPlaying = nextTrackFull ?? { track: nextTrack as string, info: await this.player.node.decode(nextTrack as string) };
 			this.game.round = new RoundData(this.currentlyPlaying.info.title, [this.currentlyPlaying.info.author]);
 			await this.player.play(this.currentlyPlaying, getRandomThirtySecondWindow(this.currentlyPlaying.info.length));
