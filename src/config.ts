@@ -5,7 +5,6 @@ import type { NodeOptions } from '@skyra/audio';
 import { cleanEnv, str, port } from 'envalid';
 import { GatewayIntentBits } from 'discord-api-types/v9';
 import { LogLevel } from '@sapphire/framework';
-import { Member } from '#entities/Member';
 import process from 'node:process';
 
 // Unless explicitly defined, set NODE_ENV to development.
@@ -40,5 +39,5 @@ export const clientOptions: ClientOptions = {
 export const dbOptions: MikroOptions<MongoDriver> = {
 	clientUrl: env.MONGODB_URI,
 	type: 'mongo',
-	entities: [Member]
+	entities: ['./dist/lib/database/entities']
 };

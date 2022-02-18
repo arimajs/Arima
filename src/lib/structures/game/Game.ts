@@ -10,6 +10,7 @@ import { Leaderboard } from '#game/Leaderboard';
 import { createEmbed } from '#utils/responses';
 import { container } from '@sapphire/framework';
 import { Queue } from '#game/Queue';
+import { Rank } from '#root/lib/database/entities/Member';
 
 export enum GameType {
 	Standard = 'standard'
@@ -202,8 +203,8 @@ export abstract class Game {
 							: `earned ${points} points, and have reached level ${member.level}! 🥳`;
 
 					if (rankedUp) {
-						content += ` You also ranked up from ${originalRank} musician to ${bold(
-							`${member.rank} musician`
+						content += ` You also ranked up from ${bold(`${Rank[originalRank]} Musician`)} to ${bold(
+							`${Rank[member.rank]} Musician`
 						)} thanks to your epic song-guessing skills!`;
 					}
 
