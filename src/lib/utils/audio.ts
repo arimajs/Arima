@@ -145,7 +145,8 @@ export const cleanSongName = (songName: string): string[] => {
 	// Try a bunch of different variations to try to match the most accurate track name.
 	const validSongVariations = [...[songWithoutSuffixAndPrefix, songWithoutPrefix, songWithoutSuffix].filter((str) => str !== songName), songName];
 
-	return validSongVariations;
+	// Remove all characters that aren't letters or numbers from all variations. It's drastic, but highly increases accuracy.
+	return validSongVariations.map((variation) => variation.replace(/[^\p{L}\p{N}]/gu, ''));
 };
 
 // Not sure what kind of regex is appropriate for cleaning artist names yet

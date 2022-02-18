@@ -261,9 +261,13 @@ export abstract class Game {
 			return false;
 		}
 
+		// Remove all characters that aren't letters or numbers from all variations. It's drastic, but highly increases accuracy.
+		const cleaned = guess.replace(/[^\p{L}\p{N}]/gu, '');
+
 		// Try a bunch of different variations to try to match the most accurate track name.
 		// The guess is valid if it's an exact match or very close to any variation.
-		const match = validSongVariations.includes(guess) || validSongVariations.some((str) => jaroWinkler(guess, str) >= kGuessThreshold);
+		const match = validSongVariations.includes(cleaned) || validSongVariations.some((str) => jaroWinkler(cleaned, str) >= kGuessThreshold);
+
 		if (match) {
 			songGuessers.push(user);
 		}
