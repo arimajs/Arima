@@ -40,7 +40,7 @@ export class UserListener extends Listener<typeof Events.NonPrefixedMessage> {
 			const wasCorrect = game.guess(message.author, message.content);
 
 			if (!wasCorrect) {
-				return console.log('nope');
+				return;
 			}
 
 			const isHalfGuessed = !wasAlreadyHalfGuessed && Boolean(game.guessedThisRound);
