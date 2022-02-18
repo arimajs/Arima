@@ -16,13 +16,13 @@ export class StandardGame extends Game {
 			return;
 		}
 
-		const isHalfGuessedNow = this.acceptedAnswer === AcceptedAnswer.Both && !guessedBefore && guessedNow;
+		const isHalfGuessed = this.acceptedAnswer === AcceptedAnswer.Both && !guessedBefore && guessedNow;
 
 		let halfGuessedString = '';
-		if (isHalfGuessedNow) {
-			const guessedNameString =
-				guessedNow === AcceptedAnswer.Song ? this.queue.currentlyPlaying!.info.title : this.queue.currentlyPlaying!.info.author;
-			halfGuessedString = ` The ${guessedNow} is **${guessedNameString}**. You're halfway there!`;
+		if (isHalfGuessed) {
+			const { title, author } = this.queue.currentlyPlaying!.info;
+			const guessedNameString = guessedNow === AcceptedAnswer.Song ? title : author;
+			halfGuessedString = ` The ${guessedNow}'s name is **${guessedNameString}**. You're halfway there!`;
 		}
 
 		const embed = createEmbed(`✅ You got it!${halfGuessedString}`);
@@ -30,7 +30,7 @@ export class StandardGame extends Game {
 		const promises: Promise<unknown>[] = [];
 		promises.push(message.channel.send({ embeds: [embed] }));
 
-		if (!isHalfGuessedNow) {
+		if (!isHalfGuessed) {
 			promises.push(this.queue.player.stop());
 		}
 
@@ -38,24 +38,28 @@ export class StandardGame extends Game {
 	}
 
 	public async onTrackEnd() {
-		const playersGuessedSong = this.round.songGuessers;
-		const playersGuessedArtist = this.round.primaryArtistGuessers;
-		// Ensure players are only in here once
-		const uniqueGuessers = [...new Set([...playersGuessedSong, ...playersGuessedArtist])];
+		const { songGuessers, primaryArtistGuessers } = this.round;
+
+		// Ensure players are only in here once.
+		const uniqueGuessers = [...new Set([...songGuessers, ...primaryArtistGuessers])];
 		const usersOrNull = await Promise.all(uniqueGuessers.map((id) => container.client.users.fetch(id).catch(() => null)));
 		const guessers = usersOrNull.filter(Boolean) as User[];
-		const numGuessers = guessers.length;
-		const requiredBoth = this.acceptedAnswer === AcceptedAnswer.Both;
-		const doubleGuesser = requiredBoth && numGuessers === 1 && playersGuessedSong.length && playersGuessedArtist.length;
 
-		// 3 cases that the song was 'guessed': someone got it (one or either of artist or song) || 1 person got both || two different people got 1 each
-		const guessed = (!requiredBoth && numGuessers) || doubleGuesser || numGuessers === 2;
+		const numGuessers = guessers.length;
+		const requiresBoth = this.acceptedAnswer === AcceptedAnswer.Both;
+		const doubleGuesser = requiresBoth && numGuessers === 1 && songGuessers.length && primaryArtistGuessers.length;
+
+		// 3 cases that the song was 'guessed':
+		//   - someone got it (one or either of artist or song)
+		//   - 1 person got both
+		//   - two different people got 1 each
+		const guessed = (!requiresBoth && numGuessers) || doubleGuesser || numGuessers === 2;
 
 		if (guessed) {
 			if (numGuessers === 1) {
-				this.leaderboard.inc(guessers[0]!.id);
+				this.leaderboard.inc(guessers[0].id);
 			} else {
-				// There should only ever be 2 guessers but made generic anyway
+				// There should only ever be 2 guessers but made generic anyway.
 				for (const guesser of guessers) {
 					this.leaderboard.inc(guesser.id, 1 / numGuessers);
 				}
@@ -98,7 +102,7 @@ export class StandardGame extends Game {
 	/**
 	 * Processes a guess returning whether either the song name or primary artist was guessed
 	 */
-	protected processGuess(guess: string, user: Snowflake): AcceptedAnswer.Song | AcceptedAnswer.Artist | null {
+	protected processGuess(guess: string, user: Snowflake) {
 		switch (this.acceptedAnswer) {
 			case AcceptedAnswer.Song: {
 				return this.processSongGuess(guess, user) ? AcceptedAnswer.Song : null;
@@ -113,12 +117,12 @@ export class StandardGame extends Game {
 			}
 
 			case AcceptedAnswer.Both: {
-				// If the song is guessed, guess the artists
+				// If the song is guessed, guess the artists.
 				if (this.round.songGuessers.length) {
 					return this.processArtistGuess(guess, user) ? AcceptedAnswer.Artist : null;
 				}
 
-				// If neither is already guessed, guess both
+				// If neither is already guessed, guess both.
 				break;
 			}
 		}
@@ -126,15 +130,17 @@ export class StandardGame extends Game {
 		// Guessing either is common to AcceptedAnswer.Either and AcceptedAnswer.Both
 		if (this.processArtistGuess(guess, user)) {
 			return AcceptedAnswer.Artist;
-		} else if (this.processSongGuess(guess, user)) {
+		}
+
+		if (this.processSongGuess(guess, user)) {
 			return AcceptedAnswer.Song;
 		}
 
 		return null;
 	}
 
-	private guessedThisRound(): AcceptedAnswer.Artist | AcceptedAnswer.Song | null {
-		// Check if someone guessed song name or primary artist
+	private guessedThisRound() {
+		// Check if someone guessed song name or primary artist.
 		if (this.round.songGuessers.length) {
 			return AcceptedAnswer.Song;
 		}
