@@ -1,4 +1,4 @@
-import { GatewayChannelDeleteDispatchData, GatewayDispatchEvents } from 'discord-api-types/v9';
+import { GatewayDispatchEvents, type APITextChannel } from 'discord-api-types/v9';
 import { GameEndReason } from '#game/Game';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Listener } from '@sapphire/framework';
@@ -9,7 +9,9 @@ import { Listener } from '@sapphire/framework';
 // to listen to in)
 @ApplyOptions<Listener.Options>({ event: GatewayDispatchEvents.ChannelDelete, emitter: 'ws' })
 export class UserListener extends Listener {
-	public async run(data: GatewayChannelDeleteDispatchData) {
+	// The real type is `APIChannel`, but I used `APITextChannel` to avoid
+	// certain Typescript issues.
+	public async run(data: APITextChannel) {
 		// Exit early if it's a DM channel.
 		if (!data.guild_id) {
 			return;
