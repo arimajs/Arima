@@ -37,7 +37,7 @@ export enum GameEndReason {
 export interface GameData {
 	textChannel: GuildTextBasedChannel;
 	voiceChannel: VoiceChannel;
-	hostUser: User;
+	host: User;
 	playlist: Playlist;
 	acceptedAnswer?: AcceptedAnswer;
 	goal?: number;
@@ -62,7 +62,7 @@ export abstract class Game {
 	public readonly streaks: StreakCounter;
 	public readonly voiceChannel: VoiceChannel;
 	public readonly textChannel: GuildTextBasedChannel;
-	public readonly hostUser: User;
+	public readonly host: User;
 	public readonly guild: Guild;
 	public readonly acceptedAnswer: AcceptedAnswer;
 	public round!: RoundData;
@@ -79,7 +79,7 @@ export abstract class Game {
 	public constructor(data: GameData) {
 		this.textChannel = data.textChannel;
 		this.voiceChannel = data.voiceChannel;
-		this.hostUser = data.hostUser;
+		this.host = data.host;
 		this.acceptedAnswer = data.acceptedAnswer ?? AcceptedAnswer.Either;
 		this.goal = data.goal;
 		this.guild = this.textChannel.guild;
@@ -108,7 +108,7 @@ export abstract class Game {
 
 		const description = `The game has begun! You have ${inlineCode('30')} seconds to guess the name of the ${answerTypeString} in this channel.`;
 		const embed = createEmbed(description)
-			.setAuthor({ name: `Hosted by ${this.hostUser.tag}`, iconURL: this.hostUser.displayAvatarURL({ size: 128, dynamic: true }) })
+			.setAuthor({ name: `Hosted by ${this.host.tag}`, iconURL: this.host.displayAvatarURL({ size: 128, dynamic: true }) })
 			.setTitle(`🎶 Playing the playlist "${this.queue.playlist.name}"`);
 
 		if (this.goal) {

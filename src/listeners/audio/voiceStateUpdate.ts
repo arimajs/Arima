@@ -50,7 +50,7 @@ export class UserListener extends Listener<typeof Events.VoiceStateUpdate> {
 		// If it's the bot that left, a different course of behavior should be
 		// taken.
 		if (!newState.channelId && member.id !== this.client.user!.id) {
-			if (member.id === game.hostUser.id) {
+			if (member.id === game.host.id) {
 				// If the user who left was the host, end the game, as the host
 				// is the only one who can use the leave command. This behavior
 				// might be changed in the future.

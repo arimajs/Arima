@@ -5,7 +5,7 @@ import { createEmbed } from '#utils/responses';
 import { container } from '@sapphire/framework';
 
 export class StandardGame extends Game {
-	public gameType: GameType.Standard = GameType.Standard;
+	public readonly gameType = GameType.Standard;
 
 	public async guess(message: Message) {
 		const guess = message.content.toLowerCase();
@@ -20,7 +20,7 @@ export class StandardGame extends Game {
 
 		let halfGuessedString = '';
 		if (isHalfGuessed) {
-			const { title, author } = this.queue.currentlyPlaying!.info;
+			const { title, author } = this.queue.nowPlaying!.info;
 			const guessedNameString = guessedNow === AcceptedAnswer.Song ? title : author;
 			halfGuessedString = ` The ${guessedNow}'s name is **${guessedNameString}**. You're halfway there!`;
 		}
@@ -68,7 +68,7 @@ export class StandardGame extends Game {
 			this.streaks.incStreak(...guessers.map(({ id }) => id));
 		}
 
-		const { tracksPlayed, playlistLength, currentlyPlaying } = this.queue;
+		const { tracksPlayed, playlistLength, nowPlaying } = this.queue;
 		let footerText = `${tracksPlayed}/${playlistLength}`;
 
 		const [streakLeaderId, streak] = this.streaks.leader ?? [];
@@ -83,7 +83,7 @@ export class StandardGame extends Game {
 			footerText += ` • Playing to ${this.goal} points`;
 		}
 
-		const { title, author, uri } = currentlyPlaying!.info;
+		const { title, author, uri } = nowPlaying!.info;
 		const guessedThisRound = this.guessedThisRound();
 
 		const embedTitle = guessed

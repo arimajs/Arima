@@ -28,7 +28,7 @@ export class Queue {
 	 * The track that is currently playing. This is undefined if there is no
 	 * track playing, obviously, and is reassigned each time a new track starts.
 	 */
-	public currentlyPlaying?: Track;
+	public nowPlaying?: Track;
 
 	// `tracks` should be an array of strings, each representing a track encoded
 	// by Lavalink.
@@ -83,16 +83,16 @@ export class Queue {
 				}
 			}
 
-			this.currentlyPlaying = nextTrackFull ?? { track: nextTrack as string, info: await this.player.node.decode(nextTrack as string) };
-			this.game.round = new RoundData(this.currentlyPlaying.info.title, [this.currentlyPlaying.info.author]);
-			await this.player.play(this.currentlyPlaying, getRandomThirtySecondWindow(this.currentlyPlaying.info.length));
+			this.nowPlaying = nextTrackFull ?? { track: nextTrack as string, info: await this.player.node.decode(nextTrack as string) };
+			this.game.round = new RoundData(this.nowPlaying.info.title, [this.nowPlaying.info.author]);
+			await this.player.play(this.nowPlaying, getRandomThirtySecondWindow(this.nowPlaying.info.length));
 		} else {
 			await this.game.end(GameEndReason.PlaylistEnded);
 		}
 	}
 
 	public async end() {
-		this.currentlyPlaying = undefined;
+		this.nowPlaying = undefined;
 
 		// Stops the player and leaves the voice channel.
 		await Promise.all([this.player.leave(), this.player.stop()]);

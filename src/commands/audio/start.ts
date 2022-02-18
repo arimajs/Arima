@@ -62,7 +62,7 @@ export class UserCommand extends ArimaCommand {
 		}
 
 		const game = new StandardGame({
-			hostUser: interaction.user,
+			host: interaction.user,
 			playlist: result.value,
 			textChannel: interaction.channel!,
 			voiceChannel: channel,
@@ -73,7 +73,7 @@ export class UserCommand extends ArimaCommand {
 		await game.queue.player.join(channel.id, { deaf: true });
 		await game.start(interaction);
 
-		return this.container.games.set(interaction.guild.id, game);
+		this.container.games.set(interaction.guild.id, game);
 	}
 
 	public override registerApplicationCommands(registry: ApplicationCommandRegistry) {

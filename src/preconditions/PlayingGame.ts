@@ -26,7 +26,7 @@ export class UserPrecondition extends Precondition {
 			return this.error({ message: 'Please only use game-related commands in the channel where the game is being played' });
 		}
 
-		if (shouldBePlaying && shouldBeHost && game!.hostUser.id !== interaction.user.id) {
+		if (shouldBePlaying && shouldBeHost && game!.host.id !== interaction.user.id) {
 			return this.error({ message: 'Only the game host can use this command' });
 		}
 
