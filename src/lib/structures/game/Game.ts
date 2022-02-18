@@ -8,6 +8,7 @@ import { StreakCounter } from '#game/StreakCounter';
 import { jaroWinkler } from '@skyra/jaro-winkler';
 import { Leaderboard } from '#game/Leaderboard';
 import { createEmbed } from '#utils/responses';
+import { AsyncQueue } from '@sapphire/async-queue';
 import { container } from '@sapphire/framework';
 import { Queue } from '#game/Queue';
 
@@ -65,6 +66,7 @@ export abstract class Game {
 	public readonly host: User;
 	public readonly guild: Guild;
 	public readonly acceptedAnswer: AcceptedAnswer;
+	public readonly guessQueue = new AsyncQueue();
 	public round!: RoundData;
 
 	/**

@@ -13,21 +13,27 @@ export class UserListener extends Listener {
 			return;
 		}
 
-		await game.onTrackEnd();
+		await game.guessQueue.wait();
 
-		for (const player of game.players.values()) {
-			// If the player is still in the voice channel (this property is
-			// turned to undefined when they leave).
-			if (player.lastGameEntryTime) {
-				player.songsListenedTo++;
+		try {
+			await game.onTrackEnd();
+
+			for (const player of game.players.values()) {
+				// If the player is still in the voice channel (this property is
+				// turned to undefined when they leave).
+				if (player.lastGameEntryTime) {
+					player.songsListenedTo++;
+				}
 			}
-		}
 
-		const points = game.leaderboard.leader?.[1];
-		if (points && game.goal && points === game.goal) {
-			await game.end(GameEndReason.GoalMet);
-		}
+			const points = game.leaderboard.leader?.[1];
+			if (points && game.goal && points === game.goal) {
+				await game.end(GameEndReason.GoalMet);
+			}
 
-		await game.queue.next();
+			await game.queue.next();
+		} finally {
+			game.guessQueue.shift();
+		}
 	}
 }
