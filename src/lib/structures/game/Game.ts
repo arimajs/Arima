@@ -1,7 +1,7 @@
 import type { CommandInteraction, Guild, Snowflake, GuildTextBasedChannel, User, VoiceChannel, MessageOptions, Message } from 'discord.js';
 import type { RoundData } from '#game/RoundData';
-import type { Playlist } from '#utils/audio';
 import { bold, inlineCode, italic, userMention } from '@discordjs/builders';
+import { PlaylistType, type Playlist } from '#utils/audio';
 import { DurationFormatter, Time } from '@sapphire/time-utilities';
 import { UseRequestContext } from '#utils/decorators';
 import { StreakCounter } from '#game/StreakCounter';
@@ -108,10 +108,22 @@ export abstract class Game {
 			answerTypeString = `song ${italic(conjunction)} artist`;
 		}
 
+		const { playlist } = this.queue;
+
 		const description = `The game has begun! You have ${inlineCode('30')} seconds to guess the name of the ${answerTypeString} in this channel.`;
 		const embed = createEmbed(description)
 			.setAuthor({ name: `Hosted by ${this.host.tag}`, iconURL: this.host.displayAvatarURL({ size: 128, dynamic: true }) })
-			.setTitle(`🎶 Playing the playlist "${this.queue.playlist.name}"`);
+			.setTitle(`🎶 Playing the playlist "${playlist.name}"`);
+
+		if (playlist.type === PlaylistType.Spotify) {
+			if (playlist.image) {
+				embed.setThumbnail(playlist.image);
+			}
+
+			if (playlist.color) {
+				embed.setColor(playlist.color);
+			}
+		}
 
 		if (this.goal) {
 			embed.setFooter({ text: `Playing to ${this.goal} points` });

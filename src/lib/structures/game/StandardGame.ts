@@ -1,5 +1,6 @@
 import type { Message, Snowflake, User } from 'discord.js';
 import { Game, AcceptedAnswer, GameType } from '#game/Game';
+import { resolveThumbnail } from '#utils/audio';
 import { BrandingColors } from '#utils/constants';
 import { createEmbed } from '#utils/responses';
 import { container } from '@sapphire/framework';
@@ -83,7 +84,7 @@ export class StandardGame extends Game {
 			footerText += ` • Playing to ${this.goal} points`;
 		}
 
-		const { title, author, uri } = nowPlaying!.info;
+		const { title, author, uri, color } = nowPlaying!.info;
 		const guessedThisRound = this.guessedThisRound();
 
 		const embedTitle = guessed
@@ -95,6 +96,15 @@ export class StandardGame extends Game {
 			.setTitle(`That was "${title}" by ${author}`)
 			.addField('Leaderboard', this.leaderboard.compute())
 			.setFooter({ text: footerText });
+
+		if (color) {
+			embed.setColor(color);
+		}
+
+		const thumbnail = resolveThumbnail(nowPlaying!.info);
+		if (thumbnail) {
+			embed.setThumbnail(thumbnail);
+		}
 
 		await this.textChannel.send({ embeds: [embed] });
 	}

@@ -1,13 +1,15 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import type { Snowflake } from 'discord.js';
-import { LoadType, type Track, type IncomingEventTrackExceptionPayload } from '@skyra/audio';
-import { getRandomThirtySecondWindow, LavalinkEvent, type Playlist } from '#utils/audio';
+import { LoadType, type Track, type IncomingEventTrackExceptionPayload, type TrackInfo } from '@skyra/audio';
+import { getRandomThirtySecondWindow, LavalinkEvent, type SpotifyAdditions, type Playlist } from '#utils/audio';
 import { GameEndReason, type Game } from '#game/Game';
 import { container } from '@sapphire/framework';
 import { RoundData } from '#game/RoundData';
 import { shuffle } from '#utils/common';
 import { Time } from '@sapphire/time-utilities';
 import NodeCache from 'node-cache';
+
+type ExtendedTrack = Track & { info: TrackInfo & SpotifyAdditions };
 
 export class Queue {
 	/**
@@ -28,7 +30,7 @@ export class Queue {
 	 * The track that is currently playing. This is undefined if there is no
 	 * track playing, obviously, and is reassigned each time a new track starts.
 	 */
-	public nowPlaying?: Track;
+	public nowPlaying?: ExtendedTrack;
 
 	// `tracks` should be an array of strings, each representing a track encoded
 	// by Lavalink.
@@ -49,23 +51,23 @@ export class Queue {
 	public async next() {
 		// This will be an info object if playing a Spotify playlist, and a
 		// string otherwise.
-		let nextTrack = this.playlist.tracks.pop();
+		const nextTrack = this.playlist.tracks.pop();
 
 		// Will be the result of `node.load` if we have to search for a Spotify
 		// song. It already gives the track info, so it's better to store it
 		// instead of waste another API call to retrieve what we already have
 		// later in the code.
-		let nextTrackFull: Track | undefined;
+		let nextTrackFull: ExtendedTrack | undefined;
 
 		if (nextTrack) {
 			if (typeof nextTrack !== 'string') {
 				// This is what will be searched on Youtube to try to get the
 				// most accurate results.
 				const displayName = `${nextTrack.name} - ${nextTrack.artist}`;
-				const cachedTrack = Queue.spotifySongCache.get<string>(displayName);
+				const cachedTrack = Queue.spotifySongCache.get<ExtendedTrack>(displayName);
 
 				if (cachedTrack) {
-					nextTrack = cachedTrack;
+					nextTrackFull = cachedTrack;
 				} else {
 					const response = await this.player.node.load(`ytsearch: ${displayName}`);
 					if (response.loadType === LoadType.SearchResult) {
@@ -75,7 +77,12 @@ export class Queue {
 						nextTrackFull.info.author = nextTrack.artist;
 						nextTrackFull.info.title = nextTrack.name;
 
-						Queue.spotifySongCache.set(displayName, nextTrackFull.track);
+						// Add on some new spicy properties because we can and
+						// it would be a waste not to.
+						nextTrackFull.info.color = nextTrack.color;
+						nextTrackFull.info.image = nextTrack.image;
+
+						Queue.spotifySongCache.set<ExtendedTrack>(displayName, nextTrackFull);
 					} else {
 						// No matches, or the search failed.
 						container.client.emit(LavalinkEvent.TrackException, { guildId: this.game.guild.id } as IncomingEventTrackExceptionPayload);
