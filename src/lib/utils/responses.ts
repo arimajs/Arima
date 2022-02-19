@@ -12,7 +12,7 @@ export const createEmbed = (description?: string, color: ColorResolvable = Brand
 /**
  * Sends an error response from an interaction.
  */
-export const sendError = (interaction: CommandInteraction, description: string, ephemeral = true) => {
+export const sendError = async (interaction: CommandInteraction, description: string, ephemeral = true) => {
 	// Core sapphire errors end in ".", so that needs to be accounted for.
 	const parsedDescription = `❌ ${description.endsWith('.') ? description.slice(0, -1) : description}!`;
 	const payload = {
@@ -22,7 +22,7 @@ export const sendError = (interaction: CommandInteraction, description: string, 
 
 	// eslint-disable-next-line @typescript-eslint/unbound-method
 	const replyFn = interaction.replied ? interaction.followUp : interaction.deferred ? interaction.editReply : interaction.reply;
-	return replyFn.call(interaction, payload);
+	await replyFn.call(interaction, payload);
 };
 
 // This method of resolving `Message` instances from interaction replies should

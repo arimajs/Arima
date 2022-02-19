@@ -36,7 +36,7 @@ export class UserCommand extends ArimaCommand {
 			.addField('Elapsed ⏱', elapsed, true);
 
 		const files = embedLimitReached ? [{ attachment: Buffer.from(output), name: 'output.txt' }] : [];
-		return interaction.editReply({ embeds: [embed], files });
+		await interaction.editReply({ embeds: [embed], files });
 	}
 
 	public override registerApplicationCommands(registry: ArimaCommand.Registry) {
