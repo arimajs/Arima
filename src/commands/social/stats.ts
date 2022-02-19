@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/member-ordering */
-import type { CommandInteraction } from 'discord.js';
-import { CommandOptionsRunTypeEnum, type ApplicationCommandRegistry } from '@sapphire/framework';
+import { CommandOptionsRunTypeEnum } from '@sapphire/framework';
 import { createEmbed, sendError } from '#utils/responses';
 import { inlineCode, underscore } from '@discordjs/builders';
 import { UseRequestContext } from '#utils/decorators';
@@ -15,7 +14,7 @@ import { Rank } from '#entities/Member';
 })
 export class UserCommand extends ArimaCommand {
 	@UseRequestContext()
-	public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
+	public override async chatInputRun(interaction: ArimaCommand.Interaction<'cached'>) {
 		const user = interaction.options.getUser('player') ?? interaction.user;
 		const player = await this.container.db.members.findOne({ userId: user.id, guildId: interaction.guild.id });
 
@@ -40,7 +39,7 @@ export class UserCommand extends ArimaCommand {
 		return interaction.reply({ embeds: [embed] });
 	}
 
-	public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
+	public override registerApplicationCommands(registry: ArimaCommand.Registry) {
 		registry.registerChatInputCommand(
 			(builder) =>
 				builder

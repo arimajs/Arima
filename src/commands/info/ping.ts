@@ -1,4 +1,4 @@
-import type { CommandInteraction, Message } from 'discord.js';
+import type { Message } from 'discord.js';
 import { BrandingColors } from '#utils/constants';
 import { ArimaCommand } from '#structures/ArimaCommand';
 import { ApplyOptions } from '@sapphire/decorators';
@@ -13,7 +13,7 @@ import { inlineCode } from '@discordjs/builders';
 	}
 })
 export class UserCommand extends ArimaCommand {
-	public override async chatInputRun(interaction: CommandInteraction) {
+	public override async chatInputRun(interaction: ArimaCommand.Interaction) {
 		const embed = createEmbed('', BrandingColors.Secondary).setTitle('Ping? 🏓');
 		const message = (await interaction.reply({ embeds: [embed], fetchReply: true })) as Message;
 

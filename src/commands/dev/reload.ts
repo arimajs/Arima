@@ -11,7 +11,7 @@ import { env } from '#root/config';
 import Fuse from 'fuse.js/dist/fuse.basic.min.js';
 
 export class UserCommand extends ArimaCommand {
-	public override async chatInputRun(interaction: CommandInteraction) {
+	public override async chatInputRun(interaction: ArimaCommand.Interaction) {
 		const type = interaction.options.getSubcommand(true);
 		const name = interaction.options.getString('name', true);
 
@@ -65,7 +65,7 @@ export class UserCommand extends ArimaCommand {
 		);
 	}
 
-	public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
+	public override registerApplicationCommands(registry: ArimaCommand.Registry) {
 		registry.registerChatInputCommand(
 			(builder) =>
 				builder

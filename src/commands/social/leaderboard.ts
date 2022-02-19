@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/member-ordering */
-import type { CommandInteraction } from 'discord.js';
 import type { Member } from '#entities/Member';
 import { QueryOrder, type FilterQuery, type FindOptions, type EntityField } from '@mikro-orm/core';
 import { bold, inlineCode, userMention } from '@discordjs/builders';
@@ -22,7 +21,7 @@ import { chunk } from '@sapphire/utilities';
 })
 export class UserCommand extends ArimaCommand {
 	@UseRequestContext()
-	public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
+	public override async chatInputRun(interaction: ArimaCommand.Interaction<'cached'>) {
 		const { members } = this.container.db;
 
 		const baseQuery: FilterQuery<Member> = { guildId: interaction.guild.id };

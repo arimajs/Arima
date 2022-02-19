@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/member-ordering */
-import type { CommandInteraction } from 'discord.js';
 import { CommandOptionsRunTypeEnum } from '@sapphire/framework';
 import { GameEndReason } from '#game/Game';
 import { ArimaCommand } from '#structures/ArimaCommand';
@@ -15,7 +13,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 	}
 })
 export class UserCommand extends ArimaCommand {
-	public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
+	public override async chatInputRun(interaction: ArimaCommand.Interaction<'cached'>) {
 		const game = this.container.games.get(interaction.guild.id)!;
 		await game.end(GameEndReason.Other, interaction.reply.bind(interaction));
 	}

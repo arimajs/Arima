@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/member-ordering */
-import type { CommandInteraction } from 'discord.js';
-import { CommandOptionsRunTypeEnum, isErr, type ApplicationCommandRegistry } from '@sapphire/framework';
+import { CommandOptionsRunTypeEnum, isErr } from '@sapphire/framework';
 import { PlaylistResolutionError, resolvePlaylist } from '#utils/audio';
 import { hideLinkEmbed, hyperlink } from '@discordjs/builders';
 import { AcceptedAnswer } from '#game/Game';
@@ -27,7 +26,7 @@ export class UserCommand extends ArimaCommand {
 		)}`
 	};
 
-	public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
+	public override async chatInputRun(interaction: ArimaCommand.Interaction<'cached'>) {
 		const { channel } = interaction.member.voice;
 		if (channel?.type !== 'GUILD_VOICE') {
 			return sendError(interaction, 'You must be in a voice channel to start a game');
@@ -76,7 +75,7 @@ export class UserCommand extends ArimaCommand {
 		return this.container.games.set(interaction.guild.id, game);
 	}
 
-	public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
+	public override registerApplicationCommands(registry: ArimaCommand.Registry) {
 		registry.registerChatInputCommand(
 			(builder) =>
 				builder

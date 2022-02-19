@@ -1,5 +1,3 @@
-import type { ApplicationCommandRegistry } from '@sapphire/framework';
-import type { CommandInteraction } from 'discord.js';
 import { BrandingColors } from '#utils/constants';
 import { ArimaCommand } from '#structures/ArimaCommand';
 import { createEmbed } from '#utils/responses';
@@ -15,7 +13,7 @@ import { env } from '#root/config';
 // interaction. That way, users could naturally send multiline code. Or, modals
 // could be used instead (when they're released).
 export class UserCommand extends ArimaCommand {
-	public override async chatInputRun(interaction: CommandInteraction) {
+	public override async chatInputRun(interaction: ArimaCommand.Interaction) {
 		const code = interaction.options.getString('code', true);
 		const depth = interaction.options.getInteger('depth');
 		const isAsync = interaction.options.getBoolean('async');
@@ -41,7 +39,7 @@ export class UserCommand extends ArimaCommand {
 		return interaction.editReply({ embeds: [embed], files });
 	}
 
-	public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
+	public override registerApplicationCommands(registry: ArimaCommand.Registry) {
 		registry.registerChatInputCommand(
 			(builder) =>
 				builder
@@ -75,7 +73,7 @@ export class UserCommand extends ArimaCommand {
 		);
 	}
 
-	private async eval(interaction: CommandInteraction, code: string, { isAsync, depth }: { isAsync: boolean | null; depth: number | null }) {
+	private async eval(interaction: ArimaCommand.Interaction, code: string, { isAsync, depth }: { isAsync: boolean | null; depth: number | null }) {
 		if (isAsync) {
 			code = `(async () => {\n${code}\n})();`;
 		}

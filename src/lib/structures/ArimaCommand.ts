@@ -1,6 +1,6 @@
 import { Command, type Args, type Piece } from '@sapphire/framework';
 import { PermissionFlagsBits } from 'discord-api-types/v9';
-import { Permissions } from 'discord.js';
+import { Permissions, type CacheType } from 'discord.js';
 import { env } from '#root/config';
 
 export abstract class ArimaCommand<O extends ArimaCommand.Options = ArimaCommand.Options> extends Command<Args, O> {
@@ -27,4 +27,6 @@ export abstract class ArimaCommand<O extends ArimaCommand.Options = ArimaCommand
 export namespace ArimaCommand {
 	// Convenience type to save imports.
 	export type Options = Command.Options;
+	export type Interaction<Cache extends CacheType = CacheType> = Command.ChatInputInteraction<Cache>;
+	export type Registry = Command.Registry;
 }
