@@ -98,12 +98,9 @@ export abstract class Game {
 		this.leaderboard = new Leaderboard();
 		this.streaks = new StreakCounter();
 
-		const players = this.voiceChannel.members
-			.filter(({ user }) => !user.bot)
-			.map<[Snowflake, Player]>((member) => [
-				member.id,
-				{ id: member.id, lastGameEntryTime: Date.now(), totalPlayTime: 0, songsListenedTo: 0 }
-			]);
+		const basePlayer: Omit<Player, 'id'> = { lastGameEntryTime: Date.now(), totalPlayTime: 0, songsListenedTo: 0 };
+		const members = this.voiceChannel.members.filter(({ user }) => !user.bot);
+		const players = members.map<[Snowflake, Player]>((member) => [member.id, { ...basePlayer, id: member.id }]);
 
 		this.players = new Map(players);
 	}
