@@ -53,6 +53,11 @@ export class UserCommand extends ArimaCommand {
 			return sendError(interaction, 'Your goal must be at least 5 points');
 		}
 
+		const limit = interaction.options.getInteger('limit');
+		if (limit && limit < 5) {
+			return sendError(interaction, 'Your goal must be at least 5 points');
+		}
+
 		const url = interaction.options.getString('url', true);
 		const [result] = await Promise.all([resolvePlaylist(url), interaction.deferReply()]);
 
@@ -66,7 +71,8 @@ export class UserCommand extends ArimaCommand {
 			textChannel: interaction.channel!,
 			voiceChannel: channel,
 			acceptedAnswer: (interaction.options.getString('answers') as AcceptedAnswer) ?? undefined,
-			goal: goal ?? undefined
+			goal: goal ?? undefined,
+			limit: limit ?? undefined
 		});
 
 		await game.queue.player.join(channel.id, { deaf: true });
@@ -91,6 +97,12 @@ export class UserCommand extends ArimaCommand {
 						builder //
 							.setName('goal')
 							.setDescription('The amount of points to play to! (Optional)')
+							.setRequired(false)
+					)
+					.addIntegerOption((builder) =>
+						builder //
+							.setName('limit')
+							.setDescription('The number of songs to play to! (Optional)')
 							.setRequired(false)
 					)
 					.addStringOption((builder) =>

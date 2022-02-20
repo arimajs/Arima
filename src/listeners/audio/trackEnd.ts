@@ -29,9 +29,11 @@ export class UserListener extends Listener {
 			const points = game.leaderboard.leader?.[1];
 			if (points && game.goal && points === game.goal) {
 				await game.end(GameEndReason.GoalMet);
+			} else if (game.queue.tracksPlayed === game.limit) {
+				await game.end(GameEndReason.LimitReached);
+			} else {
+				await game.queue.next();
 			}
-
-			await game.queue.next();
 		} finally {
 			game.guessQueue.shift();
 		}

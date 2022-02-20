@@ -30,6 +30,7 @@ export enum GameEndReason {
 	HostLeft,
 	PlaylistEnded,
 	GoalMet,
+	LimitReached,
 	TextChannelDeleted,
 	GuildInaccessible,
 	Other
@@ -42,6 +43,7 @@ export interface GameData {
 	playlist: Playlist;
 	acceptedAnswer?: AcceptedAnswer;
 	goal?: number;
+	limit?: number;
 }
 
 // More info located in voiceStateUpdate listener.
@@ -74,8 +76,14 @@ export abstract class Game {
 	 * per-game.
 	 */
 	public readonly goal?: number;
-	public players: Map<Snowflake, Player>;
 
+	/**
+	 * The number of songs to play to. Optionally provided by the user
+	 * per-game.
+	 */
+	public readonly limit?: number;
+
+	public readonly players: Map<Snowflake, Player>;
 	private readonly startTime = Date.now();
 
 	public constructor(data: GameData) {
@@ -84,6 +92,7 @@ export abstract class Game {
 		this.host = data.host;
 		this.acceptedAnswer = data.acceptedAnswer ?? AcceptedAnswer.Either;
 		this.goal = data.goal;
+		this.limit = data.limit;
 		this.guild = this.textChannel.guild;
 		this.queue = new Queue(this, data.playlist);
 		this.leaderboard = new Leaderboard();
@@ -150,7 +159,8 @@ export abstract class Game {
 
 		if (reason !== GameEndReason.TextChannelDeleted) {
 			const descriptions = {
-				[GameEndReason.GoalMet]: `The goal of **${this.goal}** 🥅 was hit!`,
+				[GameEndReason.GoalMet]: `The goal of ${inlineCode(this.goal!.toString())} was hit!  🥅`,
+				[GameEndReason.LimitReached]: `The limit of ${inlineCode(this.limit!.toString())} songs was reached! 🛑`,
 				[GameEndReason.HostLeft]: 'The game ended because the host left the voice channel 😓',
 				[GameEndReason.PlaylistEnded]: 'We ran through every song in the playlist! 🎶',
 				[GameEndReason.Other]: 'Good game! 🥳'
