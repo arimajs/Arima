@@ -1,6 +1,6 @@
 {
 	"name": "arima",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"description": "🎶 A music quiz discord bot designed for lightly competitive fun!",
 	"main": "dist/index.js",
 	"repository": "https://github.com/Lioness100/Arima",
