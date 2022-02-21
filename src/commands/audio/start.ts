@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import { CommandOptionsRunTypeEnum, isErr } from '@sapphire/framework';
-import { PlaylistResolutionError, resolvePlaylist } from '#utils/audio';
+import { AcceptedAnswer, PlaylistResolutionError } from '#types/Enums';
 import { hideLinkEmbed, hyperlink } from '@discordjs/builders';
-import { AcceptedAnswer } from '#game/Game';
-import { StandardGame } from '#game/StandardGame';
 import { PermissionFlagsBits } from 'discord-api-types/v9';
+import { resolvePlaylist } from '#utils/audio';
+import { StandardGame } from '#game/StandardGame';
 import { ArimaCommand } from '#structures/ArimaCommand';
 import { ApplyOptions } from '@sapphire/decorators';
 import { sendError } from '#utils/responses';

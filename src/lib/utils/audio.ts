@@ -1,18 +1,10 @@
 import type { HexColorString } from 'discord.js';
-import { container, Result, ok, err } from '@sapphire/framework';
+import { PlaylistResolutionError, PlaylistType } from '../types/Enums';
 import { LoadType, type TrackInfo, type PlaylistInfo } from '@skyra/audio';
+import { container, ok, err, type Result } from '@sapphire/framework';
 import { getData, type Tracks } from 'spotify-url-info';
 import { Time } from '@sapphire/time-utilities';
 import { URL } from 'node:url';
-
-/**
- * Event types from the Lavalink `event` event we listen too (mouthful)
- */
-export enum LavalinkEvent {
-	TrackEnd = 'TrackEndEvent',
-	TrackStuck = 'TrackStuckEvent',
-	TrackException = 'TrackExceptionEvent'
-}
 
 /**
  * Capture a random thirty seconds within a duration in seconds to mark the
@@ -68,18 +60,6 @@ export type Playlist = { name: string } & (
 	| { type: PlaylistType.Lavalink; tracks: string[] }
 	| ({ type: PlaylistType.Spotify; tracks: ({ name: string; artist: string } & SpotifyAdditions)[] } & SpotifyAdditions)
 );
-
-export enum PlaylistType {
-	Spotify,
-	Lavalink
-}
-
-export enum PlaylistResolutionError {
-	NotFound,
-	NotSuccessful,
-	NotPlaylist,
-	NotEnoughTracks
-}
 
 /**
  * Resolve a Youtube, Bandcamp, Soundcloud, or Spotify playlist from a URL.

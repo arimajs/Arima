@@ -1,22 +1,7 @@
 import type { Snowflake } from 'discord.js';
 import type { ObjectId } from '@mikro-orm/mongodb';
 import { SerializedPrimaryKey, PrimaryKey, Entity, Property, OptionalProps } from '@mikro-orm/core';
-
-export enum Rank {
-	Beginner,
-	Experienced,
-	Master,
-	Divine,
-	Legendary
-}
-
-const ranks = new Map([
-	[0, Rank.Beginner],
-	[10, Rank.Experienced],
-	[20, Rank.Master],
-	[30, Rank.Divine],
-	[40, Rank.Legendary]
-]);
+import { Rank } from '#types/Enums';
 
 @Entity()
 export class Member {
@@ -51,6 +36,6 @@ export class Member {
 	@Property({ persist: false })
 	public get rank() {
 		const flooredTen = Math.floor(this.gamesWon / 10) * 10;
-		return ranks.get(flooredTen) ?? Rank.Legendary;
+		return Rank[flooredTen] ?? Rank[Rank.Legendary];
 	}
 }

@@ -1,5 +1,5 @@
 import { GatewayDispatchEvents, type APITextChannel } from 'discord-api-types/v9';
-import { GameEndReason } from '#game/Game';
+import { GameEndReason } from '#types/Enums';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Listener } from '@sapphire/framework';
 

@@ -1,6 +1,6 @@
 import type { VoiceState } from 'discord.js';
 import { Listener, type Events } from '@sapphire/framework';
-import { GameEndReason } from '#game/Game';
+import { GameEndReason } from '#types/Enums';
 
 // This event is run on voice channel joins, moves, or disconnects of any person
 // in a guild channel.

@@ -1,5 +1,5 @@
 import type { IncomingEventTrackStuckPayload } from '@skyra/audio';
-import { LavalinkEvent } from '#utils/audio';
+import { LavalinkEvent } from '#types/Enums';
 import { ApplyOptions } from '@sapphire/decorators';
 import { createEmbed } from '#utils/responses';
 import { setTimeout } from 'node:timers';

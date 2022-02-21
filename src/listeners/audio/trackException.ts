@@ -1,8 +1,7 @@
 import type { IncomingEventTrackExceptionPayload } from '@skyra/audio';
 import { hideLinkEmbed, hyperlink, italic } from '@discordjs/builders';
+import { BrandingColor, LavalinkEvent } from '#types/Enums';
 import { bold, redBright } from 'colorette';
-import { BrandingColors } from '#utils/constants';
-import { LavalinkEvent } from '#utils/audio';
 import { ApplyOptions } from '@sapphire/decorators';
 import { createEmbed } from '#utils/responses';
 import { Listener } from '@sapphire/framework';
@@ -28,7 +27,7 @@ export class UserListener extends Listener {
 			`❌ Something went wrong whilst playing a track! Skipping...\n${italic(
 				`Want to report the issue? Join my ${hyperlink('support server', hideLinkEmbed(env.SUPPORT_SERVER_INVITE))}!`
 			)}`,
-			BrandingColors.Error
+			BrandingColor.Error
 		);
 
 		// Decrement the playlist length, as it is used to calculate how many

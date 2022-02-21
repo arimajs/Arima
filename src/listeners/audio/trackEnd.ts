@@ -1,6 +1,5 @@
 import type { IncomingEventTrackEndPayload } from '@skyra/audio';
-import { GameEndReason } from '#game/Game';
-import { LavalinkEvent } from '#utils/audio';
+import { GameEndReason, LavalinkEvent } from '#types/Enums';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Listener } from '@sapphire/framework';
 

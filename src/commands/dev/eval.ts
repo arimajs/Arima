@@ -1,4 +1,4 @@
-import { BrandingColors } from '#utils/constants';
+import { BrandingColor } from '#types/Enums';
 import { ArimaCommand } from '#structures/ArimaCommand';
 import { createEmbed } from '#utils/responses';
 import { isThenable } from '@sapphire/utilities';
@@ -27,7 +27,7 @@ export class UserCommand extends ArimaCommand {
 		const embedLimitReached = output.length > 4096;
 		const embed = createEmbed(
 			embedLimitReached ? 'Output was too long! The result has been sent as a file.' : output,
-			success ? BrandingColors.Primary : BrandingColors.Error
+			success ? BrandingColor.Primary : BrandingColor.Error
 		);
 
 		embed

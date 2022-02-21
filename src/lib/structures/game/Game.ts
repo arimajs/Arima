@@ -1,7 +1,8 @@
 import type { CommandInteraction, Guild, Snowflake, GuildTextBasedChannel, User, VoiceChannel, MessageOptions, Message } from 'discord.js';
 import type { RoundData } from '#game/RoundData';
+import type { Playlist } from '#utils/audio';
+import { PlaylistType, AcceptedAnswer, GameEndReason, type GameType } from '#types/Enums';
 import { bold, inlineCode, italic, userMention } from '@discordjs/builders';
-import { PlaylistType, type Playlist } from '#utils/audio';
 import { DurationFormatter, Time } from '@sapphire/time-utilities';
 import { UseRequestContext } from '#utils/decorators';
 import { StreakCounter } from '#game/StreakCounter';
@@ -12,30 +13,6 @@ import { AsyncQueue } from '@sapphire/async-queue';
 import { Collection } from 'discord.js';
 import { container } from '@sapphire/framework';
 import { Queue } from '#game/Queue';
-
-export enum GameType {
-	Standard = 'standard'
-}
-
-// This setting will be configured per-game by the user, and defaults to
-// `AcceptedAnswer.Either`.
-export enum AcceptedAnswer {
-	Song = 'song',
-	Artist = 'artist',
-	Either = 'either',
-	Both = 'both'
-}
-
-// Descriptions for each reason are located where they are used to end the game.
-export enum GameEndReason {
-	HostLeft,
-	PlaylistEnded,
-	GoalMet,
-	LimitReached,
-	TextChannelDeleted,
-	GuildInaccessible,
-	Other
-}
 
 export interface GameData {
 	textChannel: GuildTextBasedChannel;
@@ -224,9 +201,8 @@ export abstract class Game {
 							: `earned ${points} points, and have reached level ${member.level}! 🥳`;
 
 					if (rankedUp) {
-						content += ` You also ranked up from ${originalRank} musician to ${bold(
-							`${member.rank} musician`
-						)} thanks to your epic song-guessing skills!`;
+						const [oldRank, newRank] = [originalRank, member.rank].map((rank) => bold(`${rank} Musician`));
+						content += ` You also ranked up from ${oldRank} to ${newRank} thanks to your epic song-guessing skills!`;
 					}
 
 					promises.push(this.textChannel.send(content));

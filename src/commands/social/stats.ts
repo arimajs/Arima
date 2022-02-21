@@ -6,7 +6,6 @@ import { UseRequestContext } from '#utils/decorators';
 import { ArimaCommand } from '#structures/ArimaCommand';
 import { ApplyOptions } from '@sapphire/decorators';
 import { toPercent } from '#utils/common';
-import { Rank } from '#entities/Member';
 
 @ApplyOptions<ArimaCommand.Options>({
 	description: 'View the stats of a player in this guild!',
@@ -28,7 +27,7 @@ export class UserCommand extends ArimaCommand {
 		const fields = [
 			['Games Won', gamesInfoDisplay],
 			['Level', `${player.points} (level ${player.level})`],
-			['Rank', Rank[player.rank]]
+			['Rank', player.rank]
 		];
 
 		const description = fields //

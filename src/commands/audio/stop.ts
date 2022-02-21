@@ -1,5 +1,5 @@
 import { CommandOptionsRunTypeEnum } from '@sapphire/framework';
-import { GameEndReason } from '#game/Game';
+import { GameEndReason } from '#types/Enums';
 import { ArimaCommand } from '#structures/ArimaCommand';
 import { ApplyOptions } from '@sapphire/decorators';
 
