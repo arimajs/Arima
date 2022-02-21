@@ -1,8 +1,9 @@
 import type { HexColorString } from 'discord.js';
-import { PlaylistResolutionError, PlaylistType } from '../types/Enums';
+import { container, isOk, ok, err, fromAsync, type Result } from '@sapphire/framework';
 import { LoadType, type TrackInfo, type PlaylistInfo } from '@skyra/audio';
-import { container, ok, err, type Result } from '@sapphire/framework';
-import { getData, type Tracks } from 'spotify-url-info';
+import { getData as getSpotifyData, type Tracks } from 'spotify-url-info';
+import { PlaylistResolutionError, PlaylistType } from '../types/Enums';
+import { parseURL } from '@sapphire/utilities';
 import { Time } from '@sapphire/time-utilities';
 import { URL } from 'node:url';
 
@@ -62,68 +63,79 @@ export type Playlist = { name: string } & (
 );
 
 /**
- * Resolve a Youtube, Bandcamp, Soundcloud, or Spotify playlist from a URL. Also resolves Spotify albums and artists.
+ * Resolve a playlist/album/artist from a URL.
  */
 export const resolvePlaylist = async (url: string): Promise<Result<Playlist, PlaylistResolutionError>> => {
-	try {
-		// spotify-url-info validates URLs via spotify-uri, and will immediately throw an error if it's not valid.
-		const spotifyData: ResolvedSpotifyData = await getData(url);
-
-		// If there's no `tracks` property, it's a track or podcast
-		if (!spotifyData.tracks) {
-			return err(PlaylistResolutionError.NotPlaylist);
-		}
-
-		const tracks = resolveSpotifyTracks(spotifyData);
-
-		const filteredTracks = tracks.filter(({ duration_ms }) => duration_ms * Time.Second > 30);
-		if (filteredTracks.length < 5) {
-			return err(PlaylistResolutionError.NotEnoughTracks);
-		}
-
-		return ok({
-			type: PlaylistType.Spotify,
-			name: spotifyData.name,
-			color: spotifyData.dominantColor,
-			image: getBiggestImage(spotifyData.images),
-			tracks: filteredTracks.map((track) => ({
-				name: track.name,
-				artist: track.artists![0].name,
-				color: track.dominantColor,
-				image: getBiggestImage(track.album.images)
-			}))
-		});
-	} catch {
-		try {
-			new URL(url);
-		} catch {
-			return err(PlaylistResolutionError.NotFound);
-		}
-
-		const response = await container.audio.load(url);
-		if (response.loadType === LoadType.NoMatches) {
-			return err(PlaylistResolutionError.NotFound);
-		}
-
-		if (response.loadType === LoadType.LoadFailed) {
-			return err(PlaylistResolutionError.NotSuccessful);
-		}
-
-		if (response.loadType !== LoadType.PlaylistLoaded) {
-			return err(PlaylistResolutionError.NotPlaylist);
-		}
-
-		const filteredTracks = response.tracks.filter(({ info }) => info.length * Time.Second > 30);
-		if (filteredTracks.length < 5) {
-			return err(PlaylistResolutionError.NotEnoughTracks);
-		}
-
-		return ok({
-			type: PlaylistType.Lavalink,
-			name: (response.playlistInfo as PlaylistInfo).name,
-			tracks: filteredTracks.map(({ track }) => track)
-		});
+	const isValidURL = Boolean(parseURL(url));
+	if (!isValidURL) {
+		return err(PlaylistResolutionError.NotFound);
 	}
+
+	const res = await fromAsync<ResolvedSpotifyData>(() => getSpotifyData(url));
+	if (isOk(res)) {
+		return resolveSpotifyEntity(res.value);
+	}
+
+	return resolveLavalinkURL(url);
+};
+
+/**
+ * Resolved a playlist/album/artist from scraped Spotify data.
+ */
+export const resolveSpotifyEntity = (data: ResolvedSpotifyData): Result<Playlist, PlaylistResolutionError> => {
+	// If there's no `tracks` property, it's a track or podcast
+	if (!data.tracks) {
+		return err(PlaylistResolutionError.NotPlaylist);
+	}
+
+	const tracks = resolveSpotifyTracks(data);
+
+	const filteredTracks = tracks.filter(({ duration_ms }) => duration_ms * Time.Second > 30);
+	if (filteredTracks.length < 5) {
+		return err(PlaylistResolutionError.NotEnoughTracks);
+	}
+
+	return ok({
+		type: PlaylistType.Spotify,
+		name: data.name,
+		color: data.dominantColor,
+		image: getBiggestImage(data.images),
+		tracks: filteredTracks.map((track) => ({
+			name: track.name,
+			artist: track.artists![0].name,
+			color: track.dominantColor,
+			image: getBiggestImage(track.album.images)
+		}))
+	});
+};
+
+/**
+ * Resolves a playlist from a URL through Lavalink.
+ */
+export const resolveLavalinkURL = async (url: string): Promise<Result<Playlist, PlaylistResolutionError>> => {
+	const response = await container.audio.load(url);
+	if (response.loadType === LoadType.NoMatches) {
+		return err(PlaylistResolutionError.NotFound);
+	}
+
+	if (response.loadType === LoadType.LoadFailed) {
+		return err(PlaylistResolutionError.NotSuccessful);
+	}
+
+	if (response.loadType !== LoadType.PlaylistLoaded) {
+		return err(PlaylistResolutionError.NotPlaylist);
+	}
+
+	const filteredTracks = response.tracks.filter(({ info }) => info.length * Time.Second > 30);
+	if (filteredTracks.length < 5) {
+		return err(PlaylistResolutionError.NotEnoughTracks);
+	}
+
+	return ok({
+		type: PlaylistType.Lavalink,
+		name: (response.playlistInfo as PlaylistInfo).name,
+		tracks: filteredTracks.map(({ track }) => track)
+	});
 };
 
 /**
