@@ -25,6 +25,11 @@ export class UserListener extends Listener<typeof Events.NonPrefixedMessage> {
 			return;
 		}
 
+		// If the player used /pass, they can't guess.
+		if (game.round.passedPlayers.has(message.author.id)) {
+			return;
+		}
+
 		// AsyncQueues are used to prevent race conditions and ensure that
 		// guesses are processed in the order they were received.
 		await game.guessQueue.wait();

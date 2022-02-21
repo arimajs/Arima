@@ -7,6 +7,7 @@ export class RoundData {
 	public readonly artistGuessers: Map<string, Snowflake[]>;
 	public readonly primaryArtistGuessers: Snowflake[];
 	public readonly primaryArtist: string;
+	public readonly passedPlayers = new Set<Snowflake>();
 
 	public constructor(song: string, artists: string[]) {
 		this.validSongVariations = cleanSongName(song);

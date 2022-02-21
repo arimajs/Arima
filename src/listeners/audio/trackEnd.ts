@@ -8,7 +8,6 @@ import { Listener } from '@sapphire/framework';
 export class UserListener extends Listener {
 	public async run(payload: IncomingEventTrackEndPayload) {
 		const game = this.container.games.get(payload.guildId);
-
 		if (!game) {
 			return;
 		}

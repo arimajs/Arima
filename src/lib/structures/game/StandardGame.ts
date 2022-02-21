@@ -39,63 +39,74 @@ export class StandardGame extends Game {
 	}
 
 	public async onTrackEnd() {
-		const { songGuessers, primaryArtistGuessers } = this.round;
-
-		// Ensure players are only in here once.
-		const uniqueGuessers = [...new Set([...songGuessers, ...primaryArtistGuessers])];
-		const usersOrNull = await Promise.all(uniqueGuessers.map((id) => container.client.users.fetch(id).catch(() => null)));
-		const guessers = usersOrNull.filter(Boolean) as User[];
-
-		const numGuessers = guessers.length;
-		const requiresBoth = this.acceptedAnswer === AcceptedAnswer.Both;
-		const doubleGuesser = requiresBoth && numGuessers === 1 && songGuessers.length && primaryArtistGuessers.length;
-
-		// 3 cases that the song was 'guessed':
-		//   - someone got it (one or either of artist or song)
-		//   - 1 person got both
-		//   - two different people got 1 each
-		const guessed = (!requiresBoth && numGuessers) || doubleGuesser || numGuessers === 2;
-
-		if (guessed) {
-			if (numGuessers === 1) {
-				this.leaderboard.inc(guessers[0].id);
-			} else {
-				// There should only ever be 2 guessers but made generic anyway.
-				for (const guesser of guessers) {
-					this.leaderboard.inc(guesser.id, 1 / numGuessers);
-				}
-			}
-
-			this.streaks.incStreak(...guessers.map(({ id }) => id));
-		}
+		const everybodyPassed = this.round.passedPlayers.size === this.players.size;
 
 		const { tracksPlayed, playlistLength, nowPlaying } = this.queue;
-		let footerText = `${tracksPlayed}/${playlistLength}`;
+		let embedFooter = `${tracksPlayed}/${playlistLength}`;
+		let embedDescription = everybodyPassed ? 'Everybody passed! 🏃‍♂️' : 'Nobody got it! 🙁';
 
-		const [streakLeaderId, streak] = this.streaks.leader ?? [];
+		if (!everybodyPassed) {
+			const { songGuessers, primaryArtistGuessers } = this.round;
 
-		// If there is a streak leader, it must be one of the guessers.
-		const streakLeader = streak && guessers.find(({ id }) => id === streakLeaderId);
-		if (streakLeader) {
-			footerText += ` • ${streakLeader.tag} has a streak of ${streak} 🔥`;
+			// Ensure players are only in here once.
+			const uniqueGuessers = [...new Set([...songGuessers, ...primaryArtistGuessers])];
+			const usersOrNull = await Promise.all(uniqueGuessers.map((id) => container.client.users.fetch(id).catch(() => null)));
+			const guessers = usersOrNull.filter(Boolean) as User[];
+
+			const numGuessers = guessers.length;
+			const requiresBoth = this.acceptedAnswer === AcceptedAnswer.Both;
+			const doubleGuesser = requiresBoth && numGuessers === 1 && songGuessers.length && primaryArtistGuessers.length;
+
+			// 3 cases that the song was 'guessed':
+			//   - someone got it (one or either of artist or song)
+			//   - 1 person got both
+			//   - two different people got 1 each
+			const guessed = (!requiresBoth && numGuessers) || doubleGuesser || numGuessers === 2;
+
+			if (guessed) {
+				if (numGuessers === 1) {
+					this.leaderboard.inc(guessers[0].id);
+				} else {
+					// There should only ever be 2 guessers but made generic anyway.
+					for (const guesser of guessers) {
+						this.leaderboard.inc(guesser.id, 1 / numGuessers);
+					}
+				}
+
+				this.streaks.incStreak(...guessers.map(({ id }) => id));
+
+				embedDescription = `${doubleGuesser ? guessers[0] : guessers.join(' and ')} guessed it!`;
+			}
+
+			const [streakLeaderId, streak] = this.streaks.leader ?? [];
+
+			// If there is a streak leader, it must be one of the guessers.
+			const streakLeader = streak && guessers.find(({ id }) => id === streakLeaderId);
+			if (streakLeader) {
+				embedFooter += ` • ${streakLeader.tag} has a streak of ${streak} 🔥`;
+			}
+
+			const guessedThisRound = this.guessedThisRound();
+			if (guessedThisRound) {
+				embedDescription = `Only the ${guessedThisRound} was guessed! 🙁`;
+			}
 		}
 
-		if (this.goal) {
-			footerText += ` • Playing to ${this.goal} points`;
+		if (this.goal && !this.limit) {
+			embedFooter += ` • Playing to ${this.goal} points`;
+		} else if (this.limit && !this.goal) {
+			embedFooter += ` • Playing to ${this.limit} songs`;
+		} else if (this.limit && this.goal) {
+			embedFooter += ` • Playing to ${this.goal} points or ${this.limit} songs`;
 		}
 
 		const { title, author, uri, color } = nowPlaying!.info;
-		const guessedThisRound = this.guessedThisRound();
 
-		const embedTitle = guessed
-			? `${doubleGuesser ? guessers[0] : guessers.join(' and ')} guessed it! 🎉`
-			: `${guessedThisRound ? `Only the ${guessedThisRound} was guessed` : `Nobody got it`}! 🙁`;
-
-		const embed = createEmbed(embedTitle, BrandingColors.Secondary)
+		const embed = createEmbed(embedDescription, BrandingColors.Secondary)
 			.setURL(uri)
 			.setTitle(`That was "${title}" by ${author}`)
 			.addField('Leaderboard', this.leaderboard.compute())
-			.setFooter({ text: footerText });
+			.setFooter({ text: embedFooter });
 
 		if (color) {
 			embed.setColor(color);

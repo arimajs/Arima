@@ -9,6 +9,7 @@ import { jaroWinkler } from '@skyra/jaro-winkler';
 import { Leaderboard } from '#game/Leaderboard';
 import { createEmbed } from '#utils/responses';
 import { AsyncQueue } from '@sapphire/async-queue';
+import { Collection } from 'discord.js';
 import { container } from '@sapphire/framework';
 import { Queue } from '#game/Queue';
 
@@ -68,6 +69,7 @@ export abstract class Game {
 	public readonly host: User;
 	public readonly guild: Guild;
 	public readonly acceptedAnswer: AcceptedAnswer;
+	public readonly players: Collection<Snowflake, Player>;
 	public readonly guessQueue = new AsyncQueue();
 	public round!: RoundData;
 
@@ -82,8 +84,6 @@ export abstract class Game {
 	 * per-game.
 	 */
 	public readonly limit?: number;
-
-	public readonly players: Map<Snowflake, Player>;
 	private readonly startTime = Date.now();
 
 	public constructor(data: GameData) {
@@ -102,7 +102,7 @@ export abstract class Game {
 		const members = this.voiceChannel.members.filter(({ user }) => !user.bot);
 		const players = members.map<[Snowflake, Player]>((member) => [member.id, { ...basePlayer, id: member.id }]);
 
-		this.players = new Map(players);
+		this.players = new Collection(players);
 	}
 
 	public async start(interaction: CommandInteraction) {
@@ -119,7 +119,8 @@ export abstract class Game {
 		const description = `The game has begun! You have ${inlineCode('30')} seconds to guess the name of the ${answerTypeString} in this channel.`;
 		const embed = createEmbed(description)
 			.setAuthor({ name: `Hosted by ${this.host.tag}`, iconURL: this.host.displayAvatarURL({ size: 128, dynamic: true }) })
-			.setTitle(`🎶 Playing the playlist "${playlist.name}"`);
+			.setTitle(`🎶 Playing the playlist "${playlist.name}"`)
+			.setFooter({ text: "💡 Tip! Use /pass on songs you don't know" });
 
 		if (playlist.type === PlaylistType.Spotify) {
 			if (playlist.image) {
