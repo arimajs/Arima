@@ -9,6 +9,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 	runIn: [CommandOptionsRunTypeEnum.GuildText],
 	preconditions: [{ name: 'PlayingGame', context: { shouldBePlaying: true } }],
 	chatInputCommand: {
+		idHints: ['945127477829861416'],
 		register: true
 	}
 })
