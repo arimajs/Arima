@@ -157,8 +157,8 @@ export abstract class Game {
 
 		if (reason !== GameEndReason.TextChannelDeleted) {
 			const descriptions = {
-				[GameEndReason.GoalMet]: `The goal of ${inlineCode(this.goal!.toString())} was hit!  🥅`,
-				[GameEndReason.LimitReached]: `The limit of ${inlineCode(this.limit!.toString())} songs was reached! 🛑`,
+				[GameEndReason.GoalMet]: `The goal of ${inlineCode(this.goal?.toString() ?? 'N/A')} was hit!  🥅`,
+				[GameEndReason.LimitReached]: `The limit of ${inlineCode(this.limit?.toString() ?? 'N/A')} songs was reached! 🛑`,
 				[GameEndReason.HostLeft]: 'The game ended because the host left the voice channel 😓',
 				[GameEndReason.PlaylistEnded]: 'We ran through every song in the playlist! 🎶',
 				[GameEndReason.Other]: 'Good game! 🥳'
