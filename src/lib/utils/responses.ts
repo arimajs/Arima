@@ -25,14 +25,11 @@ export const sendError = async (interaction: CommandInteraction, description: st
 	await replyFn.call(interaction, payload);
 };
 
-// This method of resolving `Message` instances from interaction replies should
-// be used if channel or guild sweeping is implemented, as it's only guarranteed
-// to return a `Message` if the channel it was sent in is cached (and if the bot
-// is in the guild where the message was sent, although we don't need to worry
-// about that). Until then, we can safely cast as `Message` when using the
-// `fetchReply` option. Note that the `Message` constructor has been private
-// since v13.2.0 (discordjs/discord.js#6732), so the Reflect.construct hack is
-// necessary (@ts-ignore would also work).
+// This method of resolving `Message` instances from interaction replies should be used if channel or guild sweeping is
+// implemented, as it's only guarranteed to return a `Message` if the channel it was sent in is cached (and if the bot
+// is in the guild where the message was sent, although we don't need to worry about that). Until then, we can safely
+// cast as `Message` when using the `fetchReply` option. Note that the `Message` constructor has been private since
+// v13.2.0 (discordjs/discord.js#6732), so the Reflect.construct hack is necessary (@ts-ignore would also work).
 
 // /**
 //  * Replies to an interaction and resolves a `Message` instance from the new message.

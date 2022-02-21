@@ -52,8 +52,7 @@ export class UserCommand extends ArimaCommand {
 		const rankChunks = chunk(rankLeaderboard, 10);
 		const pointChunks = chunk(pointLeaderboard, 10);
 
-		// Loop as many times as it takes for all of the longest leaderboard to
-		// be shown.
+		// Loop as many times as it takes for all of the longest leaderboard to be shown.
 		for (let i = 0; i < Math.max(rankChunks.length, pointChunks.length); i++) {
 			const ranks = rankChunks[i];
 			const points = pointChunks[i];
@@ -68,9 +67,8 @@ export class UserCommand extends ArimaCommand {
 						return `${rankToString(index + 1)} ${userMention(member.userId)} • ${inlineCode(gamesInfoDisplay)}`;
 					});
 
-					// Add trailing newlines to separate from the potential
-					// point leaderboard below. Discord will trim them off for
-					// us if there isn't one.
+					// Add trailing newlines to separate from the potential point leaderboard below. Discord will trim
+					// them off for us if there isn't one.
 					embed.description += `🏆 ${bold('Games Won Leaderboard')}\n\n${gamesWonDisplay.join('\n')}\n\n`;
 				}
 

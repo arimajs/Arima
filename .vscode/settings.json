@@ -1,9 +1,11 @@
 {
 	"eslint.validate": ["typescript"],
 	"editor.tabSize": 4,
+	"editor.wordWrapColumn": 120,
 	"editor.useTabStops": true,
 	"editor.insertSpaces": false,
 	"editor.detectIndentation": false,
+	"rewrap.autoWrap.enabled": true,
 	"search.exclude": {
 		"**/node_modules": true,
 		"**/dist/": true,

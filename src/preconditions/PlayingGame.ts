@@ -1,12 +1,10 @@
 import type { CommandInteraction } from 'discord.js';
 import { Precondition } from '@sapphire/framework';
 
-// Asserts a game is or is not being played in a guild. If a game should be
-// playing, will also assert that the interaction author is playing the game.
-// Should always be used with `runIn` set to a `GUILD_*` value.
+// Asserts a game is or is not being played in a guild. If a game should be playing, will also assert that the
+// interaction author is playing the game. Should always be used with `runIn` set to a `GUILD_*` value.
 export class UserPrecondition extends Precondition {
-	// Context, `shouldBePlaying`, can be set to false if you want to assert the
-	// guild is *not* playing a game.
+	// Context, `shouldBePlaying`, can be set to false if you want to assert the guild is *not* playing a game.
 	public override async chatInputRun(
 		interaction: CommandInteraction,
 		_command: never,

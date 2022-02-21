@@ -9,9 +9,8 @@ import { Buffer } from 'node:buffer';
 import { Type } from '@sapphire/type';
 import { env } from '#root/config';
 
-// In the future, this may be converted to/accompanied with a context menu
-// interaction. That way, users could naturally send multiline code. Or, modals
-// could be used instead (when they're released).
+// In the future, this may be converted to/accompanied with a context menu interaction. That way, users could naturally
+// send multiline code. Or, modals could be used instead (when they're released).
 export class UserCommand extends ArimaCommand {
 	public override async chatInputRun(interaction: ArimaCommand.Interaction) {
 		const code = interaction.options.getString('code', true);

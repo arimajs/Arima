@@ -14,27 +14,24 @@ type ExtendedTrack = Track & { info: TrackInfo & SpotifyAdditions };
 
 export class Queue {
 	/**
-	 * A cache between spotify track titles and the encoded track string found from
-	 * Youtube. Usage of node-cache might be refactored to redis if there becomes a
-	 * need.
+	 * A cache between spotify track titles and the encoded track string found from Youtube. Usage of node-cache might
+	 * be refactored to redis if there becomes a need.
 	 */
 	private static spotifySongCache = new NodeCache({ stdTTL: Time.Day * Time.Second });
 
 	/**
-	 * A constant number that represents the original length of the playlist.
-	 * This is useful when determining how many tracks have been played so far.
-	 * It will be decremented if a Spotify song can not be found on Youtube.
+	 * A constant number that represents the original length of the playlist. This is useful when determining how many
+	 * tracks have been played so far. It will be decremented if a Spotify song can not be found on Youtube.
 	 */
 	public playlistLength: number;
 
 	/**
-	 * The track that is currently playing. This is undefined if there is no
-	 * track playing, obviously, and is reassigned each time a new track starts.
+	 * The track that is currently playing. This is undefined if there is no track playing, obviously, and is reassigned
+	 * each time a new track starts.
 	 */
 	public nowPlaying?: ExtendedTrack;
 
-	// `tracks` should be an array of strings, each representing a track encoded
-	// by Lavalink.
+	// `tracks` should be an array of strings, each representing a track encoded by Lavalink.
 	public constructor(public readonly game: Game, public playlist: Playlist) {
 		// Shuffle the playlist tracks in place.
 		shuffle(playlist.tracks);
@@ -50,20 +47,17 @@ export class Queue {
 	}
 
 	public async next() {
-		// This will be an info object if playing a Spotify playlist, and a
-		// string otherwise.
+		// This will be an info object if playing a Spotify playlist, and a string otherwise.
 		const nextTrack = this.playlist.tracks.pop();
 
-		// Will be the result of `node.load` if we have to search for a Spotify
-		// song. It already gives the track info, so it's better to store it
-		// instead of waste another API call to retrieve what we already have
-		// later in the code.
+		// Will be the result of `node.load` if we have to search for a Spotify song. It already gives the track info,
+		// so it's better to store it instead of waste another API call to retrieve what we already have later in the
+		// code.
 		let nextTrackFull: ExtendedTrack | undefined;
 
 		if (nextTrack) {
 			if (typeof nextTrack !== 'string') {
-				// This is what will be searched on Youtube to try to get the
-				// most accurate results.
+				// This is what will be searched on Youtube to try to get the most accurate results.
 				const displayName = `${nextTrack.name} - ${nextTrack.artist}`;
 				const cachedTrack = Queue.spotifySongCache.get<ExtendedTrack>(displayName);
 
@@ -78,8 +72,7 @@ export class Queue {
 						nextTrackFull.info.author = nextTrack.artist;
 						nextTrackFull.info.title = nextTrack.name;
 
-						// Add on some new spicy properties because we can and
-						// it would be a waste not to.
+						// Add on some new spicy properties because we can and it would be a waste not to.
 						nextTrackFull.info.color = nextTrack.color;
 						nextTrackFull.info.image = nextTrack.image;
 

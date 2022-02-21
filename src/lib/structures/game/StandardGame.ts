@@ -121,7 +121,7 @@ export class StandardGame extends Game {
 	}
 
 	/**
-	 * Processes a guess returning whether either the song name or primary artist was guessed
+	 * Processes a guess returning whether either the song name or primary artist was guessed.
 	 */
 	protected processGuess(guess: string, user: Snowflake) {
 		switch (this.acceptedAnswer) {
@@ -148,7 +148,7 @@ export class StandardGame extends Game {
 			}
 		}
 
-		// Guessing either is common to AcceptedAnswer.Either and AcceptedAnswer.Both
+		// Guessing either is common to AcceptedAnswer.Either and AcceptedAnswer.Both.
 		if (this.processArtistGuess(guess, user)) {
 			return AcceptedAnswer.Artist;
 		}

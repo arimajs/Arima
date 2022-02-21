@@ -2,14 +2,12 @@ import type { Message } from 'discord.js';
 import { PermissionFlagsBits } from 'discord-api-types/v9';
 import { Events, Listener } from '@sapphire/framework';
 
-// The `nonPrefixedMessage` listener is used instead of the base `messageCreate`
-// because, as it was made for message commands, all permission and other
-// related checks that would have to be done anyways would already be done.
+// The `nonPrefixedMessage` listener is used instead of the base `messageCreate` because, as it was made for message
+// commands, all permission and other related checks that would have to be done anyways would already be done.
 export class UserListener extends Listener<typeof Events.NonPrefixedMessage> {
 	public async run(message: Message) {
-		// We don't specify the `DirectMessages` intent, so it isn't currently
-		// possible for the message to be from a DM, but typescript needs
-		// reassurance.
+		// We don't specify the `DirectMessages` intent, so it isn't currently possible for the message to be from a DM,
+		// but typescript needs reassurance.
 		if (!message.guild) {
 			return;
 		}
@@ -20,7 +18,6 @@ export class UserListener extends Listener<typeof Events.NonPrefixedMessage> {
 		}
 
 		// One permission check that isn't done by the base listener:
-		// `message.guild.me` is guarranteed to be present by, again, the base listener
 		if (!game.textChannel.permissionsFor(message.guild.me!).has(PermissionFlagsBits.EmbedLinks)) {
 			return;
 		}
@@ -30,12 +27,12 @@ export class UserListener extends Listener<typeof Events.NonPrefixedMessage> {
 			return;
 		}
 
-		// AsyncQueues are used to prevent race conditions and ensure that
-		// guesses are processed in the order they were received.
+		// AsyncQueues are used to prevent race conditions and ensure that guesses are processed in the order they were
+		// received.
 		await game.guessQueue.wait();
 
-		// The following is encapsulated in a try...finally so that the queue
-		// won't get stuck forever if an error occurs.
+		// The following is encapsulated in a try...finally so that the queue won't get stuck forever if an error
+		// occurs.
 		try {
 			await game.guess(message);
 		} finally {

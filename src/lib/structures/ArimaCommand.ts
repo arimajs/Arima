@@ -14,8 +14,8 @@ export abstract class ArimaCommand<O extends ArimaCommand.Options = ArimaCommand
 
 		// If this command is owner only:
 		if (this.category === 'dev') {
-			// Enable it only if there is a development server on the assumption
-			// it would've been registered guild wide otherwise.
+			// Enable it only if there is a development server on the assumption it would've been registered guild wide
+			// otherwise.
 			this.enabled &&= Boolean(env.DEV_SERVER_ID);
 
 			// Automatically enable the OwnerOnly precondition.
@@ -31,11 +31,9 @@ export namespace ArimaCommand {
 	export type Registry = ApplicationCommandRegistry;
 }
 
-// This is a hacky (but perfectly safe) way to have quickly updating slash
-// commands for development. This is achieved by overriding the
-// registerChatInputCommand method and making commands guild-scoped to the dev
-// server if NODE_ENV is 'development' (which will make updates show up
-// immediately).
+// This is a hacky (but perfectly safe) way to have quickly updating slash commands for development. This is achieved by
+// overriding the registerChatInputCommand method and making commands guild-scoped to the dev server if NODE_ENV is
+// 'development' (which will make updates show up immediately).
 
 const target = 'registerChatInputCommand' as const;
 type Target = ApplicationCommandRegistry[typeof target];

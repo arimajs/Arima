@@ -1,9 +1,8 @@
 /* eslint-disable unicorn/prefer-spread */
-// The lint rule should only apply when concatenating arrays, but instead flags
-// down Collection#concat.
+// The lint rule should only apply when concatenating arrays, but instead flags down Collection#concat.
 
-import { Collection, type AutocompleteInteraction, type CommandInteraction } from 'discord.js';
-import { Piece, type Store, type ApplicationCommandRegistry } from '@sapphire/framework';
+import { Collection, type AutocompleteInteraction } from 'discord.js';
+import { Piece, type Store } from '@sapphire/framework';
 import { ArimaCommand } from '#structures/ArimaCommand';
 import { createEmbed } from '#utils/responses';
 import { Stopwatch } from '@sapphire/stopwatch';

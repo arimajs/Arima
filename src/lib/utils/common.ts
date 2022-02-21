@@ -1,5 +1,5 @@
 /**
- * Shuffles an array in place
+ * Shuffles an array in place.
  */
 export const shuffle = (array: unknown[]) => {
 	let m = array.length;

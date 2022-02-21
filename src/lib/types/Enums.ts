@@ -29,8 +29,7 @@ export enum AcceptedAnswer {
 }
 
 /**
- * Identifiers to give context to why a game has ended. Descriptions of each are
- * located where they are used.
+ * Identifiers to give context to why a game has ended. Descriptions of each are located where they are used.
  */
 export enum GameEndReason {
 	HostLeft,
@@ -43,7 +42,7 @@ export enum GameEndReason {
 }
 
 /**
- * Event types from the Lavalink `event` event we listen too (mouthful)
+ * Event types from the Lavalink `event` event we listen to (mouthful).
  */
 export enum LavalinkEvent {
 	TrackEnd = 'TrackEndEvent',

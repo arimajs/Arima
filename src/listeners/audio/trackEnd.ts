@@ -17,8 +17,7 @@ export class UserListener extends Listener {
 			await game.onTrackEnd();
 
 			for (const player of game.players.values()) {
-				// If the player is still in the voice channel (this property is
-				// turned to undefined when they leave).
+				// If the player is still in the voice channel (this property is turned to undefined when they leave).
 				if (player.lastGameEntryTime) {
 					player.songsListenedTo++;
 				}

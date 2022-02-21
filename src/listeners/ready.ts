@@ -53,9 +53,8 @@ export class UserListener extends Listener<typeof Events.ClientReady> {
 			return guild?.shard.send(packet);
 		});
 
-		// All events from `Node` should be rerouted through `client`. This is a
-		// workaround because listeners are registered before `container.audio`
-		// is populated, so we can't use it as an emitter.
+		// All events from `Node` should be rerouted through `client`. This is a workaround because listeners are
+		// registered before `container.audio` is populated, so we can't use it as an emitter.
 		this.container.audio.emit = this.client.emit.bind(this.client);
 
 		await this.container.audio.connect();
@@ -78,8 +77,8 @@ export class UserListener extends Listener<typeof Events.ClientReady> {
 
 		this.container.stats = new StatcordClient({ client: this.client, key: env.STATCORD_API_KEY });
 
-		// Register a custom counter for the amount of games being played at once.
-		// The typings require the return type to be a promise.
+		// Register a custom counter for the amount of games being played at once. The typings require the return type
+		// to be a promise.
 		await this.container.stats.registerCustomFieldHandler(1, () => Promise.resolve(this.container.games.size.toString()));
 
 		// Automatically post stats every minute.

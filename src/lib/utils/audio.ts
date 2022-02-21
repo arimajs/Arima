@@ -62,13 +62,11 @@ export type Playlist = { name: string } & (
 );
 
 /**
- * Resolve a Youtube, Bandcamp, Soundcloud, or Spotify playlist from a URL.
- * Also resolves Spotify albums and artists.
+ * Resolve a Youtube, Bandcamp, Soundcloud, or Spotify playlist from a URL. Also resolves Spotify albums and artists.
  */
 export const resolvePlaylist = async (url: string): Promise<Result<Playlist, PlaylistResolutionError>> => {
 	try {
-		// spotify-url-info validates URLs via spotify-uri, and will immediately
-		// throw an error if it's not valid.
+		// spotify-url-info validates URLs via spotify-uri, and will immediately throw an error if it's not valid.
 		const spotifyData: ResolvedSpotifyData = await getData(url);
 
 		// If there's no `tracks` property, it's a track or podcast
@@ -129,7 +127,7 @@ export const resolvePlaylist = async (url: string): Promise<Result<Playlist, Pla
 };
 
 /**
- * Resolve thumbnail from a Youtube or Spotify entity
+ * Resolve thumbnail from a Youtube or Spotify entity.
  */
 export const resolveThumbnail = (info: TrackInfo & SpotifyAdditions) => {
 	if (info.image) {
@@ -154,8 +152,7 @@ export const getBiggestImage = (images: SpotifyImage[]): string => {
 };
 
 /**
- * Generate 3 variations of the song name:
- * Stripped prefix, stripped suffix, stripped both
+ * Generate 3 variations of the song name: Stripped prefix, stripped suffix, stripped both.
  */
 export const cleanSongName = (songName: string): string[] => {
 	songName = songName.toLowerCase();
@@ -180,7 +177,7 @@ export const cleanSongName = (songName: string): string[] => {
 	return validSongVariations.map((variation) => variation.replace(/[^\p{L}\p{N}]/gu, ''));
 };
 
-// Not sure what kind of regex is appropriate for cleaning artist names yet
+// Not sure what kind of regex is appropriate for cleaning artist names yet.
 export const cleanArtistName = (artistName: string) => {
 	return artistName.toLowerCase();
 };

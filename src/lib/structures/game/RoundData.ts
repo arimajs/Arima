@@ -15,8 +15,7 @@ export class RoundData {
 		const cleanedArtistNames = artists.map<[string, Snowflake[]]>((artist) => [cleanArtistName(artist), []]);
 		this.artistGuessers = new Map(cleanedArtistNames);
 
-		// The first key and value have their own respective properties
-		// for utility purposes.
+		// The first key and value have their own respective properties for utility purposes.
 		[[this.primaryArtist, this.primaryArtistGuessers]] = cleanedArtistNames;
 	}
 }
