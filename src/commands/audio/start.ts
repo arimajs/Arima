@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/member-ordering */
-import { CommandOptionsRunTypeEnum, isErr } from '@sapphire/framework';
 import { AcceptedAnswer, PlaylistResolutionError } from '#types/Enums';
+import { CommandOptionsRunTypeEnum, isErr } from '@sapphire/framework';
 import { hideLinkEmbed, hyperlink } from '@discordjs/builders';
 import { PermissionFlagsBits } from 'discord-api-types/v9';
 import { resolvePlaylist } from '#utils/audio';

@@ -1,6 +1,6 @@
 import type { Message, Snowflake, User } from 'discord.js';
-import { resolveThumbnail } from '#utils/audio';
 import { BrandingColor, AcceptedAnswer, GameType } from '#types/Enums';
+import { resolveThumbnail } from '#utils/audio';
 import { createEmbed } from '#utils/responses';
 import { container } from '@sapphire/framework';
 import { Game } from '#game/Game';

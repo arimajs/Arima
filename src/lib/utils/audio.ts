@@ -2,7 +2,7 @@ import type { HexColorString } from 'discord.js';
 import { container, isOk, ok, err, fromAsync, type Result } from '@sapphire/framework';
 import { LoadType, type TrackInfo, type PlaylistInfo } from '@skyra/audio';
 import { getData as getSpotifyData, type Tracks } from 'spotify-url-info';
-import { PlaylistResolutionError, PlaylistType } from '../types/Enums';
+import { PlaylistResolutionError, PlaylistType } from '#types/Enums';
 import { parseURL } from '@sapphire/utilities';
 import { Time } from '@sapphire/time-utilities';
 import { URL } from 'node:url';
