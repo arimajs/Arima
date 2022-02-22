@@ -1,16 +1,10 @@
-import { Command, ApplicationCommandRegistry, type Args, type Piece } from '@sapphire/framework';
-import { PermissionFlagsBits } from 'discord-api-types/v9';
-import { Permissions, type CacheType } from 'discord.js';
+import type { CacheType } from 'discord.js';
+import { Command, ApplicationCommandRegistry, type Piece } from '@sapphire/framework';
 import { env } from '#root/config';
 
-export abstract class ArimaCommand<O extends ArimaCommand.Options = ArimaCommand.Options> extends Command<Args, O> {
-	public constructor(context: Piece.Context, options: O) {
-		super(context, {
-			// All commands use embeds and thus require this permissions
-			requiredClientPermissions: new Permissions(options.requiredClientPermissions).add(PermissionFlagsBits.EmbedLinks),
-			generateDashLessAliases: true,
-			...options
-		});
+export abstract class ArimaCommand extends Command {
+	public constructor(context: Piece.Context, options: Command.Options) {
+		super(context, options);
 
 		// If this command is owner only:
 		if (this.category === 'dev') {

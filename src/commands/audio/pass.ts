@@ -1,6 +1,7 @@
 import { inlineCode, italic, userMention } from '@discordjs/builders';
 import { CommandOptionsRunTypeEnum } from '@sapphire/framework';
 import { createEmbed, sendError } from '#utils/responses';
+import { PermissionFlagsBits } from 'discord-api-types/v9';
 import { ArimaCommand } from '#structures/ArimaCommand';
 import { ApplyOptions } from '@sapphire/decorators';
 
@@ -8,6 +9,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 	description: 'Give up on the current song! If everyone passes, the song will skip.',
 	runIn: [CommandOptionsRunTypeEnum.GuildText],
 	preconditions: [{ name: 'PlayingGame', context: { shouldBePlaying: true } }],
+	requiredClientPermissions: PermissionFlagsBits.EmbedLinks,
 	chatInputCommand: {
 		idHints: ['945127477829861416'],
 		register: true

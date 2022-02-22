@@ -13,6 +13,7 @@ import { env } from '#root/config';
 @ApplyOptions<ArimaCommand.Options>({
 	description: 'Start a new music quiz game!',
 	runIn: [CommandOptionsRunTypeEnum.GuildText],
+	requiredClientPermissions: PermissionFlagsBits.EmbedLinks,
 	preconditions: [{ name: 'PlayingGame', context: { shouldBePlaying: false } }]
 })
 export class UserCommand extends ArimaCommand {
