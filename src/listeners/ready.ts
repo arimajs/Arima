@@ -47,9 +47,9 @@ export class UserListener extends Listener<typeof Events.ClientReady> {
 
 	private async createAudioNode() {
 		this.container.games = new Collection();
-		this.container.audio = new Node(createAudioOptions(this.client), (guildId, packet) => {
+		this.container.audio = new Node(createAudioOptions(this.client), async (guildId, packet) => {
 			// https://github.com/skyra-project/audio#usage
-			const guild = this.client.guilds.cache.get(guildId);
+			const guild = await this.client.guilds.fetch(guildId).catch(() => null);
 			return guild?.shard.send(packet);
 		});
 
@@ -61,7 +61,7 @@ export class UserListener extends Listener<typeof Events.ClientReady> {
 
 		// If the bot stayed in a voice channel through a restart, leave.
 		const promises = this.client.guilds.cache.map(async (guild) => {
-			if (guild.me!.voice.channelId) {
+			if (guild.voiceStates.cache.has(this.client.user!.id)) {
 				const player = Queue.getPlayer(guild.id);
 				await Promise.all([player.leave(), player.stop()]);
 			}
