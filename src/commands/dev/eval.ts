@@ -1,6 +1,6 @@
-import { BrandingColor } from '#types/Enums';
 import { ArimaCommand } from '#structures/ArimaCommand';
 import { createEmbed } from '#utils/responses';
+import { EmbedColor } from '#types/Enums';
 import { isThenable } from '@sapphire/utilities';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { codeBlock } from '@discordjs/builders';
@@ -26,7 +26,7 @@ export class UserCommand extends ArimaCommand {
 		const embedLimitReached = output.length > 4096;
 		const embed = createEmbed(
 			embedLimitReached ? 'Output was too long! The result has been sent as a file.' : output,
-			success ? BrandingColor.Primary : BrandingColor.Error
+			success ? EmbedColor.Primary : EmbedColor.Error
 		);
 
 		embed

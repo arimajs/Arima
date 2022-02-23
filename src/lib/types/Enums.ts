@@ -71,7 +71,7 @@ export enum PlaylistResolutionError {
 /**
  * Colors to be used for embeds.
  */
-export enum BrandingColor {
+export enum EmbedColor {
 	/**
 	 * Used for direct responses.
 	 */

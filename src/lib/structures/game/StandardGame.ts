@@ -1,5 +1,5 @@
 import type { Message, Snowflake, User } from 'discord.js';
-import { BrandingColor, AcceptedAnswer, GameType } from '#types/Enums';
+import { EmbedColor, AcceptedAnswer, GameType } from '#types/Enums';
 import { cleanName, resolveThumbnail } from '#utils/audio';
 import { createEmbed } from '#utils/responses';
 import { container } from '@sapphire/framework';
@@ -102,7 +102,7 @@ export class StandardGame extends Game {
 
 		const { title, author, uri, color } = nowPlaying!.info;
 
-		const embed = createEmbed(embedDescription, BrandingColor.Secondary)
+		const embed = createEmbed(embedDescription, EmbedColor.Secondary)
 			.setURL(uri)
 			.setTitle(`That was "${title}" by ${author}`)
 			.addField('Leaderboard', this.leaderboard.compute())
