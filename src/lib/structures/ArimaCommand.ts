@@ -1,9 +1,9 @@
 import type { CacheType } from 'discord.js';
-import { Command, ApplicationCommandRegistry, type Piece } from '@sapphire/framework';
+import { Command, ApplicationCommandRegistry, type Piece, type ChatInputCommand } from '@sapphire/framework';
 import { env } from '#root/config';
 
 export abstract class ArimaCommand extends Command {
-	public constructor(context: Piece.Context, options: Command.Options) {
+	public constructor(context: Piece.Context, options: ChatInputCommand.Options) {
 		super(context, options);
 
 		// If this command is owner only:
@@ -16,13 +16,16 @@ export abstract class ArimaCommand extends Command {
 			this.preconditions.append('OwnerOnly');
 		}
 	}
+
+	// This is already present Command, but is marked as optional.
+	public abstract override chatInputRun(interaction: ChatInputCommand.Interaction, context: ChatInputCommand.RunContext): unknown;
 }
 
 export namespace ArimaCommand {
 	// Convenience type to save imports.
-	export type Options = Command.Options;
+	export type Options = ChatInputCommand.Options;
 	export type Interaction<Cache extends CacheType = CacheType> = Command.ChatInputInteraction<Cache>;
-	export type Registry = ApplicationCommandRegistry;
+	export type Registry = ChatInputCommand.Registry;
 }
 
 // This is a hacky (but perfectly safe) way to have quickly updating slash commands for development. This is achieved by
