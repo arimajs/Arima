@@ -1,6 +1,6 @@
 import type { Message, Snowflake, User } from 'discord.js';
 import { BrandingColor, AcceptedAnswer, GameType } from '#types/Enums';
-import { resolveThumbnail } from '#utils/audio';
+import { cleanName, resolveThumbnail } from '#utils/audio';
 import { createEmbed } from '#utils/responses';
 import { container } from '@sapphire/framework';
 import { Game } from '#game/Game';
@@ -9,7 +9,7 @@ export class StandardGame extends Game {
 	public readonly gameType = GameType.Standard;
 
 	public async guess(message: Message) {
-		const guess = message.content.toLowerCase();
+		const guess = cleanName(message.content);
 		const guessedBefore = this.guessedThisRound();
 		const guessedNow = this.processGuess(guess, message.author.id);
 

@@ -167,29 +167,57 @@ export const getBiggestImage = (images: SpotifyImage[]): string => {
  * Generate 3 variations of the song name: Stripped prefix, stripped suffix, stripped both.
  */
 export const cleanSongName = (songName: string): string[] => {
-	songName = songName.toLowerCase();
+	const normalized = convertToNormalized(songName);
 
 	// "Blank Space - Taylor Swift" -> "Blank Space"
 	// "Blank Space (Lyric Video)" -> "Blank Space"
-	const songWithoutSuffix = songName.replace(/\s*\(.*|\s*- .*/, '');
+	const songWithoutSuffix = normalized.replace(/\s*\(.*|\s*- .*/, '');
 
 	// "Taylor Swift  -  Blank Space" -> "Blank Space"
-	const songWithoutPrefix = songName.replace(/.* -\s*/, '');
+	const songWithoutPrefix = normalized.replace(/.* -\s*/, '');
 
 	// Applies both of the above, one at a time.
 	// "Taylor Swift - Blank Space (Lyrics Video)" -> "Blank Space"
-	let songWithoutSuffixAndPrefix = songName;
+	let songWithoutSuffixAndPrefix = normalized;
 	songWithoutSuffixAndPrefix = songWithoutSuffixAndPrefix.replace(/.* -\s*/, '');
 	songWithoutSuffixAndPrefix = songWithoutSuffixAndPrefix.replace(/\s*\(.*|\s*- .*/, '');
 
 	// Try a bunch of different variations to try to match the most accurate track name.
-	const validSongVariations = [...[songWithoutSuffixAndPrefix, songWithoutPrefix, songWithoutSuffix].filter((str) => str !== songName), songName];
+	const validSongVariations = [
+		...[songWithoutSuffixAndPrefix, songWithoutPrefix, songWithoutSuffix].filter((str) => str !== normalized),
+		normalized
+	];
 
-	// Remove all characters that aren't letters or numbers from all variations. It's drastic, but highly increases accuracy.
-	return validSongVariations.map((variation) => variation.replace(/[^\p{L}\p{N}]/gu, ''));
+	return validSongVariations.map((variation) => convertToAlphaNumeric(variation));
 };
 
-// Not sure what kind of regex is appropriate for cleaning artist names yet.
+/**
+ * Currently just calls {@link cleanName}, but logic specific to artist names may be added in the future.
+ */
 export const cleanArtistName = (artistName: string) => {
-	return artistName.toLowerCase();
+	return cleanName(artistName);
+};
+
+/**
+ * Remove all characters that aren't letters or numbers from a string in any language.
+ * @example convertToAlphaNumeric('A ticket to 大阪 costs ¥2000 👌.'); // Aticketto大阪costs2000
+ */
+export const convertToAlphaNumeric = (str: string) => {
+	// https://unicode.org/reports/tr18/#General_Category_Property
+	return str.replace(/[^\p{L}\p{N}]/gu, '');
+};
+
+/**
+ * Converts a string to lowercase and normalizes it using the NFKD Unicode Normalization Form.
+ * @example convertToNormalized('ａｂｃＡＢＣ'); // abcabc
+ */
+export const convertToNormalized = (str: string) => {
+	return str.normalize('NFKD').toLowerCase();
+};
+
+/**
+ * Combination of {@link convertToAlphaNumeric} and {@link convertToNormalized}.
+ */
+export const cleanName = (str: string) => {
+	return convertToAlphaNumeric(convertToNormalized(str));
 };
