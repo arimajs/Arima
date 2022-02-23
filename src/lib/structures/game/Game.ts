@@ -4,6 +4,7 @@ import type { Playlist } from '#utils/audio';
 import { PlaylistType, AcceptedAnswer, GameEndReason, type GameType } from '#types/Enums';
 import { bold, inlineCode, italic, userMention } from '@discordjs/builders';
 import { DurationFormatter, Time } from '@sapphire/time-utilities';
+import { prefixAndPluralize } from '#utils/common';
 import { UseRequestContext } from '#utils/decorators';
 import { StreakCounter } from '#game/StreakCounter';
 import { jaroWinkler } from '@skyra/jaro-winkler';
@@ -189,9 +190,10 @@ export abstract class Game {
 
 				const rankedUp = originalRank !== member.rank;
 				if (reason !== GameEndReason.TextChannelDeleted && (songsGuessedCorrectly || rankedUp)) {
-					let content = `${userMention(player.id)}, thanks for playing! You listened to ${
+					let content = `${userMention(player.id)}, thanks for playing! You listened to ${prefixAndPluralize(
+						'song',
 						player.songsListenedTo
-					} songs, guessed ${songsGuessedCorrectly} of them correctly, `;
+					)}, guessed ${songsGuessedCorrectly} of them correctly, `;
 
 					content +=
 						originalLevel === member.level
