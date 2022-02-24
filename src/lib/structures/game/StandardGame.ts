@@ -76,6 +76,11 @@ export class StandardGame extends Game {
 				this.streaks.incStreak(...guessers.map(({ id }) => id));
 
 				embedDescription = `${doubleGuesser ? guessers[0] : guessers.join(' and ')} guessed it!`;
+			} else {
+				const guessedThisRound = this.guessedThisRound();
+				if (guessedThisRound) {
+					embedDescription = `Only the ${guessedThisRound} was guessed! 🙁`;
+				}
 			}
 
 			const [streakLeaderId, streak] = this.streaks.leader ?? [];
@@ -84,11 +89,6 @@ export class StandardGame extends Game {
 			const streakLeader = streak && guessers.find(({ id }) => id === streakLeaderId);
 			if (streakLeader) {
 				embedFooter += ` • ${streakLeader.tag} has a streak of ${streak} 🔥`;
-			}
-
-			const guessedThisRound = this.guessedThisRound();
-			if (guessedThisRound) {
-				embedDescription = `Only the ${guessedThisRound} was guessed! 🙁`;
 			}
 		}
 
