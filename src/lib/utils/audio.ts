@@ -160,7 +160,7 @@ export const resolveThumbnail = (info: TrackInfo & SpotifyAdditions) => {
 export const getBiggestImage = (images: SpotifyImage[]): string => {
 	// Array#reduce is actually more performant than #sort in this situation.
 	// eslint-disable-next-line unicorn/no-array-reduce
-	return images.reduce((a, b) => (a > b ? a : b)).url;
+	return images.reduce((a, b) => (a.width > b.width ? a : b)).url;
 };
 
 /**
