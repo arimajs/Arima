@@ -4,7 +4,7 @@ import { cleanSongName, cleanArtistName } from '#utils/audio';
 export class RoundData {
 	public readonly songGuessers: Snowflake[] = [];
 	public readonly validSongVariations: string[];
-	public readonly artistGuessers: Map<string, Snowflake[]>;
+	public readonly artistGuessers: ReadonlyMap<string, Snowflake[]>;
 	public readonly primaryArtistGuessers: Snowflake[];
 	public readonly primaryArtist: string;
 	public readonly passedPlayers = new Set<Snowflake>();
