@@ -66,7 +66,8 @@ const sweepers: SweeperOptions = {
 
 export const clientOptions: ClientOptions = {
 	// Intents dictate what events the client will receive.
-	intents: GatewayIntentBits.Guilds | GatewayIntentBits.GuildMessages | GatewayIntentBits.GuildVoiceStates,
+	intents: GatewayIntentBits.Guilds | GatewayIntentBits.GuildMessages | GatewayIntentBits.GuildVoiceStates | GatewayIntentBits.DirectMessages,
+	partials: ['CHANNEL'], // required to receive DMs
 	logger: { level: env.isProduction ? LogLevel.Info : LogLevel.Debug },
 	loadDefaultErrorListeners: false,
 	// "Message Command" listeners include the one used to receive game guesses.

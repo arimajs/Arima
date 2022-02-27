@@ -1,9 +1,11 @@
-import type { Message, Snowflake, User } from 'discord.js';
+import { Collection, type DMChannel, GuildMember, Message, PartialDMChannel, Snowflake, TextChannel, User } from 'discord.js';
 import { EmbedColor, AcceptedAnswer, GameType } from '#types/Enums';
 import { cleanName, resolveThumbnail } from '#utils/audio';
 import { createEmbed } from '#utils/responses';
 import { container } from '@sapphire/framework';
-import { Game } from '#game/Game';
+import { Game, Player } from '#game/Game';
+import { PermissionFlagsBits } from 'discord-api-types/v9';
+import { isTextChannel } from '@sapphire/discord.js-utilities';
 
 export class StandardGame extends Game {
 	public readonly gameType = GameType.Standard;
@@ -40,10 +42,9 @@ export class StandardGame extends Game {
 
 	public async onTrackEnd() {
 		const everybodyPassed = this.round.passedPlayers.size === this.players.size;
-
 		const { tracksPlayed, playlistLength, nowPlaying } = this.queue;
 		let embedFooter = `${tracksPlayed}/${playlistLength}`;
-		let embedDescription = everybodyPassed ? 'Everybody passed! 🏃‍♂️' : 'Nobody got it! 🙁';
+		let embedDescription = everybodyPassed ? 'Everybody passed! 🏃' : 'Nobody got it! 🙁';
 
 		if (!everybodyPassed) {
 			const { songGuessers, primaryArtistGuessers } = this.round;
@@ -120,6 +121,22 @@ export class StandardGame extends Game {
 		await this.textChannel.send({ embeds: [embed] });
 	}
 
+	public validGuessChannel(channel: TextChannel | DMChannel | PartialDMChannel) {
+		if (!isTextChannel(channel)) {
+			return false;
+		}
+		return this.textChannel.id === channel.id && this.textChannel.permissionsFor(channel.guild.me!).has(PermissionFlagsBits.EmbedLinks);
+	}
+
+	protected calcPointsDivisor(songsListenedTo: number) {
+		return songsListenedTo;
+	}
+
+	protected getPlayers(vcMembers: Collection<string, GuildMember>) {
+		const basePlayer: Omit<Player, 'id'> = { lastGameEntryTime: Date.now(), totalPlayTime: 0, songsListenedTo: 0 };
+		return new Collection(vcMembers.map<[Snowflake, Player]>((member) => [member.id, { ...basePlayer, id: member.id }]));
+	}
+
 	/**
 	 * Processes a guess returning whether either the song name or primary artist was guessed.
 	 */
@@ -130,7 +147,7 @@ export class StandardGame extends Game {
 			}
 
 			case AcceptedAnswer.Artist: {
-				return this.processArtistGuess(guess, user) ? AcceptedAnswer.Artist : null;
+				return this.processArtistGuess(guess, user) === this.round.primaryArtist ? AcceptedAnswer.Artist : null;
 			}
 
 			case AcceptedAnswer.Either: {
@@ -143,7 +160,7 @@ export class StandardGame extends Game {
 					return this.processArtistGuess(guess, user) ? AcceptedAnswer.Artist : null;
 				}
 
-				// If neither is already guessed, guess both.
+				// If neither is already guessed, guess either.
 				break;
 			}
 		}

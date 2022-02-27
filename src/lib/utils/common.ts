@@ -56,3 +56,20 @@ export const rankToString = (rank: number) => {
 export const toPercent = (decimal: number) => {
 	return `${(decimal * 100).toFixed(2)}%`;
 };
+
+/**
+ * Returns the first numDuplicates earliest duplicates in an array, in order
+ * If there aren't that many duplicates, return all duplicates (can be empty array)
+ */
+export const getDuplicates = <Type>(array: Type[]): Type[] => {
+	// Set.has is O(1), so use Sets
+	const seenElements = new Set<Type>();
+	const duplicates = new Set<Type>();
+	for (const elem of array) {
+		if (seenElements.has(elem)) {
+			duplicates.add(elem);
+		}
+		seenElements.add(elem);
+	}
+	return [...duplicates];
+};

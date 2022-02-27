@@ -15,7 +15,8 @@ export enum Rank {
  * Enum to identify what type of game is being played. Currently there's only one...
  */
 export enum GameType {
-	Standard = 'standard'
+	Standard = 'standard',
+	Binb = 'binb'
 }
 
 /**

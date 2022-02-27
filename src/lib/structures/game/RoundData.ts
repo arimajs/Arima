@@ -8,6 +8,7 @@ export class RoundData {
 	public readonly primaryArtistGuessers: Snowflake[];
 	public readonly primaryArtist: string;
 	public readonly passedPlayers = new Set<Snowflake>();
+	public readonly startTime: number;
 
 	public constructor(song: string, artists: string[]) {
 		this.validSongVariations = cleanSongName(song);
@@ -17,5 +18,7 @@ export class RoundData {
 
 		// The first key and value have their own respective properties for utility purposes.
 		[[this.primaryArtist, this.primaryArtistGuessers]] = cleanedArtistNames;
+
+		this.startTime = Date.now();
 	}
 }
