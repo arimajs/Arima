@@ -1191,15 +1191,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mikro-orm/core@npm:^5.0.4":
-  version: 5.0.4
-  resolution: "@mikro-orm/core@npm:5.0.4"
+"@mikro-orm/core@npm:^5.0.5":
+  version: 5.0.5
+  resolution: "@mikro-orm/core@npm:5.0.5"
   dependencies:
     dotenv: 16.0.0
     escaya: 0.0.61
-    fs-extra: 10.0.0
+    fs-extra: 10.0.1
     globby: 11.0.4
-    mikro-orm: ^5.0.3
+    mikro-orm: 5.0.5
     reflect-metadata: 0.1.13
   peerDependencies:
     "@mikro-orm/better-sqlite": ^5.0.0
@@ -1230,13 +1230,13 @@ __metadata:
       optional: true
     "@mikro-orm/sqlite":
       optional: true
-  checksum: d04044313f13ce531894301c591634abe4f8b7d77c2237d92ec6a2b412851419a856d82193c9d483afcf133a2d3810f2340a909d78c3b064113c9b8de2028fff
+  checksum: b483d1020c791f03e97831a278b22eeea82825fc888ff3c0f9e652da548af4f4c46e53b762f4cff012acf0214bff22c8aecc8abd949cfd2cb8fb70587556d662
   languageName: node
   linkType: hard
 
-"@mikro-orm/mongodb@npm:^5.0.4":
-  version: 5.0.4
-  resolution: "@mikro-orm/mongodb@npm:5.0.4"
+"@mikro-orm/mongodb@npm:^5.0.5":
+  version: 5.0.5
+  resolution: "@mikro-orm/mongodb@npm:5.0.5"
   dependencies:
     bson: ^4.6.1
     mongodb: 4.4.0
@@ -1252,7 +1252,7 @@ __metadata:
       optional: true
     "@mikro-orm/seeder":
       optional: true
-  checksum: d93dcf6ff27ed99e3ad8d6d50f21609540a073caa80d130c27974e21d47d51fe0ad26ec285a4780339c8e7722037f9789f678abf6cdc5a31df762f9ea61f9a78
+  checksum: f7d788210920b84547462a8d518772baaeb1a37b1852dc1e08a01575632414f73bbe65a3ce31f59324906d00a76a8da01e2d3f1ef8ca3cee9a3bc20ea61fb133
   languageName: node
   linkType: hard
 
@@ -1634,140 +1634,140 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swc/core-android-arm-eabi@npm:1.2.145":
-  version: 1.2.145
-  resolution: "@swc/core-android-arm-eabi@npm:1.2.145"
+"@swc/core-android-arm-eabi@npm:1.2.146":
+  version: 1.2.146
+  resolution: "@swc/core-android-arm-eabi@npm:1.2.146"
   bin:
     swcx: swc
   conditions: os=android & cpu=arm
   languageName: node
   linkType: hard
 
-"@swc/core-android-arm64@npm:1.2.145":
-  version: 1.2.145
-  resolution: "@swc/core-android-arm64@npm:1.2.145"
+"@swc/core-android-arm64@npm:1.2.146":
+  version: 1.2.146
+  resolution: "@swc/core-android-arm64@npm:1.2.146"
   bin:
     swcx: swc
   conditions: os=android & cpu=arm64
   languageName: node
   linkType: hard
 
-"@swc/core-darwin-arm64@npm:1.2.145":
-  version: 1.2.145
-  resolution: "@swc/core-darwin-arm64@npm:1.2.145"
+"@swc/core-darwin-arm64@npm:1.2.146":
+  version: 1.2.146
+  resolution: "@swc/core-darwin-arm64@npm:1.2.146"
   bin:
     swcx: swc
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@swc/core-darwin-x64@npm:1.2.145":
-  version: 1.2.145
-  resolution: "@swc/core-darwin-x64@npm:1.2.145"
+"@swc/core-darwin-x64@npm:1.2.146":
+  version: 1.2.146
+  resolution: "@swc/core-darwin-x64@npm:1.2.146"
   bin:
     swcx: swc
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@swc/core-freebsd-x64@npm:1.2.145":
-  version: 1.2.145
-  resolution: "@swc/core-freebsd-x64@npm:1.2.145"
+"@swc/core-freebsd-x64@npm:1.2.146":
+  version: 1.2.146
+  resolution: "@swc/core-freebsd-x64@npm:1.2.146"
   bin:
     swcx: swc
   conditions: os=freebsd & cpu=x64
   languageName: node
   linkType: hard
 
-"@swc/core-linux-arm-gnueabihf@npm:1.2.145":
-  version: 1.2.145
-  resolution: "@swc/core-linux-arm-gnueabihf@npm:1.2.145"
+"@swc/core-linux-arm-gnueabihf@npm:1.2.146":
+  version: 1.2.146
+  resolution: "@swc/core-linux-arm-gnueabihf@npm:1.2.146"
   bin:
     swcx: swc
   conditions: os=linux & cpu=arm
   languageName: node
   linkType: hard
 
-"@swc/core-linux-arm64-gnu@npm:1.2.145":
-  version: 1.2.145
-  resolution: "@swc/core-linux-arm64-gnu@npm:1.2.145"
+"@swc/core-linux-arm64-gnu@npm:1.2.146":
+  version: 1.2.146
+  resolution: "@swc/core-linux-arm64-gnu@npm:1.2.146"
   bin:
     swcx: swc
   conditions: os=linux & cpu=arm64
   languageName: node
   linkType: hard
 
-"@swc/core-linux-arm64-musl@npm:1.2.145":
-  version: 1.2.145
-  resolution: "@swc/core-linux-arm64-musl@npm:1.2.145"
+"@swc/core-linux-arm64-musl@npm:1.2.146":
+  version: 1.2.146
+  resolution: "@swc/core-linux-arm64-musl@npm:1.2.146"
   bin:
     swcx: swc
   conditions: os=linux & cpu=arm64
   languageName: node
   linkType: hard
 
-"@swc/core-linux-x64-gnu@npm:1.2.145":
-  version: 1.2.145
-  resolution: "@swc/core-linux-x64-gnu@npm:1.2.145"
+"@swc/core-linux-x64-gnu@npm:1.2.146":
+  version: 1.2.146
+  resolution: "@swc/core-linux-x64-gnu@npm:1.2.146"
   bin:
     swcx: swc
   conditions: os=linux & cpu=x64
   languageName: node
   linkType: hard
 
-"@swc/core-linux-x64-musl@npm:1.2.145":
-  version: 1.2.145
-  resolution: "@swc/core-linux-x64-musl@npm:1.2.145"
+"@swc/core-linux-x64-musl@npm:1.2.146":
+  version: 1.2.146
+  resolution: "@swc/core-linux-x64-musl@npm:1.2.146"
   bin:
     swcx: swc
   conditions: os=linux & cpu=x64
   languageName: node
   linkType: hard
 
-"@swc/core-win32-arm64-msvc@npm:1.2.145":
-  version: 1.2.145
-  resolution: "@swc/core-win32-arm64-msvc@npm:1.2.145"
+"@swc/core-win32-arm64-msvc@npm:1.2.146":
+  version: 1.2.146
+  resolution: "@swc/core-win32-arm64-msvc@npm:1.2.146"
   bin:
     swcx: swc.exe
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@swc/core-win32-ia32-msvc@npm:1.2.145":
-  version: 1.2.145
-  resolution: "@swc/core-win32-ia32-msvc@npm:1.2.145"
+"@swc/core-win32-ia32-msvc@npm:1.2.146":
+  version: 1.2.146
+  resolution: "@swc/core-win32-ia32-msvc@npm:1.2.146"
   bin:
     swcx: swc.exe
   conditions: os=win32 & cpu=ia32
   languageName: node
   linkType: hard
 
-"@swc/core-win32-x64-msvc@npm:1.2.145":
-  version: 1.2.145
-  resolution: "@swc/core-win32-x64-msvc@npm:1.2.145"
+"@swc/core-win32-x64-msvc@npm:1.2.146":
+  version: 1.2.146
+  resolution: "@swc/core-win32-x64-msvc@npm:1.2.146"
   bin:
     swcx: swc.exe
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
-"@swc/core@npm:^1.2.145":
-  version: 1.2.145
-  resolution: "@swc/core@npm:1.2.145"
+"@swc/core@npm:^1.2.146":
+  version: 1.2.146
+  resolution: "@swc/core@npm:1.2.146"
   dependencies:
-    "@swc/core-android-arm-eabi": 1.2.145
-    "@swc/core-android-arm64": 1.2.145
-    "@swc/core-darwin-arm64": 1.2.145
-    "@swc/core-darwin-x64": 1.2.145
-    "@swc/core-freebsd-x64": 1.2.145
-    "@swc/core-linux-arm-gnueabihf": 1.2.145
-    "@swc/core-linux-arm64-gnu": 1.2.145
-    "@swc/core-linux-arm64-musl": 1.2.145
-    "@swc/core-linux-x64-gnu": 1.2.145
-    "@swc/core-linux-x64-musl": 1.2.145
-    "@swc/core-win32-arm64-msvc": 1.2.145
-    "@swc/core-win32-ia32-msvc": 1.2.145
-    "@swc/core-win32-x64-msvc": 1.2.145
+    "@swc/core-android-arm-eabi": 1.2.146
+    "@swc/core-android-arm64": 1.2.146
+    "@swc/core-darwin-arm64": 1.2.146
+    "@swc/core-darwin-x64": 1.2.146
+    "@swc/core-freebsd-x64": 1.2.146
+    "@swc/core-linux-arm-gnueabihf": 1.2.146
+    "@swc/core-linux-arm64-gnu": 1.2.146
+    "@swc/core-linux-arm64-musl": 1.2.146
+    "@swc/core-linux-x64-gnu": 1.2.146
+    "@swc/core-linux-x64-musl": 1.2.146
+    "@swc/core-win32-arm64-msvc": 1.2.146
+    "@swc/core-win32-ia32-msvc": 1.2.146
+    "@swc/core-win32-x64-msvc": 1.2.146
   dependenciesMeta:
     "@swc/core-android-arm-eabi":
       optional: true
@@ -1795,7 +1795,7 @@ __metadata:
       optional: true
     "@swc/core-win32-x64-msvc":
       optional: true
-  checksum: c34ff054cb4af53966c9607ba60180e2c653cc7a093f3511174462e072ebc41b4bd698f522330cc1de84f05f3f20e21152cef3d661a3361a3a49ff8cf84f357e
+  checksum: 9dae149a2a28cfccef8eaab59fa776ca20c6070c7aaaec60e55cfc7d17d514580bb6173de7d069ecf44f1dcec3a193f4f19d89e70df759ffc77b67f449b75630
   languageName: node
   linkType: hard
 
@@ -2563,8 +2563,8 @@ __metadata:
     "@commitlint/cli": ^16.2.1
     "@commitlint/config-conventional": ^16.2.1
     "@discordjs/builders": 0.12.0
-    "@mikro-orm/core": ^5.0.4
-    "@mikro-orm/mongodb": ^5.0.4
+    "@mikro-orm/core": ^5.0.5
+    "@mikro-orm/mongodb": ^5.0.5
     "@sapphire/async-queue": ^1.2.0
     "@sapphire/decorators": ^4.2.5
     "@sapphire/discord.js-utilities": ^4.8.1
@@ -2579,7 +2579,7 @@ __metadata:
     "@sapphire/utilities": ^3.3.0
     "@skyra/audio": ^2.0.0
     "@skyra/jaro-winkler": ^1.0.0
-    "@swc/core": ^1.2.145
+    "@swc/core": ^1.2.146
     "@swc/jest": ^0.2.20
     "@types/jest": ^27.4.1
     "@types/node": ^17.0.21
@@ -4565,7 +4565,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fs-extra@npm:10.0.0, fs-extra@npm:^10.0.0":
+"fs-extra@npm:10.0.1":
+  version: 10.0.1
+  resolution: "fs-extra@npm:10.0.1"
+  dependencies:
+    graceful-fs: ^4.2.0
+    jsonfile: ^6.0.1
+    universalify: ^2.0.0
+  checksum: c1faaa5eb9e1c5c7c7ff09f966e93922ecb068ae1b04801cfc983ef05fcc1f66bfbb8d8d0b745c910014c7a2e7317fb6cf3bfe7390450c1157e3cc1a218f221d
+  languageName: node
+  linkType: hard
+
+"fs-extra@npm:^10.0.0":
   version: 10.0.0
   resolution: "fs-extra@npm:10.0.0"
   dependencies:
@@ -6315,10 +6326,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mikro-orm@npm:^5.0.3":
-  version: 5.0.3
-  resolution: "mikro-orm@npm:5.0.3"
-  checksum: 313dc48007f78d8ffd6b261d4b988753ecaaf0a0bb2071cb526967f8c13dac1cc2fedd36d4c2031ce1108b0303c3b0e2fde73c7dbe7eeef4fa72654acc3718d1
+"mikro-orm@npm:5.0.5":
+  version: 5.0.5
+  resolution: "mikro-orm@npm:5.0.5"
+  checksum: 67fc3af05388b3454bd9e464147767d3e5a9178d72ceebe03c7ed0031e1baa9a380f5f8aa325f9e7a85048d94517c6a2c047aa4a4e01b8d959304e64192d3e9a
   languageName: node
   linkType: hard
 
