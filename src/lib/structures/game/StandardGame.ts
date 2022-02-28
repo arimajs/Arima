@@ -1,10 +1,9 @@
-import { Collection, GuildMember, Message, Snowflake, TextBasedChannel } from 'discord.js';
+import { Collection, GuildMember, Message, Snowflake, TextBasedChannel, TextChannel } from 'discord.js';
 import { EmbedColor, AcceptedAnswer, GameType } from '#types/Enums';
 import { cleanName, resolveThumbnail } from '#utils/audio';
 import { createEmbed } from '#utils/responses';
 import { Game, Player } from '#game/Game';
 import { PermissionFlagsBits } from 'discord-api-types/v9';
-import { isTextChannel } from '@sapphire/discord.js-utilities';
 import { bold, userMention } from '@discordjs/builders';
 
 export class StandardGame extends Game {
@@ -119,10 +118,8 @@ export class StandardGame extends Game {
 	}
 
 	public validGuessChannel(channel: TextBasedChannel) {
-		if (!isTextChannel(channel)) {
-			return false;
-		}
-		return this.textChannel.id === channel.id && this.textChannel.permissionsFor(channel.guild.me!).has(PermissionFlagsBits.EmbedLinks);
+		const textChannel = channel as TextChannel;
+		return this.textChannel.id === channel.id && this.textChannel.permissionsFor(textChannel.guild.me!).has(PermissionFlagsBits.EmbedLinks);
 	}
 
 	protected calcPointsDivisor(songsListenedTo: number) {
