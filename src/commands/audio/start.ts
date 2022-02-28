@@ -4,13 +4,11 @@ import { CommandOptionsRunTypeEnum, isErr } from '@sapphire/framework';
 import { hideLinkEmbed, hyperlink } from '@discordjs/builders';
 import { PermissionFlagsBits } from 'discord-api-types/v9';
 import { resolvePlaylist } from '#utils/audio';
-import { StandardGame } from '#game/StandardGame';
 import { ArimaCommand } from '#structures/ArimaCommand';
 import { ApplyOptions } from '@sapphire/decorators';
 import { sendError } from '#utils/responses';
 import { env } from '#root/config';
-import { BinbGame } from '#root/lib/structures/game/BinbGame';
-import type { Game } from '#root/lib/structures/game/Game';
+import { Games, type GameData } from '#game/Game';
 
 @ApplyOptions<ArimaCommand.Options>({
 	description: 'Start a new music quiz game!',
@@ -62,7 +60,7 @@ export class UserCommand extends ArimaCommand {
 		}
 
 		const gameType = (interaction.options.getString('gametype') as GameType) ?? GameType.Standard;
-		const gameData = {
+		const gameData: GameData = {
 			host: interaction.user,
 			playlist: result.value,
 			textChannel: interaction.channel!,
@@ -71,16 +69,8 @@ export class UserCommand extends ArimaCommand {
 			goal: goal ?? undefined,
 			limit: limit ?? undefined
 		};
-		let game: Game;
-		switch (gameType) {
-			case GameType.Standard:
-				game = new StandardGame(gameData);
-				break;
 
-			case GameType.Binb:
-				game = new BinbGame(gameData);
-				break;
-		}
+		const game = new Games[gameType](gameData);
 
 		await game.queue.player.join(channel.id, { deaf: true });
 		await game.start(interaction);
@@ -105,8 +95,8 @@ export class UserCommand extends ArimaCommand {
 							.setName('gametype')
 							.setDescription('The game format to play! (Optional)')
 							.addChoices([
-								['Standard', GameType.Standard],
-								['Binb', GameType.Binb]
+								['Trivia in this channel (Default)', GameType.Standard],
+								['Competitive in DMs', GameType.Binb]
 							])
 							.setRequired(false)
 					)

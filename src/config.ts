@@ -1,7 +1,7 @@
 import type { Options as MikroOptions } from '@mikro-orm/core';
 import type { MongoDriver } from '@mikro-orm/mongodb';
 import type { NodeOptions } from '@skyra/audio';
-import { Options, type Client, type ClientOptions, type CacheFactory, type SweeperOptions } from 'discord.js';
+import { Options, type Client, type ClientOptions, type CacheFactory, type SweeperOptions, Constants } from 'discord.js';
 import { cleanEnv, str, port } from 'envalid';
 import { container, LogLevel } from '@sapphire/framework';
 import { GatewayIntentBits } from 'discord-api-types/v9';
@@ -67,7 +67,7 @@ const sweepers: SweeperOptions = {
 export const clientOptions: ClientOptions = {
 	// Intents dictate what events the client will receive.
 	intents: GatewayIntentBits.Guilds | GatewayIntentBits.GuildMessages | GatewayIntentBits.GuildVoiceStates | GatewayIntentBits.DirectMessages,
-	partials: ['CHANNEL'], // required to receive DMs
+	partials: [Constants.PartialTypes.CHANNEL], // required to receive DMs
 	logger: { level: env.isProduction ? LogLevel.Info : LogLevel.Debug },
 	loadDefaultErrorListeners: false,
 	// "Message Command" listeners include the one used to receive game guesses.

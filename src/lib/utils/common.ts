@@ -58,13 +58,13 @@ export const toPercent = (decimal: number) => {
 };
 
 /**
- * Returns the first numDuplicates earliest duplicates in an array, in order
- * If there aren't that many duplicates, return all duplicates (can be empty array)
+ * @returns an array of elements that have duplicate entries in the passed array
+ * @param array
  */
-export const getDuplicates = <Type>(array: Type[]): Type[] => {
+export const getDuplicates = <T>(array: readonly T[]): T[] => {
 	// Set.has is O(1), so use Sets
-	const seenElements = new Set<Type>();
-	const duplicates = new Set<Type>();
+	const seenElements = new Set<T>();
+	const duplicates = new Set<T>();
 	for (const elem of array) {
 		if (seenElements.has(elem)) {
 			duplicates.add(elem);

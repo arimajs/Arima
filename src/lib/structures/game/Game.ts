@@ -7,14 +7,12 @@ import type {
 	VoiceChannel,
 	MessageOptions,
 	Message,
-	TextChannel,
-	DMChannel,
-	PartialDMChannel,
-	GuildMember
+	GuildMember,
+	TextBasedChannel
 } from 'discord.js';
 import type { RoundData } from '#game/RoundData';
 import type { Playlist } from '#utils/audio';
-import { PlaylistType, AcceptedAnswer, GameEndReason, type GameType } from '#types/Enums';
+import { PlaylistType, AcceptedAnswer, GameEndReason, GameType } from '#types/Enums';
 import { bold, inlineCode, italic, userMention } from '@discordjs/builders';
 import { DurationFormatter, Time } from '@sapphire/time-utilities';
 import { prefixAndPluralize } from '#utils/common';
@@ -27,6 +25,8 @@ import { AsyncQueue } from '@sapphire/async-queue';
 import { container } from '@sapphire/framework';
 import { Queue } from '#game/Queue';
 import { Collection } from 'discord.js';
+import { StandardGame } from '#game/StandardGame';
+import { BinbGame } from '#game/BinbGame';
 
 export interface GameData {
 	textChannel: GuildTextBasedChannel;
@@ -46,6 +46,11 @@ export interface Player {
 	id: Snowflake;
 }
 
+export const Games = {
+	[GameType.Standard]: StandardGame,
+	[GameType.Binb]: BinbGame
+};
+
 // Might be changed in the future after more testing.
 const kGuessThreshold = 0.75 as const;
 const durationFormatter = new DurationFormatter();
@@ -62,7 +67,7 @@ export abstract class Game {
 	public readonly acceptedAnswer: AcceptedAnswer;
 	public readonly guessQueue = new AsyncQueue();
 	public round!: RoundData;
-	public players: Collection<Snowflake, Player> = new Collection<string, Player>();
+	public players = new Collection<Snowflake, Player>();
 
 	/**
 	 * The number of points to play to. Optionally provided by the user per-game.
@@ -167,7 +172,7 @@ export abstract class Game {
 			const promises: Promise<Message>[] = [];
 
 			for (const player of this.players.values()) {
-				const playersScore = this.leaderboard.get(player.id) ?? 0;
+				const score = this.leaderboard.get(player.id) ?? 0;
 
 				let timePlayed = player.totalPlayTime;
 
@@ -179,7 +184,7 @@ export abstract class Game {
 				const isWinner = player.id === leader?.id;
 				const multiplier = isWinner && this.players.size > 1 ? 1500 : 1000;
 
-				const points = Math.round((playersScore / this.calcPointsDivisor(player.songsListenedTo)) * (timePlayed / Time.Minute) * multiplier);
+				const points = Math.round((score / this.calcPointsDivisor(player.songsListenedTo)) * (timePlayed / Time.Minute) * multiplier);
 
 				const existingMember = existingMembers.find(({ userId }) => userId === player.id);
 				const member = existingMember ?? container.db.members.create({ userId: player.id, guildId: this.guild.id });
@@ -199,11 +204,11 @@ export abstract class Game {
 				}
 
 				const rankedUp = originalRank !== member.rank;
-				if (reason !== GameEndReason.TextChannelDeleted && (playersScore || rankedUp)) {
+				if (reason !== GameEndReason.TextChannelDeleted && (score || rankedUp)) {
 					let content = `${userMention(player.id)}, thanks for playing! You listened to ${prefixAndPluralize(
 						'song',
 						player.songsListenedTo
-					)}, guessed ${playersScore} of them correctly, `;
+					)}, guessed ${score} of them correctly, `;
 
 					content +=
 						originalLevel === member.level
@@ -233,7 +238,7 @@ export abstract class Game {
 	/**
 	 * @returns if the channel is where guesses are made for this game
 	 */
-	public abstract validGuessChannel(channel: TextChannel | DMChannel | PartialDMChannel): boolean;
+	public abstract validGuessChannel(channel: TextBasedChannel): boolean;
 
 	/**
 	 * Handles game-specific behaviour for when the track ends.
@@ -246,7 +251,7 @@ export abstract class Game {
 	 */
 	protected abstract calcPointsDivisor(songsListenedTo: number): number;
 
-	protected abstract getPlayers(vcMembers: Collection<string, GuildMember>): Collection<Snowflake, Player>;
+	protected abstract getPlayers(voiceChannelMembers: Collection<string, GuildMember>): Collection<Snowflake, Player>;
 
 	/**
 	 * Appends user to first guessedArtist list they haven't guessed.

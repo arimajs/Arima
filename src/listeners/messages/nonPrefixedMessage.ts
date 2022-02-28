@@ -6,7 +6,7 @@ import { isDMChannel, isTextChannel } from '@sapphire/discord.js-utilities';
 // commands, all permission and other related checks that would have to be done anyways would already be done.
 export class UserListener extends Listener<typeof Events.NonPrefixedMessage> {
 	public async run(message: Message) {
-		if (!isDMChannel(message.channel) || isTextChannel(message.channel)) {
+		if (!isDMChannel(message.channel) && !isTextChannel(message.channel)) {
 			return;
 		}
 

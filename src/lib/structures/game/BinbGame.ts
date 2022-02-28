@@ -1,11 +1,13 @@
-import { DMChannel, Message, MessagePayload, MessageOptions, Snowflake, TextChannel, PartialDMChannel, Collection, GuildMember } from 'discord.js';
+import { Message, MessagePayload, MessageOptions, Snowflake, Collection, GuildMember, TextBasedChannel } from 'discord.js';
 import { AcceptedAnswer, EmbedColor, GameType } from '#types/Enums';
-import { Game, Player } from '#game/Game';
 import { cleanName, resolveThumbnail } from '#utils/audio';
-import { createEmbed } from '#utils/responses';
-import { container } from '@sapphire/framework';
 import { getDuplicates } from '#utils/common';
+import { Game, Player } from '#game/Game';
+import { createEmbed } from '#utils/responses';
 import { isDMChannel } from '@sapphire/discord.js-utilities';
+import { userMention } from '@discordjs/builders';
+import { container } from '@sapphire/framework';
+import { Time } from '@sapphire/time-utilities';
 
 export class BinbGame extends Game {
 	public readonly gameType = GameType.Binb;
@@ -33,11 +35,16 @@ export class BinbGame extends Game {
 			promises.push(message.reply({ embeds: [embed] }));
 		}
 
-		if (guessed && this.guessedBoth(guesserID)) {
+		const guessedBoth = this.round.primaryArtistGuessers.includes(guesserID) && this.round.songGuessers.includes(guesserID);
+		if (guessed && guessedBoth) {
 			// User has guessed both the primary artist and song
-			const embed = createEmbed(`✅ ${message.author.tag} got it in ${((Date.now() - this.round.startTime) / 1000).toPrecision(2)}s!`);
-			promises.push.apply(this.dmAllPlayers({ embeds: [embed] }));
-			if (this.everyoneGuessedBoth()) {
+			const guessTime = ((Date.now() - this.round.startTime) / Time.Second).toPrecision(2);
+			const embed = createEmbed(`✅ ${message.author.tag} got it in ${guessTime}s!`);
+			promises.push(this.messageAllPlayers({ embeds: [embed] }));
+
+			const everyoneGuessedBoth =
+				this.round.primaryArtistGuessers.length === this.players.size && this.round.songGuessers.length === this.players.size;
+			if (everyoneGuessedBoth) {
 				promises.push(this.queue.player.stop());
 			}
 		}
@@ -50,24 +57,19 @@ export class BinbGame extends Game {
 		const { tracksPlayed, playlistLength, nowPlaying } = this.queue;
 		let embedFooter = `${tracksPlayed}/${playlistLength}`;
 		let embedDescription = everybodyPassed ? 'Everybody passed 🏃' : '';
-		// const prevLeaderboard = new Collection(this.leaderboard);
 
 		if (!everybodyPassed) {
-			const { songGuessers, primaryArtistGuessers, artistGuessers, primaryArtist } = this.round;
-			const primaryArtistAndSongGuessers = [...songGuessers, ...primaryArtistGuessers];
-
 			// Give 0.5 points for each of primary artist and song
+			const primaryArtistAndSongGuessers = [...this.round.songGuessers, ...this.round.primaryArtistGuessers];
 			for (const guesser of primaryArtistAndSongGuessers) {
 				this.leaderboard.inc(guesser, 0.5);
 			}
 
 			// Give 0.25 points for each 'other' artist
-			for (const [artist, guessers] of artistGuessers.entries()) {
-				// Skip primary artist because it's already scored
-				if (artist === primaryArtist) {
-					continue;
-				}
-
+			const otherArtistGuessers = this.round.artistGuessers.values();
+			// Skip primary artist
+			otherArtistGuessers.next();
+			for (const guessers of otherArtistGuessers) {
 				for (const guesser of guessers) {
 					this.leaderboard.inc(guesser, 0.25);
 				}
@@ -75,12 +77,13 @@ export class BinbGame extends Game {
 
 			// Give bonus points to 1st, 2nd, 3rd double guessers
 			const doubleGuessers = getDuplicates(primaryArtistAndSongGuessers);
-			for (const [index, doubleGuesser] of doubleGuessers.entries()) {
-				this.leaderboard.inc(doubleGuesser, 1.5 - index * 0.5);
-				if (index === 2) {
-					break;
-				}
+			// Cut back on unnecessary loops if they're aren't more than 3 double guessers.
+			const placedSize = Math.min(3, doubleGuessers.length);
+			for (let i = 0; i < placedSize; i++) {
+				this.leaderboard.inc(doubleGuessers[i], 1.5 - i * 0.5);
 			}
+
+			this.streaks.incStreak(...doubleGuessers);
 
 			if (primaryArtistAndSongGuessers.length) {
 				// There are players who guessed something
@@ -101,7 +104,7 @@ export class BinbGame extends Game {
 			// If there is a streak leader, it must be one of the guessers.
 			const streakLeader = streak && doubleGuessers.find((id) => id === streakLeaderId);
 			if (streakLeader) {
-				embedFooter += ` • <@${streakLeader}> has a streak of ${streak} 🔥`;
+				embedFooter += ` • ${userMention(streakLeader)} has a streak of ${streak} 🔥`;
 			}
 		}
 
@@ -130,10 +133,10 @@ export class BinbGame extends Game {
 			embed.setThumbnail(thumbnail);
 		}
 
-		await Promise.all(this.dmAllPlayers({ embeds: [embed] }));
+		await this.messageAllPlayers({ embeds: [embed] });
 	}
 
-	public validGuessChannel(channel: TextChannel | DMChannel | PartialDMChannel) {
+	public validGuessChannel(channel: TextBasedChannel) {
 		return isDMChannel(channel);
 	}
 
@@ -148,25 +151,17 @@ export class BinbGame extends Game {
 		return songsListenedTo * (1 + 1.5 / this.players.size);
 	}
 
-	protected getPlayers(vcMembers: Collection<string, GuildMember>) {
+	protected getPlayers(voiceChannelMembers: Collection<string, GuildMember>) {
 		// TODO: Prompt players to join the game with a button.
 		const basePlayer: Omit<Player, 'id'> = { lastGameEntryTime: Date.now(), totalPlayTime: 0, songsListenedTo: 0 };
-		return new Collection(vcMembers.map<[Snowflake, Player]>((member) => [member.id, { ...basePlayer, id: member.id }]));
+		return new Collection(voiceChannelMembers.map<[Snowflake, Player]>((member) => [member.id, { ...basePlayer, id: member.id }]));
 	}
 
-	private guessedBoth(user: Snowflake) {
-		return this.round.primaryArtistGuessers.includes(user) && this.round.songGuessers.includes(user);
-	}
-
-	private everyoneGuessedBoth() {
-		return this.round.primaryArtistGuessers.length === this.players.size && this.round.songGuessers.length === this.players.size;
-	}
-
-	private dmAllPlayers(options: string | MessagePayload | MessageOptions) {
+	private async messageAllPlayers(options: string | MessagePayload | MessageOptions) {
 		const promises: Promise<unknown>[] = [];
 		for (const playerID of this.players.keys()) {
 			promises.push(container.client.users.send(playerID, options));
 		}
-		return promises;
+		await Promise.all(promises);
 	}
 }

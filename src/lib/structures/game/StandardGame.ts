@@ -1,11 +1,11 @@
-import { Collection, type DMChannel, GuildMember, Message, PartialDMChannel, Snowflake, TextChannel, User } from 'discord.js';
+import { Collection, GuildMember, Message, Snowflake, TextBasedChannel } from 'discord.js';
 import { EmbedColor, AcceptedAnswer, GameType } from '#types/Enums';
 import { cleanName, resolveThumbnail } from '#utils/audio';
 import { createEmbed } from '#utils/responses';
-import { container } from '@sapphire/framework';
 import { Game, Player } from '#game/Game';
 import { PermissionFlagsBits } from 'discord-api-types/v9';
 import { isTextChannel } from '@sapphire/discord.js-utilities';
+import { bold, userMention } from '@discordjs/builders';
 
 export class StandardGame extends Game {
 	public readonly gameType = GameType.Standard;
@@ -25,7 +25,7 @@ export class StandardGame extends Game {
 		if (isHalfGuessed) {
 			const { title, author } = this.queue.nowPlaying!.info;
 			const guessedNameString = guessedNow === AcceptedAnswer.Song ? title : author;
-			halfGuessedString = ` The ${guessedNow}'s name is **${guessedNameString}**. You're halfway there!`;
+			halfGuessedString = ` The ${guessedNow}'s name is ${bold(guessedNameString)}. You're halfway there!`;
 		}
 
 		const embed = createEmbed(`✅ You got it!${halfGuessedString}`);
@@ -44,16 +44,13 @@ export class StandardGame extends Game {
 		const everybodyPassed = this.round.passedPlayers.size === this.players.size;
 		const { tracksPlayed, playlistLength, nowPlaying } = this.queue;
 		let embedFooter = `${tracksPlayed}/${playlistLength}`;
-		let embedDescription = everybodyPassed ? 'Everybody passed! 🏃' : 'Nobody got it! 🙁';
+		let embedDescription = everybodyPassed ? 'Everybody passed! 🏃' : 'Nobody guessed it! 🙁 That was a hard one!';
 
 		if (!everybodyPassed) {
 			const { songGuessers, primaryArtistGuessers } = this.round;
 
 			// Ensure players are only in here once.
-			const uniqueGuessers = [...new Set([...songGuessers, ...primaryArtistGuessers])];
-			const usersOrNull = await Promise.all(uniqueGuessers.map((id) => container.client.users.fetch(id).catch(() => null)));
-			const guessers = usersOrNull.filter(Boolean) as User[];
-
+			const guessers = [...new Set([...songGuessers, ...primaryArtistGuessers])];
 			const numGuessers = guessers.length;
 			const requiresBoth = this.acceptedAnswer === AcceptedAnswer.Both;
 			const doubleGuesser = requiresBoth && numGuessers === 1 && songGuessers.length && primaryArtistGuessers.length;
@@ -66,15 +63,15 @@ export class StandardGame extends Game {
 
 			if (guessed) {
 				if (numGuessers === 1) {
-					this.leaderboard.inc(guessers[0].id);
+					this.leaderboard.inc(guessers[0]);
 				} else {
 					// There should only ever be 2 guessers but made generic anyway.
 					for (const guesser of guessers) {
-						this.leaderboard.inc(guesser.id, 1 / numGuessers);
+						this.leaderboard.inc(guesser, 1 / numGuessers);
 					}
 				}
 
-				this.streaks.incStreak(...guessers.map(({ id }) => id));
+				this.streaks.incStreak(...guessers);
 
 				embedDescription = `${doubleGuesser ? guessers[0] : guessers.join(' and ')} guessed it!`;
 			} else {
@@ -87,9 +84,9 @@ export class StandardGame extends Game {
 			const [streakLeaderId, streak] = this.streaks.leader ?? [];
 
 			// If there is a streak leader, it must be one of the guessers.
-			const streakLeader = streak && guessers.find(({ id }) => id === streakLeaderId);
+			const streakLeader = streak && guessers.find((id) => id === streakLeaderId);
 			if (streakLeader) {
-				embedFooter += ` • ${streakLeader.tag} has a streak of ${streak} 🔥`;
+				embedFooter += ` • ${userMention(streakLeaderId)} has a streak of ${streak} 🔥`;
 			}
 		}
 
@@ -121,7 +118,7 @@ export class StandardGame extends Game {
 		await this.textChannel.send({ embeds: [embed] });
 	}
 
-	public validGuessChannel(channel: TextChannel | DMChannel | PartialDMChannel) {
+	public validGuessChannel(channel: TextBasedChannel) {
 		if (!isTextChannel(channel)) {
 			return false;
 		}
@@ -132,9 +129,9 @@ export class StandardGame extends Game {
 		return songsListenedTo;
 	}
 
-	protected getPlayers(vcMembers: Collection<string, GuildMember>) {
+	protected getPlayers(voiceChannelMembers: Collection<string, GuildMember>) {
 		const basePlayer: Omit<Player, 'id'> = { lastGameEntryTime: Date.now(), totalPlayTime: 0, songsListenedTo: 0 };
-		return new Collection(vcMembers.map<[Snowflake, Player]>((member) => [member.id, { ...basePlayer, id: member.id }]));
+		return new Collection(voiceChannelMembers.map<[Snowflake, Player]>((member) => [member.id, { ...basePlayer, id: member.id }]));
 	}
 
 	/**
