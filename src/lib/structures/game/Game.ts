@@ -259,13 +259,17 @@ export abstract class Game {
 	 */
 	protected processArtistGuess(guess: string, user: Snowflake) {
 		for (const [artist, guessers] of this.round.artistGuessers.entries()) {
-			if (guessers.includes(user)) {
+			if (guessers.has(user)) {
 				continue;
 			}
 
 			const match = guess === artist || jaroWinkler(guess, artist) >= kGuessThreshold;
 			if (match) {
-				guessers.push(user);
+				guessers.add(user);
+				if (artist === this.round.primaryArtist && this.round.songGuessers.has(user)) {
+					this.round.doubleGuessers.push(user);
+				}
+
 				return artist;
 			}
 		}
@@ -281,7 +285,7 @@ export abstract class Game {
 		const { validSongVariations, songGuessers } = this.round;
 
 		// Don't process if they've already guessed it.
-		if (songGuessers.includes(user)) {
+		if (songGuessers.has(user)) {
 			return false;
 		}
 
@@ -293,7 +297,11 @@ export abstract class Game {
 		const match = validSongVariations.includes(cleaned) || validSongVariations.some((str) => jaroWinkler(cleaned, str) >= kGuessThreshold);
 
 		if (match) {
-			songGuessers.push(user);
+			songGuessers.add(user);
+			const { primaryArtistGuessers, doubleGuessers } = this.round;
+			if (primaryArtistGuessers.has(user)) {
+				doubleGuessers.push(user);
+			}
 		}
 
 		return match;

@@ -56,20 +56,3 @@ export const rankToString = (rank: number) => {
 export const toPercent = (decimal: number) => {
 	return `${(decimal * 100).toFixed(2)}%`;
 };
-
-/**
- * @returns an array of elements that have duplicate entries in the passed array
- * @param array
- */
-export const getDuplicates = <T>(array: readonly T[]): T[] => {
-	// Set.has is O(1), so use Sets
-	const seenElements = new Set<T>();
-	const duplicates = new Set<T>();
-	for (const elem of array) {
-		if (seenElements.has(elem)) {
-			duplicates.add(elem);
-		}
-		seenElements.add(elem);
-	}
-	return [...duplicates];
-};

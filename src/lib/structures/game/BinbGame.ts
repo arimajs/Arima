@@ -1,7 +1,6 @@
 import { Message, MessagePayload, MessageOptions, Snowflake, Collection, GuildMember, TextBasedChannel } from 'discord.js';
 import { AcceptedAnswer, EmbedColor, GameType } from '#types/Enums';
 import { cleanName, resolveThumbnail } from '#utils/audio';
-import { getDuplicates } from '#utils/common';
 import { Game, Player } from '#game/Game';
 import { createEmbed } from '#utils/responses';
 import { isDMChannel } from '@sapphire/discord.js-utilities';
@@ -17,7 +16,7 @@ export class BinbGame extends Game {
 		const guesserID = message.author.id;
 		let guessed: AcceptedAnswer | null = null;
 
-		if (!this.round.songGuessers.includes(guesserID)) {
+		if (!this.round.songGuessers.has(guesserID)) {
 			guessed = this.processSongGuess(guess, guesserID) ? AcceptedAnswer.Song : null;
 		}
 
@@ -35,7 +34,7 @@ export class BinbGame extends Game {
 			promises.push(message.reply({ embeds: [embed] }));
 		}
 
-		const guessedBoth = this.round.primaryArtistGuessers.includes(guesserID) && this.round.songGuessers.includes(guesserID);
+		const guessedBoth = this.round.primaryArtistGuessers.has(guesserID) && this.round.songGuessers.has(guesserID);
 		if (guessed && guessedBoth) {
 			// User has guessed both the primary artist and song
 			const guessTime = ((Date.now() - this.round.startTime) / Time.Second).toPrecision(2);
@@ -43,7 +42,7 @@ export class BinbGame extends Game {
 			promises.push(this.messageAllPlayers({ embeds: [embed] }));
 
 			const everyoneGuessedBoth =
-				this.round.primaryArtistGuessers.length === this.players.size && this.round.songGuessers.length === this.players.size;
+				this.round.primaryArtistGuessers.size === this.players.size && this.round.songGuessers.size === this.players.size;
 			if (everyoneGuessedBoth) {
 				promises.push(this.queue.player.stop());
 			}
@@ -76,7 +75,7 @@ export class BinbGame extends Game {
 			}
 
 			// Give bonus points to 1st, 2nd, 3rd double guessers
-			const doubleGuessers = getDuplicates(primaryArtistAndSongGuessers);
+			const { doubleGuessers } = this.round;
 			// Cut back on unnecessary loops if they're aren't more than 3 double guessers.
 			const placedSize = Math.min(3, doubleGuessers.length);
 			for (let i = 0; i < placedSize; i++) {
@@ -87,7 +86,7 @@ export class BinbGame extends Game {
 
 			if (primaryArtistAndSongGuessers.length) {
 				// There are players who guessed something
-				if (primaryArtistAndSongGuessers.length === 2 * this.players.size) {
+				if (doubleGuessers.length === this.players.size) {
 					embedDescription = 'Well done everyone! You all guessed it!';
 				} else {
 					// Not everyone got the answer, check if anyone got it

@@ -53,7 +53,7 @@ export class StandardGame extends Game {
 			const guessers = [...new Set([...songGuessers, ...primaryArtistGuessers])];
 			const numGuessers = guessers.length;
 			const requiresBoth = this.acceptedAnswer === AcceptedAnswer.Both;
-			const doubleGuesser = requiresBoth && numGuessers === 1 && songGuessers.length && primaryArtistGuessers.length;
+			const doubleGuesser = requiresBoth && numGuessers === 1 && songGuessers.size && primaryArtistGuessers.size;
 
 			// 3 cases that the song was 'guessed':
 			//   - someone got it (one or either of artist or song)
@@ -153,7 +153,7 @@ export class StandardGame extends Game {
 
 			case AcceptedAnswer.Both: {
 				// If the song is guessed, guess the artists.
-				if (this.round.songGuessers.length) {
+				if (this.round.songGuessers.size) {
 					return this.processArtistGuess(guess, user) ? AcceptedAnswer.Artist : null;
 				}
 
@@ -176,11 +176,11 @@ export class StandardGame extends Game {
 
 	private guessedThisRound() {
 		// Check if someone guessed song name or primary artist.
-		if (this.round.songGuessers.length) {
+		if (this.round.songGuessers.size) {
 			return AcceptedAnswer.Song;
 		}
 
-		if (this.round.primaryArtistGuessers.length) {
+		if (this.round.primaryArtistGuessers.size) {
 			return AcceptedAnswer.Artist;
 		}
 
