@@ -1,7 +1,7 @@
-import { Message, MessagePayload, MessageOptions, Snowflake, Collection, GuildMember, TextBasedChannel } from 'discord.js';
-import { AcceptedAnswer, EmbedColor, GameType } from '#types/Enums';
+import { Message, MessageOptions, Collection, GuildMember, TextBasedChannel, MessageButton, Constants, MessageActionRow } from 'discord.js';
+import { AcceptedAnswer, CustomIds, EmbedColor, GameType } from '#types/Enums';
 import { cleanName, resolveThumbnail } from '#utils/audio';
-import { Game, Player } from '#game/Game';
+import { Game } from '#game/Game';
 import { createEmbed } from '#utils/responses';
 import { isDMChannel } from '@sapphire/discord.js-utilities';
 import { userMention } from '@discordjs/builders';
@@ -150,17 +150,20 @@ export class BinbGame extends Game {
 		return songsListenedTo * (1 + 1.5 / this.players.size);
 	}
 
-	protected getPlayers(voiceChannelMembers: Collection<string, GuildMember>) {
-		// TODO: Prompt players to join the game with a button.
-		const basePlayer: Omit<Player, 'id'> = { lastGameEntryTime: Date.now(), totalPlayTime: 0, songsListenedTo: 0 };
-		return new Collection(voiceChannelMembers.map<[Snowflake, Player]>((member) => [member.id, { ...basePlayer, id: member.id }]));
+	protected async getPlayers(voiceChannelMembers: Collection<string, GuildMember>) {
+		const joinButton = new MessageActionRow() //
+			.addComponents(
+				new MessageButton() //
+					.setCustomId(CustomIds.Join)
+					.setLabel('Join Game')
+					.setStyle(Constants.MessageButtonStyles.SUCCESS)
+			);
+
+		const embed = createEmbed(`Click the button to join this round of ${this.gameType} music trivia!`, EmbedColor.Primary);
+		await Promise.all(voiceChannelMembers.map((member) => member.send({ embeds: [embed], components: [joinButton] })));
 	}
 
-	private async messageAllPlayers(options: string | MessagePayload | MessageOptions) {
-		const promises: Promise<unknown>[] = [];
-		for (const playerID of this.players.keys()) {
-			promises.push(container.client.users.send(playerID, options));
-		}
-		await Promise.all(promises);
+	private async messageAllPlayers(options: string | MessageOptions) {
+		await Promise.all(this.players.map((_player, playerID) => container.client.users.send(playerID, options)));
 	}
 }

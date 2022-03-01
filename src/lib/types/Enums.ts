@@ -88,3 +88,10 @@ export enum EmbedColor {
 	 */
 	Error = Constants.Colors.RED
 }
+
+/**
+ * CustomIds of interactions.
+ */
+export const enum CustomIds {
+	Join = 'join-button'
+}

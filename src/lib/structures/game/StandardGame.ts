@@ -128,7 +128,7 @@ export class StandardGame extends Game {
 
 	protected getPlayers(voiceChannelMembers: Collection<string, GuildMember>) {
 		const basePlayer: Omit<Player, 'id'> = { lastGameEntryTime: Date.now(), totalPlayTime: 0, songsListenedTo: 0 };
-		return new Collection(voiceChannelMembers.map<[Snowflake, Player]>((member) => [member.id, { ...basePlayer, id: member.id }]));
+		this.players = new Collection(voiceChannelMembers.map<[Snowflake, Player]>((member) => [member.id, { ...basePlayer, id: member.id }]));
 	}
 
 	/**

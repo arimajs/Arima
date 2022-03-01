@@ -8,7 +8,7 @@ import { ArimaCommand } from '#structures/ArimaCommand';
 import { ApplyOptions } from '@sapphire/decorators';
 import { sendError } from '#utils/responses';
 import { env } from '#root/config';
-import { Games, type GameData } from '#game/Game';
+import { type GameData, Games } from '#game/Game';
 
 @ApplyOptions<ArimaCommand.Options>({
 	description: 'Start a new music quiz game!',

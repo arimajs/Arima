@@ -11,6 +11,7 @@ import type {
 	TextBasedChannel
 } from 'discord.js';
 import type { RoundData } from '#game/RoundData';
+import type { Awaitable } from '@sapphire/utilities';
 import type { Playlist } from '#utils/audio';
 import { PlaylistType, AcceptedAnswer, GameEndReason, GameType } from '#types/Enums';
 import { bold, inlineCode, italic, userMention } from '@discordjs/builders';
@@ -45,11 +46,6 @@ export interface Player {
 	songsListenedTo: number;
 	id: Snowflake;
 }
-
-export const Games = {
-	[GameType.Standard]: StandardGame,
-	[GameType.Binb]: BinbGame
-};
 
 // Might be changed in the future after more testing.
 const kGuessThreshold = 0.75 as const;
@@ -96,7 +92,7 @@ export abstract class Game {
 	public async start(interaction: CommandInteraction) {
 		// Moved here because this.getPlayers will probably become async
 		const members = this.voiceChannel.members.filter(({ user }) => !user.bot);
-		this.players = this.getPlayers(members);
+		await this.getPlayers(members);
 
 		let answerTypeString = '';
 		if ([AcceptedAnswer.Song, AcceptedAnswer.Artist].includes(this.acceptedAnswer)) {
@@ -251,7 +247,7 @@ export abstract class Game {
 	 */
 	protected abstract calcPointsDivisor(songsListenedTo: number): number;
 
-	protected abstract getPlayers(voiceChannelMembers: Collection<string, GuildMember>): Collection<Snowflake, Player>;
+	protected abstract getPlayers(voiceChannelMembers: Collection<string, GuildMember>): Awaitable<void>;
 
 	/**
 	 * Appends user to first guessedArtist list they haven't guessed.
@@ -307,3 +303,8 @@ export abstract class Game {
 		return match;
 	}
 }
+
+export const Games = {
+	[GameType.Standard]: StandardGame,
+	[GameType.Binb]: BinbGame
+};
