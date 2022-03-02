@@ -18,16 +18,15 @@ export class UserPrecondition extends Precondition {
 			return this.error({ message: "There's already a game being played" });
 		}
 
-		if (shouldBePlaying && !game?.players.has(interaction.user.id)) {
+		if (shouldBePlaying && !game.players.has(interaction.user.id)) {
 			return this.error({ message: "You aren't playing a game" });
 		}
 
-		// TODO: Allow commands to be used in DMs for a BinbGame
-		if (shouldBePlaying && game!.textChannel.id !== interaction.channelId) {
+		if (shouldBePlaying && !game.validGuessChannel(interaction.channel!)) {
 			return this.error({ message: 'Please only use game-related commands in the channel where the game is being played' });
 		}
 
-		if (shouldBePlaying && shouldBeHost && game!.host.id !== interaction.user.id) {
+		if (shouldBePlaying && shouldBeHost && game.host.id !== interaction.user.id) {
 			return this.error({ message: 'Only the game host can use this command' });
 		}
 
