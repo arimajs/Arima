@@ -22,6 +22,7 @@ import { setTimeout } from 'node:timers/promises';
 
 export class BinbGame extends Game {
 	public readonly gameType = GameType.Binb;
+	public override readonly acceptedAnswer: AcceptedAnswer = AcceptedAnswer.Both;
 
 	public async guess(message: Message) {
 		const guess = cleanName(message.content);
