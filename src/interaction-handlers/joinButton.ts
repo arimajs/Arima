@@ -7,8 +7,9 @@ import { createEmbed } from '#root/lib/utils/responses';
 @ApplyOptions<InteractionHandler.Options>({ interactionHandlerType: InteractionHandlerTypes.Button, enabled: true })
 export class UserInteractionHandler extends InteractionHandler {
 	public override parse(interaction: ButtonInteraction) {
-		if (interaction.customId.startsWith(CustomIds.Join)) {
-			return this.some({ user: interaction.user.id, guild: interaction.customId.split(CustomIds.Join)[1] });
+		const [customId, guildId] = interaction.customId.split('|');
+		if (customId === CustomIds.Join) {
+			return this.some({ user: interaction.user.id, guild: guildId });
 		}
 		return this.none();
 	}

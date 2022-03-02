@@ -1,14 +1,13 @@
 import { Collection, CommandInteraction, GuildMember, Message, MessageEmbed, Snowflake, TextBasedChannel, TextChannel } from 'discord.js';
-import { EmbedColor, AcceptedAnswer } from '#types/Enums';
+import { EmbedColor, AcceptedAnswer, GameType } from '#types/Enums';
 import { cleanName, resolveThumbnail } from '#utils/audio';
 import { createEmbed } from '#utils/responses';
 import { Game, Player } from '#game/Game';
 import { PermissionFlagsBits } from 'discord-api-types/v9';
 import { bold, userMention } from '@discordjs/builders';
-import { Gametype } from '#game/Gametypes';
 
 export class StandardGame extends Game {
-	public readonly gametype = Gametype.Standard;
+	public readonly gameType = GameType.Standard;
 
 	public async guess(message: Message) {
 		const guess = cleanName(message.content);

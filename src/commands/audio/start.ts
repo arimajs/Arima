@@ -1,15 +1,24 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import type { GameData } from '#game/Game';
-import { AcceptedAnswer, PlaylistResolutionError } from '#types/Enums';
+import { AcceptedAnswer, PlaylistResolutionError, GameType } from '#types/Enums';
 import { CommandOptionsRunTypeEnum, isErr } from '@sapphire/framework';
 import { hideLinkEmbed, hyperlink } from '@discordjs/builders';
 import { PermissionFlagsBits } from 'discord-api-types/v9';
-import { Games, Gametype } from '#game/Gametypes';
 import { resolvePlaylist } from '#utils/audio';
+import { StandardGame } from '#game/StandardGame';
 import { ArimaCommand } from '#structures/ArimaCommand';
 import { ApplyOptions } from '@sapphire/decorators';
 import { sendError } from '#utils/responses';
+import { BinbGame } from '#game/BinbGame';
 import { env } from '#root/config';
+
+/**
+ * Map from GameTypes to Game subclasses
+ */
+const Games = {
+	[GameType.Standard]: StandardGame,
+	[GameType.Binb]: BinbGame
+};
 
 @ApplyOptions<ArimaCommand.Options>({
 	description: 'Start a new music quiz game!',
@@ -60,7 +69,7 @@ export class UserCommand extends ArimaCommand {
 			return sendError(interaction, UserCommand.errorDescriptors[result.error]);
 		}
 
-		const gameType = (interaction.options.getString('gametype') as Gametype) ?? Gametype.Standard;
+		const gameType = (interaction.options.getString('mode') as GameType) ?? GameType.Standard;
 		const gameData: GameData = {
 			host: interaction.user,
 			playlist: result.value,
@@ -91,11 +100,11 @@ export class UserCommand extends ArimaCommand {
 					)
 					.addStringOption((builder) =>
 						builder
-							.setName('gametype')
-							.setDescription('The game format to play! (Optional)')
+							.setName('mode')
+							.setDescription('The game mode to play! (Optional)')
 							.addChoices([
-								['Trivia in this channel (Default)', Gametype.Standard],
-								['Competitive in DMs', Gametype.Binb]
+								['Trivia in this channel (Default)', GameType.Standard],
+								['Competitive in DMs', GameType.Binb]
 							])
 							.setRequired(false)
 					)

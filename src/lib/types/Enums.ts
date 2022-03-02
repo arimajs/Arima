@@ -22,6 +22,14 @@ export enum AcceptedAnswer {
 }
 
 /**
+ * Enum to identify what type of game is being played.
+ */
+export enum GameType {
+	Standard = 'standard',
+	Binb = 'binb'
+}
+
+/**
  * Identifiers to give context to why a game has ended. Descriptions of each are located where they are used.
  */
 export enum GameEndReason {

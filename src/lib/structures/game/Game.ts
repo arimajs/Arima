@@ -13,9 +13,8 @@ import type {
 } from 'discord.js';
 import type { RoundData } from '#game/RoundData';
 import type { Awaitable } from '@sapphire/utilities';
-import type { Gametype } from '#game/Gametypes';
 import type { Playlist } from '#utils/audio';
-import { PlaylistType, AcceptedAnswer, GameEndReason } from '#types/Enums';
+import { PlaylistType, AcceptedAnswer, GameEndReason, GameType } from '#types/Enums';
 import { bold, inlineCode, italic, userMention } from '@discordjs/builders';
 import { DurationFormatter, Time } from '@sapphire/time-utilities';
 import { prefixAndPluralize } from '#utils/common';
@@ -52,7 +51,7 @@ const kGuessThreshold = 0.75 as const;
 const durationFormatter = new DurationFormatter();
 
 export abstract class Game {
-	public abstract readonly gametype: Gametype;
+	public abstract readonly gameType: GameType;
 	public readonly queue: Queue;
 	public readonly leaderboard: Leaderboard;
 	public readonly streaks: StreakCounter;

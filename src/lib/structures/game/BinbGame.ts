@@ -8,22 +8,20 @@ import {
 	Constants,
 	MessageActionRow,
 	MessageEmbed,
-	CommandInteraction,
-	DMChannel
+	CommandInteraction
 } from 'discord.js';
-import { AcceptedAnswer, CustomIds, EmbedColor } from '#types/Enums';
+import { AcceptedAnswer, CustomIds, EmbedColor, GameType } from '#types/Enums';
 import { cleanName, resolveThumbnail } from '#utils/audio';
 import { createEmbed } from '#utils/responses';
 import { isDMChannel } from '@sapphire/discord.js-utilities';
 import { userMention } from '@discordjs/builders';
 import { container } from '@sapphire/framework';
-import { Gametype } from '#game/Gametypes';
 import { Game } from '#game/Game';
 import { Time } from '@sapphire/time-utilities';
 import { setTimeout } from 'node:timers/promises';
 
 export class BinbGame extends Game {
-	public readonly gametype = Gametype.Binb;
+	public readonly gameType = GameType.Binb;
 
 	public async guess(message: Message) {
 		const guess = cleanName(message.content);
@@ -168,32 +166,15 @@ export class BinbGame extends Game {
 		const row = new MessageActionRow() //
 			.addComponents(
 				new MessageButton() //
-					.setCustomId(CustomIds.Join + voiceChannelMembers.first()!.guild.id)
+					.setCustomId(`${CustomIds.Join}|${voiceChannelMembers.first()!.guild.id}`)
 					.setLabel('Join Game')
 					.setStyle(Constants.MessageButtonStyles.SUCCESS)
 			);
 
-		const embed = createEmbed(`Click the button to join this game of ${this.gametype} music trivia!`);
+		const embed = createEmbed(`Click the button to join this game of ${this.gameType} music trivia!`);
 		const messagePromises = voiceChannelMembers.map((member) => member.send({ embeds: [embed], components: [row] }).catch(() => null));
-		const messages = await Promise.all(messagePromises);
-
+		await Promise.all(messagePromises);
 		await setTimeout(Time.Second * 10);
-
-		console.log('players:', this.players);
-		const notJoinedEmbed = createEmbed(`You didn't join the game!`, EmbedColor.Error);
-
-		const notJoinedMessages = messages.filter((message) => {
-			const channel = message?.channel as DMChannel;
-			return message && !this.players.has(channel.recipient.id);
-		});
-
-		console.log('notJoinedMessages:', notJoinedMessages);
-
-		const notJoinedMessageEditPromises = notJoinedMessages.map((notJoinedMessage) =>
-			notJoinedMessage!.edit({ embeds: [notJoinedEmbed], components: [] })
-		);
-
-		await Promise.all(notJoinedMessageEditPromises);
 	}
 
 	protected async sendStartEmbed(embed: MessageEmbed, interaction: CommandInteraction) {
