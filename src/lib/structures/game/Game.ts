@@ -8,12 +8,14 @@ import type {
 	MessageOptions,
 	Message,
 	GuildMember,
-	TextBasedChannel
+	TextBasedChannel,
+	MessageEmbed
 } from 'discord.js';
 import type { RoundData } from '#game/RoundData';
 import type { Awaitable } from '@sapphire/utilities';
+import type { Gametype } from '#game/Gametypes';
 import type { Playlist } from '#utils/audio';
-import { PlaylistType, AcceptedAnswer, GameEndReason, GameType } from '#types/Enums';
+import { PlaylistType, AcceptedAnswer, GameEndReason } from '#types/Enums';
 import { bold, inlineCode, italic, userMention } from '@discordjs/builders';
 import { DurationFormatter, Time } from '@sapphire/time-utilities';
 import { prefixAndPluralize } from '#utils/common';
@@ -26,8 +28,6 @@ import { AsyncQueue } from '@sapphire/async-queue';
 import { container } from '@sapphire/framework';
 import { Queue } from '#game/Queue';
 import { Collection } from 'discord.js';
-import { StandardGame } from '#game/StandardGame';
-import { BinbGame } from '#game/BinbGame';
 
 export interface GameData {
 	textChannel: GuildTextBasedChannel;
@@ -52,7 +52,7 @@ const kGuessThreshold = 0.75 as const;
 const durationFormatter = new DurationFormatter();
 
 export abstract class Game {
-	public abstract readonly gameType: GameType;
+	public abstract readonly gametype: Gametype;
 	public readonly queue: Queue;
 	public readonly leaderboard: Leaderboard;
 	public readonly streaks: StreakCounter;
@@ -90,7 +90,6 @@ export abstract class Game {
 	}
 
 	public async start(interaction: CommandInteraction) {
-		// Moved here because this.getPlayers will probably become async
 		const members = this.voiceChannel.members.filter(({ user }) => !user.bot);
 		await this.getPlayers(members);
 
@@ -124,7 +123,7 @@ export abstract class Game {
 			embed.setFooter({ text: `Playing to ${this.goal} points` });
 		}
 
-		await Promise.all([this.queue.next(), interaction.editReply({ embeds: [embed] })]);
+		await Promise.all([this.queue.next(), this.sendStartEmbed(embed, interaction)]);
 	}
 
 	@UseRequestContext()
@@ -204,7 +203,7 @@ export abstract class Game {
 					let content = `${userMention(player.id)}, thanks for playing! You listened to ${prefixAndPluralize(
 						'song',
 						player.songsListenedTo
-					)}, guessed ${score} of them correctly, `;
+					)}, scored ${score}, `;
 
 					content +=
 						originalLevel === member.level
@@ -248,6 +247,8 @@ export abstract class Game {
 	protected abstract calcPointsDivisor(songsListenedTo: number): number;
 
 	protected abstract getPlayers(voiceChannelMembers: Collection<string, GuildMember>): Awaitable<void>;
+
+	protected abstract sendStartEmbed(embed: MessageEmbed, interaction: CommandInteraction): Promise<void>;
 
 	/**
 	 * Appends user to first guessedArtist list they haven't guessed.
@@ -303,8 +304,3 @@ export abstract class Game {
 		return match;
 	}
 }
-
-export const Games = {
-	[GameType.Standard]: StandardGame,
-	[GameType.Binb]: BinbGame
-};

@@ -1,15 +1,29 @@
-import { Message, MessageOptions, Collection, GuildMember, TextBasedChannel, MessageButton, Constants, MessageActionRow } from 'discord.js';
-import { AcceptedAnswer, CustomIds, EmbedColor, GameType } from '#types/Enums';
+import {
+	Message,
+	MessageOptions,
+	Collection,
+	GuildMember,
+	TextBasedChannel,
+	MessageButton,
+	Constants,
+	MessageActionRow,
+	MessageEmbed,
+	CommandInteraction,
+	DMChannel
+} from 'discord.js';
+import { AcceptedAnswer, CustomIds, EmbedColor } from '#types/Enums';
 import { cleanName, resolveThumbnail } from '#utils/audio';
-import { Game } from '#game/Game';
 import { createEmbed } from '#utils/responses';
 import { isDMChannel } from '@sapphire/discord.js-utilities';
 import { userMention } from '@discordjs/builders';
 import { container } from '@sapphire/framework';
+import { Gametype } from '#game/Gametypes';
+import { Game } from '#game/Game';
 import { Time } from '@sapphire/time-utilities';
+import { setTimeout } from 'node:timers/promises';
 
 export class BinbGame extends Game {
-	public readonly gameType = GameType.Binb;
+	public readonly gametype = Gametype.Binb;
 
 	public async guess(message: Message) {
 		const guess = cleanName(message.content);
@@ -37,7 +51,7 @@ export class BinbGame extends Game {
 		const guessedBoth = this.round.primaryArtistGuessers.has(guesserID) && this.round.songGuessers.has(guesserID);
 		if (guessed && guessedBoth) {
 			// User has guessed both the primary artist and song
-			const guessTime = ((Date.now() - this.round.startTime) / Time.Second).toPrecision(2);
+			const guessTime = ((Date.now() - this.round.startTime) / Time.Second).toFixed(2);
 			const embed = createEmbed(`✅ ${message.author.tag} got it in ${guessTime}s!`);
 			promises.push(this.messageAllPlayers({ embeds: [embed] }));
 
@@ -151,19 +165,43 @@ export class BinbGame extends Game {
 	}
 
 	protected async getPlayers(voiceChannelMembers: Collection<string, GuildMember>) {
-		const joinButton = new MessageActionRow() //
+		const row = new MessageActionRow() //
 			.addComponents(
 				new MessageButton() //
-					.setCustomId(CustomIds.Join)
+					.setCustomId(CustomIds.Join + voiceChannelMembers.first()!.guild.id)
 					.setLabel('Join Game')
 					.setStyle(Constants.MessageButtonStyles.SUCCESS)
 			);
 
-		const embed = createEmbed(`Click the button to join this round of ${this.gameType} music trivia!`, EmbedColor.Primary);
-		await Promise.all(voiceChannelMembers.map((member) => member.send({ embeds: [embed], components: [joinButton] })));
+		const embed = createEmbed(`Click the button to join this game of ${this.gametype} music trivia!`);
+		const messagePromises = voiceChannelMembers.map((member) => member.send({ embeds: [embed], components: [row] }).catch(() => null));
+		const messages = await Promise.all(messagePromises);
+
+		await setTimeout(Time.Second * 10);
+
+		console.log('players:', this.players);
+		const notJoinedEmbed = createEmbed(`You didn't join the game!`, EmbedColor.Error);
+
+		const notJoinedMessages = messages.filter((message) => {
+			const channel = message?.channel as DMChannel;
+			return message && !this.players.has(channel.recipient.id);
+		});
+
+		console.log('notJoinedMessages:', notJoinedMessages);
+
+		const notJoinedMessageEditPromises = notJoinedMessages.map((notJoinedMessage) =>
+			notJoinedMessage!.edit({ embeds: [notJoinedEmbed], components: [] })
+		);
+
+		await Promise.all(notJoinedMessageEditPromises);
+	}
+
+	protected async sendStartEmbed(embed: MessageEmbed, interaction: CommandInteraction) {
+		await interaction.editReply({ embeds: [embed] });
+		await this.messageAllPlayers({ embeds: [embed] });
 	}
 
 	private async messageAllPlayers(options: string | MessageOptions) {
-		await Promise.all(this.players.map((_player, playerID) => container.client.users.send(playerID, options)));
+		await Promise.all(this.players.map((_player, playerID) => container.client.users.send(playerID, options).catch(() => null)));
 	}
 }

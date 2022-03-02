@@ -1,13 +1,14 @@
-import { Collection, GuildMember, Message, Snowflake, TextBasedChannel, TextChannel } from 'discord.js';
-import { EmbedColor, AcceptedAnswer, GameType } from '#types/Enums';
+import { Collection, CommandInteraction, GuildMember, Message, MessageEmbed, Snowflake, TextBasedChannel, TextChannel } from 'discord.js';
+import { EmbedColor, AcceptedAnswer } from '#types/Enums';
 import { cleanName, resolveThumbnail } from '#utils/audio';
 import { createEmbed } from '#utils/responses';
 import { Game, Player } from '#game/Game';
 import { PermissionFlagsBits } from 'discord-api-types/v9';
 import { bold, userMention } from '@discordjs/builders';
+import { Gametype } from '#game/Gametypes';
 
 export class StandardGame extends Game {
-	public readonly gameType = GameType.Standard;
+	public readonly gametype = Gametype.Standard;
 
 	public async guess(message: Message) {
 		const guess = cleanName(message.content);
@@ -131,10 +132,14 @@ export class StandardGame extends Game {
 		this.players = new Collection(voiceChannelMembers.map<[Snowflake, Player]>((member) => [member.id, { ...basePlayer, id: member.id }]));
 	}
 
+	protected async sendStartEmbed(embed: MessageEmbed, interaction: CommandInteraction) {
+		await interaction.editReply({ embeds: [embed] });
+	}
+
 	/**
 	 * Processes a guess returning whether either the song name or primary artist was guessed.
 	 */
-	protected processGuess(guess: string, user: Snowflake) {
+	private processGuess(guess: string, user: Snowflake) {
 		switch (this.acceptedAnswer) {
 			case AcceptedAnswer.Song: {
 				return this.processSongGuess(guess, user) ? AcceptedAnswer.Song : null;

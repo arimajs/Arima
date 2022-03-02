@@ -12,14 +12,6 @@ export enum Rank {
 }
 
 /**
- * Enum to identify what type of game is being played. Currently there's only one...
- */
-export enum GameType {
-	Standard = 'standard',
-	Binb = 'binb'
-}
-
-/**
  * This setting will be configured per-game by the user, and defaults to `AcceptedAnswer.Either`.
  */
 export enum AcceptedAnswer {

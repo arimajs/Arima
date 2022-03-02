@@ -10,7 +10,9 @@ export class UserPrecondition extends Precondition {
 		_command: never,
 		{ shouldBePlaying = true, shouldBeHost = false }: Precondition.Context
 	) {
-		const game = this.container.games.get(interaction.guildId!);
+		const game = interaction.guild
+			? this.container.games.get(interaction.guild.id)!
+			: this.container.games.find((game) => game.players.has(interaction.user.id))!;
 
 		if (game && !shouldBePlaying) {
 			return this.error({ message: "There's already a game being played" });
@@ -20,6 +22,7 @@ export class UserPrecondition extends Precondition {
 			return this.error({ message: "You aren't playing a game" });
 		}
 
+		// TODO: Allow commands to be used in DMs for a BinbGame
 		if (shouldBePlaying && game!.textChannel.id !== interaction.channelId) {
 			return this.error({ message: 'Please only use game-related commands in the channel where the game is being played' });
 		}

@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/member-ordering */
-import { AcceptedAnswer, PlaylistResolutionError, GameType } from '#types/Enums';
+import type { GameData } from '#game/Game';
+import { AcceptedAnswer, PlaylistResolutionError } from '#types/Enums';
 import { CommandOptionsRunTypeEnum, isErr } from '@sapphire/framework';
 import { hideLinkEmbed, hyperlink } from '@discordjs/builders';
 import { PermissionFlagsBits } from 'discord-api-types/v9';
+import { Games, Gametype } from '#game/Gametypes';
 import { resolvePlaylist } from '#utils/audio';
 import { ArimaCommand } from '#structures/ArimaCommand';
 import { ApplyOptions } from '@sapphire/decorators';
 import { sendError } from '#utils/responses';
 import { env } from '#root/config';
-import { type GameData, Games } from '#game/Game';
 
 @ApplyOptions<ArimaCommand.Options>({
 	description: 'Start a new music quiz game!',
@@ -59,7 +60,7 @@ export class UserCommand extends ArimaCommand {
 			return sendError(interaction, UserCommand.errorDescriptors[result.error]);
 		}
 
-		const gameType = (interaction.options.getString('gametype') as GameType) ?? GameType.Standard;
+		const gameType = (interaction.options.getString('gametype') as Gametype) ?? Gametype.Standard;
 		const gameData: GameData = {
 			host: interaction.user,
 			playlist: result.value,
@@ -71,11 +72,9 @@ export class UserCommand extends ArimaCommand {
 		};
 
 		const game = new Games[gameType](gameData);
-
+		this.container.games.set(interaction.guild.id, game);
 		await game.queue.player.join(channel.id, { deaf: true });
-		await game.start(interaction);
-
-		return this.container.games.set(interaction.guild.id, game);
+		return game.start(interaction);
 	}
 
 	public override registerApplicationCommands(registry: ArimaCommand.Registry) {
@@ -95,8 +94,8 @@ export class UserCommand extends ArimaCommand {
 							.setName('gametype')
 							.setDescription('The game format to play! (Optional)')
 							.addChoices([
-								['Trivia in this channel (Default)', GameType.Standard],
-								['Competitive in DMs', GameType.Binb]
+								['Trivia in this channel (Default)', Gametype.Standard],
+								['Competitive in DMs', Gametype.Binb]
 							])
 							.setRequired(false)
 					)
