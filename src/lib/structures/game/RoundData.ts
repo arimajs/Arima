@@ -12,12 +12,12 @@ export class RoundData {
 	public readonly startTime = Date.now();
 
 	public constructor(song: string, artists: string[]) {
-		this.validSongVariations = cleanSongName(song);
+		const cleanedArtistNames = artists.map((artist) => cleanArtistName(artist));
+		this.validSongVariations = cleanSongName(song, cleanedArtistNames);
 
-		const cleanedArtistNames = artists.map<[string, Set<Snowflake>]>((artist) => [cleanArtistName(artist), new Set<Snowflake>()]);
-		this.artistGuessers = new Map(cleanedArtistNames);
+		this.artistGuessers = new Map(cleanedArtistNames.map((artist) => [artist, new Set<Snowflake>()]));
 
 		// The first key and value have their own respective properties for utility purposes.
-		[[this.primaryArtist, this.primaryArtistGuessers]] = cleanedArtistNames;
+		[[this.primaryArtist, this.primaryArtistGuessers]] = this.artistGuessers;
 	}
 }
