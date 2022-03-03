@@ -22,7 +22,7 @@ import { setTimeout } from 'node:timers/promises';
 
 export class BinbGame extends Game {
 	public readonly gameType = GameType.Binb;
-	public override readonly acceptedAnswer: AcceptedAnswer = AcceptedAnswer.Both;
+	public override readonly acceptedAnswer = AcceptedAnswer.Both;
 
 	public async guess(message: Message) {
 		const guess = cleanName(message.content);
@@ -167,7 +167,7 @@ export class BinbGame extends Game {
 		const row = new MessageActionRow() //
 			.addComponents(
 				new MessageButton() //
-					.setCustomId(`${CustomIds.Join}|${voiceChannelMembers.first()!.guild.id}`)
+					.setCustomId(`${CustomIds.Join}|${this.guild.id}`)
 					.setLabel('Join Game')
 					.setStyle(Constants.MessageButtonStyles.SUCCESS)
 			);

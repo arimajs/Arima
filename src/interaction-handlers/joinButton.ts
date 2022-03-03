@@ -4,7 +4,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 import { CustomIds, EmbedColor } from '#types/Enums';
 import { createEmbed } from '#root/lib/utils/responses';
 
-@ApplyOptions<InteractionHandler.Options>({ interactionHandlerType: InteractionHandlerTypes.Button, enabled: true })
+@ApplyOptions<InteractionHandler.Options>({ interactionHandlerType: InteractionHandlerTypes.Button })
 export class UserInteractionHandler extends InteractionHandler {
 	public override parse(interaction: ButtonInteraction) {
 		const [customId, guildId] = interaction.customId.split('|');

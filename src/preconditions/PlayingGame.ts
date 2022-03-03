@@ -1,5 +1,6 @@
 import type { CommandInteraction } from 'discord.js';
 import { Precondition } from '@sapphire/framework';
+import { fetchGame } from '#utils/common';
 
 // Asserts a game is or is not being played in a guild. If a game should be playing, will also assert that the
 // interaction author is playing the game. Should always be used with `runIn` set to a `GUILD_*` value.
@@ -10,9 +11,7 @@ export class UserPrecondition extends Precondition {
 		_command: never,
 		{ shouldBePlaying = true, shouldBeHost = false }: Precondition.Context
 	) {
-		const game = interaction.guild
-			? this.container.games.get(interaction.guild.id)!
-			: this.container.games.find((game) => game.players.has(interaction.user.id))!;
+		const game = fetchGame(interaction);
 
 		if (game && !shouldBePlaying) {
 			return this.error({ message: "There's already a game being played" });

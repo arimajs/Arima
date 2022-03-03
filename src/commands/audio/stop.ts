@@ -3,6 +3,7 @@ import { PermissionFlagsBits } from 'discord-api-types/v9';
 import { GameEndReason } from '#types/Enums';
 import { ArimaCommand } from '#structures/ArimaCommand';
 import { ApplyOptions } from '@sapphire/decorators';
+import { fetchGame } from '#utils/common';
 
 @ApplyOptions<ArimaCommand.Options>({
 	description: 'Stop an ongoing game!',
@@ -16,9 +17,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 })
 export class UserCommand extends ArimaCommand {
 	public override async chatInputRun(interaction: ArimaCommand.Interaction<'cached'>) {
-		const game = interaction.guild
-			? this.container.games.get(interaction.guild.id)!
-			: this.container.games.find((game) => game.players.has(interaction.author.id))!;
+		const game = fetchGame(interaction)!;
 		await game.end(GameEndReason.Other, interaction.reply.bind(interaction));
 	}
 }

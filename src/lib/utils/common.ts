@@ -1,3 +1,6 @@
+import type { Game } from '#game/Game';
+import { type CommandInteraction, Message } from 'discord.js';
+import { container } from '@sapphire/framework';
 /**
  * Shuffles an array in place.
  */
@@ -55,4 +58,17 @@ export const rankToString = (rank: number) => {
  */
 export const toPercent = (decimal: number) => {
 	return `${(decimal * 100).toFixed(2)}%`;
+};
+
+/**
+ * Returns a Game (if it exists) from either a Message or Interaction.
+ * @param invoker - the Message or Interaction for which to obtain the game.
+ * @returns Game if it exists, undefined otherwise.
+ */
+export const fetchGame = (invoker: Message | CommandInteraction): Game | undefined => {
+	if (invoker.guild) {
+		return container.games.get(invoker.guild.id);
+	}
+	const userId = invoker instanceof Message ? invoker.author.id : invoker.user.id;
+	return container.games.find((game) => game.players.has(userId));
 };

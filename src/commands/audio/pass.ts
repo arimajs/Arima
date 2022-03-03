@@ -4,6 +4,7 @@ import { createEmbed, sendError } from '#utils/responses';
 import { PermissionFlagsBits } from 'discord-api-types/v9';
 import { ArimaCommand } from '#structures/ArimaCommand';
 import { ApplyOptions } from '@sapphire/decorators';
+import { fetchGame } from '#utils/common';
 
 @ApplyOptions<ArimaCommand.Options>({
 	description: 'Give up on the current song! If everyone passes, the song will skip.',
@@ -17,9 +18,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 })
 export class UserCommand extends ArimaCommand {
 	public override async chatInputRun(interaction: ArimaCommand.Interaction<'cached'>) {
-		const game = interaction.guild
-			? this.container.games.get(interaction.guild.id)!
-			: this.container.games.find((game) => game.players.has(interaction.author.id))!;
+		const game = fetchGame(interaction)!;
 		if (game.round.passedPlayers.has(interaction.user.id)) {
 			return sendError(interaction, 'You have already passed this round');
 		}
