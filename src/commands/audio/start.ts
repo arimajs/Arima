@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/member-ordering */
-import { AcceptedAnswer, PlaylistResolutionError } from '#types/Enums';
+import type { GameData } from '#game/Game';
+import { AcceptedAnswer, PlaylistResolutionError, GameType } from '#types/Enums';
 import { CommandOptionsRunTypeEnum, isErr } from '@sapphire/framework';
 import { hideLinkEmbed, hyperlink } from '@discordjs/builders';
 import { PermissionFlagsBits } from 'discord-api-types/v9';
@@ -8,7 +9,16 @@ import { StandardGame } from '#game/StandardGame';
 import { ArimaCommand } from '#structures/ArimaCommand';
 import { ApplyOptions } from '@sapphire/decorators';
 import { sendError } from '#utils/responses';
+import { BinbGame } from '#game/BinbGame';
 import { env } from '#root/config';
+
+/**
+ * Map from GameTypes to Game subclasses
+ */
+const Games = {
+	[GameType.Standard]: StandardGame,
+	[GameType.Binb]: BinbGame
+};
 
 @ApplyOptions<ArimaCommand.Options>({
 	description: 'Start a new music quiz game!',
@@ -59,7 +69,8 @@ export class UserCommand extends ArimaCommand {
 			return sendError(interaction, UserCommand.errorDescriptors[result.error]);
 		}
 
-		const game = new StandardGame({
+		const gameType = (interaction.options.getString('mode') as GameType) ?? GameType.Standard;
+		const gameData: GameData = {
 			host: interaction.user,
 			playlist: result.value,
 			textChannel: interaction.channel!,
@@ -67,12 +78,12 @@ export class UserCommand extends ArimaCommand {
 			acceptedAnswer: (interaction.options.getString('answers') as AcceptedAnswer) ?? undefined,
 			goal: goal ?? undefined,
 			limit: limit ?? undefined
-		});
+		};
 
+		const game = new Games[gameType](gameData);
+		this.container.games.set(interaction.guild.id, game);
 		await game.queue.player.join(channel.id, { deaf: true });
-		await game.start(interaction);
-
-		return this.container.games.set(interaction.guild.id, game);
+		return game.start(interaction);
 	}
 
 	public override registerApplicationCommands(registry: ArimaCommand.Registry) {
@@ -86,6 +97,16 @@ export class UserCommand extends ArimaCommand {
 							.setName('url')
 							.setDescription('The URL of the Youtube/Soundcloud/Bandcamp/Spotify playlist, album, or artist to play!')
 							.setRequired(true)
+					)
+					.addStringOption((builder) =>
+						builder
+							.setName('mode')
+							.setDescription('The game mode to play! (Optional)')
+							.addChoices([
+								['Trivia in this channel (Default)', GameType.Standard],
+								['Competitive in DMs', GameType.Binb]
+							])
+							.setRequired(false)
 					)
 					.addIntegerOption((builder) =>
 						builder //

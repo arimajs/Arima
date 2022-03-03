@@ -18,6 +18,7 @@ export const getRandomThirtySecondWindow = (duration: number) => {
 };
 
 export interface SpotifyAdditions {
+	artists?: string[];
 	color?: HexColorString;
 	image?: string;
 }
@@ -59,7 +60,7 @@ const resolveSpotifyTracks = (data: ResolvedSpotifyData) => {
 
 export type Playlist = { name: string } & (
 	| { type: PlaylistType.Lavalink; tracks: string[] }
-	| ({ type: PlaylistType.Spotify; tracks: ({ name: string; artist: string } & SpotifyAdditions)[] } & SpotifyAdditions)
+	| ({ type: PlaylistType.Spotify; tracks: ({ name: string; artists: string[] } & SpotifyAdditions)[] } & SpotifyAdditions)
 );
 
 /**
@@ -102,7 +103,7 @@ export const resolveSpotifyEntity = (data: ResolvedSpotifyData): Result<Playlist
 		image: getBiggestImage(data.images),
 		tracks: filteredTracks.map((track) => ({
 			name: track.name,
-			artist: track.artists![0].name,
+			artists: track.artists!.map(({ name }) => name),
 			color: track.dominantColor,
 			image: getBiggestImage(track.album.images)
 		}))
@@ -166,7 +167,7 @@ export const getBiggestImage = (images: SpotifyImage[]): string => {
 /**
  * Generate 3 variations of the song name: Stripped prefix, stripped suffix, stripped both.
  */
-export const cleanSongName = (songName: string): string[] => {
+export const cleanSongName = (songName: string, artistNames: string[]): string[] => {
 	const normalized = convertToNormalized(songName);
 
 	// "Blank Space - Taylor Swift" -> "Blank Space"
@@ -182,13 +183,16 @@ export const cleanSongName = (songName: string): string[] => {
 	songWithoutSuffixAndPrefix = songWithoutSuffixAndPrefix.replace(/.* -\s*/, '');
 	songWithoutSuffixAndPrefix = songWithoutSuffixAndPrefix.replace(/\s*\(.*|\s*- .*/, '');
 
-	// Try a bunch of different variations to try to match the most accurate track name.
-	const validSongVariations = [
-		...[songWithoutSuffixAndPrefix, songWithoutPrefix, songWithoutSuffix].filter((str) => str !== normalized),
-		normalized
-	];
+	// Remove any strings that contain an artist as this isn't the song name.
+	const songNamesNoArtist = [songWithoutSuffixAndPrefix, songWithoutPrefix, songWithoutSuffix].filter(
+		(str) => !artistNames.some((artist) => str.includes(artist))
+	);
 
-	return validSongVariations.map((variation) => convertToAlphaNumeric(variation));
+	const validSongVariations = [...new Set([...songNamesNoArtist, normalized])];
+
+	const variations = validSongVariations.map((variation) => convertToAlphaNumeric(variation));
+	console.log(variations);
+	return variations;
 };
 
 /**

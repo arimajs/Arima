@@ -7,7 +7,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 
 @ApplyOptions<ArimaCommand.Options>({
 	description: 'Give up on the current song! If everyone passes, the song will skip.',
-	runIn: [CommandOptionsRunTypeEnum.GuildText],
+	runIn: [CommandOptionsRunTypeEnum.GuildText, CommandOptionsRunTypeEnum.Dm],
 	preconditions: [{ name: 'PlayingGame', context: { shouldBePlaying: true } }],
 	requiredClientPermissions: PermissionFlagsBits.EmbedLinks,
 	chatInputCommand: {
@@ -17,7 +17,9 @@ import { ApplyOptions } from '@sapphire/decorators';
 })
 export class UserCommand extends ArimaCommand {
 	public override async chatInputRun(interaction: ArimaCommand.Interaction<'cached'>) {
-		const game = this.container.games.get(interaction.guild.id)!;
+		const game = interaction.guild
+			? this.container.games.get(interaction.guild.id)!
+			: this.container.games.find((game) => game.players.has(interaction.author.id))!;
 		if (game.round.passedPlayers.has(interaction.user.id)) {
 			return sendError(interaction, 'You have already passed this round');
 		}
@@ -25,7 +27,7 @@ export class UserCommand extends ArimaCommand {
 		const { passedPlayers } = game.round;
 		passedPlayers.add(interaction.user.id);
 
-		let embedDescription = `${userMention(interaction.user.id)} has passed! 🏃‍♂️`;
+		let embedDescription = `${userMention(interaction.user.id)} has passed! 🏃`;
 
 		const everyonePassed = passedPlayers.size === game.players.size;
 		if (!everyonePassed) {

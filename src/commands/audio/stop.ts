@@ -6,7 +6,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 
 @ApplyOptions<ArimaCommand.Options>({
 	description: 'Stop an ongoing game!',
-	runIn: [CommandOptionsRunTypeEnum.GuildText],
+	runIn: [CommandOptionsRunTypeEnum.GuildText, CommandOptionsRunTypeEnum.Dm],
 	preconditions: [{ name: 'PlayingGame', context: { shouldBePlaying: true } }],
 	requiredClientPermissions: PermissionFlagsBits.EmbedLinks,
 	chatInputCommand: {
@@ -16,7 +16,9 @@ import { ApplyOptions } from '@sapphire/decorators';
 })
 export class UserCommand extends ArimaCommand {
 	public override async chatInputRun(interaction: ArimaCommand.Interaction<'cached'>) {
-		const game = this.container.games.get(interaction.guild.id)!;
+		const game = interaction.guild
+			? this.container.games.get(interaction.guild.id)!
+			: this.container.games.find((game) => game.players.has(interaction.author.id))!;
 		await game.end(GameEndReason.Other, interaction.reply.bind(interaction));
 	}
 }

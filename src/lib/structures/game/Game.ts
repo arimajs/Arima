@@ -1,7 +1,20 @@
-import type { CommandInteraction, Guild, Snowflake, GuildTextBasedChannel, User, VoiceChannel, MessageOptions, Message } from 'discord.js';
+import type {
+	CommandInteraction,
+	Guild,
+	Snowflake,
+	GuildTextBasedChannel,
+	User,
+	VoiceChannel,
+	MessageOptions,
+	Message,
+	GuildMember,
+	TextBasedChannel,
+	MessageEmbed
+} from 'discord.js';
 import type { RoundData } from '#game/RoundData';
+import type { Awaitable } from '@sapphire/utilities';
 import type { Playlist } from '#utils/audio';
-import { PlaylistType, AcceptedAnswer, GameEndReason, type GameType } from '#types/Enums';
+import { PlaylistType, AcceptedAnswer, GameEndReason, GameType } from '#types/Enums';
 import { bold, inlineCode, italic, userMention } from '@discordjs/builders';
 import { DurationFormatter, Time } from '@sapphire/time-utilities';
 import { prefixAndPluralize } from '#utils/common';
@@ -11,9 +24,9 @@ import { jaroWinkler } from '@skyra/jaro-winkler';
 import { Leaderboard } from '#game/Leaderboard';
 import { createEmbed } from '#utils/responses';
 import { AsyncQueue } from '@sapphire/async-queue';
-import { Collection } from 'discord.js';
 import { container } from '@sapphire/framework';
 import { Queue } from '#game/Queue';
+import { Collection } from 'discord.js';
 
 export interface GameData {
 	textChannel: GuildTextBasedChannel;
@@ -34,7 +47,7 @@ export interface Player {
 }
 
 // Might be changed in the future after more testing.
-const kGuessThreshold = 0.75 as const;
+const kGuessThreshold = 0.95 as const;
 const durationFormatter = new DurationFormatter();
 
 export abstract class Game {
@@ -47,9 +60,9 @@ export abstract class Game {
 	public readonly host: User;
 	public readonly guild: Guild;
 	public readonly acceptedAnswer: AcceptedAnswer;
-	public readonly players: Collection<Snowflake, Player>;
 	public readonly guessQueue = new AsyncQueue();
 	public round!: RoundData;
+	public players = new Collection<Snowflake, Player>();
 
 	/**
 	 * The number of points to play to. Optionally provided by the user per-game.
@@ -73,15 +86,12 @@ export abstract class Game {
 		this.queue = new Queue(this, data.playlist);
 		this.leaderboard = new Leaderboard();
 		this.streaks = new StreakCounter();
-
-		const basePlayer: Omit<Player, 'id'> = { lastGameEntryTime: Date.now(), totalPlayTime: 0, songsListenedTo: 0 };
-		const members = this.voiceChannel.members.filter(({ user }) => !user.bot);
-		const players = members.map<[Snowflake, Player]>((member) => [member.id, { ...basePlayer, id: member.id }]);
-
-		this.players = new Collection(players);
 	}
 
 	public async start(interaction: CommandInteraction) {
+		const members = this.voiceChannel.members.filter(({ user }) => !user.bot);
+		await this.getPlayers(members);
+
 		let answerTypeString = '';
 		if ([AcceptedAnswer.Song, AcceptedAnswer.Artist].includes(this.acceptedAnswer)) {
 			answerTypeString = this.acceptedAnswer;
@@ -112,10 +122,9 @@ export abstract class Game {
 			embed.setFooter({ text: `Playing to ${this.goal} points` });
 		}
 
-		await Promise.all([this.queue.next(), interaction.editReply({ embeds: [embed] })]);
+		await Promise.all([this.queue.next(), this.sendStartEmbed(embed, interaction)]);
 	}
 
-	// This may become abstract later if the different modes should score differently.
 	@UseRequestContext()
 	public async end(reason: GameEndReason, sendFn: (options: MessageOptions) => Promise<unknown> = this.textChannel.send.bind(this.textChannel)) {
 		container.games.delete(this.guild.id);
@@ -157,7 +166,7 @@ export abstract class Game {
 			const promises: Promise<Message>[] = [];
 
 			for (const player of this.players.values()) {
-				const songsGuessedCorrectly = this.leaderboard.get(player.id) ?? 0;
+				const score = this.leaderboard.get(player.id) ?? 0;
 
 				let timePlayed = player.totalPlayTime;
 
@@ -167,9 +176,9 @@ export abstract class Game {
 				}
 
 				const isWinner = player.id === leader?.id;
-				const multiplier = isWinner ? 1500 : 1000;
+				const multiplier = isWinner && this.players.size > 1 ? 1500 : 1000;
 
-				const points = Math.round((songsGuessedCorrectly / player.songsListenedTo) * (timePlayed / Time.Minute) * multiplier);
+				const points = Math.round((score / this.calcPointsDivisor(player.songsListenedTo)) * (timePlayed / Time.Minute) * multiplier);
 
 				const existingMember = existingMembers.find(({ userId }) => userId === player.id);
 				const member = existingMember ?? container.db.members.create({ userId: player.id, guildId: this.guild.id });
@@ -189,11 +198,11 @@ export abstract class Game {
 				}
 
 				const rankedUp = originalRank !== member.rank;
-				if (reason !== GameEndReason.TextChannelDeleted && (songsGuessedCorrectly || rankedUp)) {
+				if (reason !== GameEndReason.TextChannelDeleted && (score || rankedUp)) {
 					let content = `${userMention(player.id)}, thanks for playing! You listened to ${prefixAndPluralize(
 						'song',
 						player.songsListenedTo
-					)}, guessed ${songsGuessedCorrectly} of them correctly, `;
+					)}, scored ${score}, `;
 
 					content +=
 						originalLevel === member.level
@@ -221,28 +230,47 @@ export abstract class Game {
 	public abstract guess(guessMessage: Message): Promise<void>;
 
 	/**
+	 * @returns if the channel is where guesses are made for this game
+	 */
+	public abstract validGuessChannel(channel: TextBasedChannel): boolean;
+
+	/**
 	 * Handles game-specific behaviour for when the track ends.
 	 */
 	public abstract onTrackEnd(): Promise<void>;
 
 	/**
+	 * Calculates the points divisor for a player
+	 * Used in end()
+	 */
+	protected abstract calcPointsDivisor(songsListenedTo: number): number;
+
+	protected abstract getPlayers(voiceChannelMembers: Collection<string, GuildMember>): Awaitable<void>;
+
+	protected abstract sendStartEmbed(embed: MessageEmbed, interaction: CommandInteraction): Promise<void>;
+
+	/**
 	 * Appends user to first guessedArtist list they haven't guessed.
-	 * @returns true if a player guesses the primary artist.
+	 * @returns the artist that was guessed or null if none guessed
 	 */
 	protected processArtistGuess(guess: string, user: Snowflake) {
 		for (const [artist, guessers] of this.round.artistGuessers.entries()) {
-			if (guessers.includes(user)) {
+			if (guessers.has(user)) {
 				continue;
 			}
 
 			const match = guess === artist || jaroWinkler(guess, artist) >= kGuessThreshold;
 			if (match) {
-				guessers.push(user);
-				return artist === this.round.primaryArtist;
+				guessers.add(user);
+				if (artist === this.round.primaryArtist && this.round.songGuessers.has(user)) {
+					this.round.doubleGuessers.push(user);
+				}
+
+				return artist;
 			}
 		}
 
-		return false;
+		return null;
 	}
 
 	/**
@@ -253,7 +281,7 @@ export abstract class Game {
 		const { validSongVariations, songGuessers } = this.round;
 
 		// Don't process if they've already guessed it.
-		if (songGuessers.includes(user)) {
+		if (songGuessers.has(user)) {
 			return false;
 		}
 
@@ -265,7 +293,11 @@ export abstract class Game {
 		const match = validSongVariations.includes(cleaned) || validSongVariations.some((str) => jaroWinkler(cleaned, str) >= kGuessThreshold);
 
 		if (match) {
-			songGuessers.push(user);
+			songGuessers.add(user);
+			const { primaryArtistGuessers, doubleGuessers } = this.round;
+			if (primaryArtistGuessers.has(user)) {
+				doubleGuessers.push(user);
+			}
 		}
 
 		return match;

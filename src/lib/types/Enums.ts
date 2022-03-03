@@ -12,13 +12,6 @@ export enum Rank {
 }
 
 /**
- * Enum to identify what type of game is being played. Currently there's only one...
- */
-export enum GameType {
-	Standard = 'standard'
-}
-
-/**
  * This setting will be configured per-game by the user, and defaults to `AcceptedAnswer.Either`.
  */
 export enum AcceptedAnswer {
@@ -26,6 +19,14 @@ export enum AcceptedAnswer {
 	Artist = 'artist',
 	Either = 'either',
 	Both = 'both'
+}
+
+/**
+ * Enum to identify what type of game is being played.
+ */
+export enum GameType {
+	Standard = 'standard',
+	Binb = 'binb'
 }
 
 /**
@@ -86,4 +87,11 @@ export enum EmbedColor {
 	 * Used when reporting errors.
 	 */
 	Error = Constants.Colors.RED
+}
+
+/**
+ * CustomIds of interactions.
+ */
+export const enum CustomIds {
+	Join = 'join-button'
 }

@@ -58,7 +58,7 @@ export class Queue {
 		if (nextTrack) {
 			if (typeof nextTrack !== 'string') {
 				// This is what will be searched on Youtube to try to get the most accurate results.
-				const displayName = `${nextTrack.name} - ${nextTrack.artist}`;
+				const displayName = `${nextTrack.name} - ${nextTrack.artists[0]}`;
 				const cachedTrack = Queue.spotifySongCache.get<ExtendedTrack>(displayName);
 
 				if (cachedTrack) {
@@ -68,8 +68,8 @@ export class Queue {
 					if (response.loadType === LoadType.SearchResult) {
 						[nextTrackFull] = response.tracks;
 
-						// Keep the original artist and track name.
-						nextTrackFull.info.author = nextTrack.artist;
+						// Keep the original artists and track name.
+						nextTrackFull.info.artists = nextTrack.artists;
 						nextTrackFull.info.title = nextTrack.name;
 
 						// Add on some new spicy properties because we can and it would be a waste not to.
@@ -85,7 +85,7 @@ export class Queue {
 			}
 
 			this.nowPlaying = nextTrackFull ?? { track: nextTrack as string, info: await this.player.node.decode(nextTrack as string) };
-			this.game.round = new RoundData(this.nowPlaying.info.title, [this.nowPlaying.info.author]);
+			this.game.round = new RoundData(this.nowPlaying.info.title, this.nowPlaying.info.artists!);
 			await this.player.play(this.nowPlaying, getRandomThirtySecondWindow(this.nowPlaying.info.length));
 		} else {
 			await this.game.end(GameEndReason.PlaylistEnded);
