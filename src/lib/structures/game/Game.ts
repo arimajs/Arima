@@ -34,7 +34,7 @@ export interface Player {
 }
 
 // Might be changed in the future after more testing.
-const kGuessThreshold = 0.75 as const;
+const kGuessThreshold = 0.95 as const;
 const durationFormatter = new DurationFormatter();
 
 export abstract class Game {

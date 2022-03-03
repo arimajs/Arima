@@ -166,7 +166,7 @@ export const getBiggestImage = (images: SpotifyImage[]): string => {
 /**
  * Generate 3 variations of the song name: Stripped prefix, stripped suffix, stripped both.
  */
-export const cleanSongName = (songName: string): string[] => {
+export const cleanSongName = (songName: string, artistNames: string[]): string[] => {
 	const normalized = convertToNormalized(songName);
 
 	// "Blank Space - Taylor Swift" -> "Blank Space"
@@ -182,11 +182,12 @@ export const cleanSongName = (songName: string): string[] => {
 	songWithoutSuffixAndPrefix = songWithoutSuffixAndPrefix.replace(/.* -\s*/, '');
 	songWithoutSuffixAndPrefix = songWithoutSuffixAndPrefix.replace(/\s*\(.*|\s*- .*/, '');
 
-	// Try a bunch of different variations to try to match the most accurate track name.
-	const validSongVariations = [
-		...[songWithoutSuffixAndPrefix, songWithoutPrefix, songWithoutSuffix].filter((str) => str !== normalized),
-		normalized
-	];
+	// Remove any strings that contain an artist as this isn't the song name.
+	const songNamesNoArtist = [songWithoutSuffixAndPrefix, songWithoutPrefix, songWithoutSuffix].filter(
+		(str) => !artistNames.some((artist) => str.includes(artist))
+	);
+
+	const validSongVariations = [...new Set([...songNamesNoArtist, normalized])];
 
 	return validSongVariations.map((variation) => convertToAlphaNumeric(variation));
 };
