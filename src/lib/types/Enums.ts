@@ -14,7 +14,7 @@ export enum Rank {
 /**
  * Enum to identify what type of game is being played. Currently there's only one...
  */
-export enum GameType {
+export const enum GameType {
 	Standard = 'standard'
 }
 
@@ -31,7 +31,7 @@ export enum AcceptedAnswer {
 /**
  * Identifiers to give context to why a game has ended. Descriptions of each are located where they are used.
  */
-export enum GameEndReason {
+export const enum GameEndReason {
 	HostLeft,
 	PlaylistEnded,
 	GoalMet,
@@ -44,7 +44,7 @@ export enum GameEndReason {
 /**
  * Event types from the Lavalink `event` event we listen to (mouthful).
  */
-export enum LavalinkEvent {
+export const enum LavalinkEvent {
 	TrackEnd = 'TrackEndEvent',
 	TrackStuck = 'TrackStuckEvent',
 	TrackException = 'TrackExceptionEvent'
@@ -53,7 +53,7 @@ export enum LavalinkEvent {
 /**
  * The type of a playlist; useful as a typeguard for typescript.
  */
-export enum PlaylistType {
+export const enum PlaylistType {
 	Spotify,
 	Lavalink
 }
@@ -61,7 +61,7 @@ export enum PlaylistType {
 /**
  * Identifiers to give context to why a playlist could not be resolved from user input.
  */
-export enum PlaylistResolutionError {
+export const enum PlaylistResolutionError {
 	NotFound,
 	NotSuccessful,
 	NotPlaylist,
