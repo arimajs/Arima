@@ -1,16 +1,15 @@
 /* eslint-disable @typescript-eslint/member-ordering */
+import type { ExtendedTrack, Playlist } from '#types/Playlist';
 import type { Snowflake } from 'discord.js';
 import type { Game } from '#game/Game';
-import { getRandomThirtySecondWindow, type SpotifyAdditions, type Playlist } from '#utils/audio';
-import { LoadType, type Track, type IncomingEventTrackExceptionPayload, type TrackInfo } from '@skyra/audio';
+import { getRandomThirtySecondWindow } from '#utils/audio';
+import { LoadType, type IncomingEventTrackExceptionPayload } from '@skyra/audio';
 import { GameEndReason, LavalinkEvent } from '#types/Enums';
 import { container } from '@sapphire/framework';
 import { RoundData } from '#game/RoundData';
 import { shuffle } from '#utils/common';
 import { Time } from '@sapphire/time-utilities';
 import NodeCache from 'node-cache';
-
-type ExtendedTrack = Track & { info: TrackInfo & SpotifyAdditions };
 
 export class Queue {
 	/**

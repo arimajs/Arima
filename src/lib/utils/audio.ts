@@ -1,7 +1,7 @@
-import type { HexColorString } from 'discord.js';
+import type { ResolvedSpotifyData, SpotifyTrack, Playlist, ExtendedTrack, SpotifyImage } from '#types/Playlist';
 import { container, isOk, ok, err, fromAsync, type Result } from '@sapphire/framework';
-import { LoadType, type TrackInfo, type PlaylistInfo } from '@skyra/audio';
-import { getData as getSpotifyData, type Tracks } from 'spotify-url-info';
+import { LoadType, type PlaylistInfo } from '@skyra/audio';
+import { getData as getSpotifyData } from 'spotify-url-info';
 import { PlaylistResolutionError, PlaylistType } from '#types/Enums';
 import { parseURL } from '@sapphire/utilities';
 import { Time } from '@sapphire/time-utilities';
@@ -17,50 +17,29 @@ export const getRandomThirtySecondWindow = (duration: number) => {
 	return { start, end: start + 30 * Time.Second };
 };
 
-export interface SpotifyAdditions {
-	color?: HexColorString;
-	image?: string;
-}
-
-export interface SpotifyImage {
-	url: string;
-	width: number;
-}
-
-export interface ExtendedTrack extends Tracks {
-	album: { images: SpotifyImage[] };
-	dominantColor: HexColorString;
-}
-
-export interface ResolvedSpotifyData {
-	name: string;
-	dominantColor: HexColorString;
-	images: SpotifyImage[];
-	tracks: { items: ExtendedTrack[] | { track: ExtendedTrack }[] } | ExtendedTrack[];
-}
+/**
+ * A typeguard that guarrantees that {@link ResolvedSpotifyData} is a playlist by checking if a property exists on its items.
+ */
+export const isPlaylist = (items: SpotifyTrack[] | { track: SpotifyTrack }[]): items is { track: SpotifyTrack }[] => {
+	return 'track' in items;
+};
 
 /**
  * Resolves scraped Spotify artist, playlist, or album data into the tracks.
  */
 const resolveSpotifyTracks = (data: ResolvedSpotifyData) => {
 	if ('items' in data.tracks) {
-		// Is a playlist.
-		if ('track' in data.tracks.items[0]) {
-			return data.tracks.items.map((t) => (t as { track: ExtendedTrack }).track);
+		if (isPlaylist(data.tracks.items)) {
+			return data.tracks.items.map(({ track }) => track);
 		}
 
 		// Is an album.
-		return data.tracks.items as ExtendedTrack[];
+		return data.tracks.items;
 	}
 
 	// Is an artist.
 	return data.tracks;
 };
-
-export type Playlist = { name: string } & (
-	| { type: PlaylistType.Lavalink; tracks: string[] }
-	| ({ type: PlaylistType.Spotify; tracks: ({ name: string; artist: string } & SpotifyAdditions)[] } & SpotifyAdditions)
-);
 
 /**
  * Resolve a playlist/album/artist from a URL.
@@ -141,7 +120,7 @@ export const resolveLavalinkURL = async (url: string): Promise<Result<Playlist, 
 /**
  * Resolve thumbnail from a Youtube or Spotify entity.
  */
-export const resolveThumbnail = (info: TrackInfo & SpotifyAdditions) => {
+export const resolveThumbnail = (info: ExtendedTrack['info']) => {
 	if (info.image) {
 		return info.image;
 	}
