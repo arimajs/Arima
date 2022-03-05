@@ -18,6 +18,7 @@ export const getRandomThirtySecondWindow = (duration: number) => {
 };
 
 export interface SpotifyAdditions {
+	artists?: string[];
 	color?: HexColorString;
 	image?: string;
 }
@@ -59,7 +60,7 @@ const resolveSpotifyTracks = (data: ResolvedSpotifyData) => {
 
 export type Playlist = { name: string } & (
 	| { type: PlaylistType.Lavalink; tracks: string[] }
-	| ({ type: PlaylistType.Spotify; tracks: ({ name: string; artist: string } & SpotifyAdditions)[] } & SpotifyAdditions)
+	| ({ type: PlaylistType.Spotify; tracks: ({ name: string; artists: string[] } & SpotifyAdditions)[] } & SpotifyAdditions)
 );
 
 /**
@@ -102,7 +103,7 @@ export const resolveSpotifyEntity = (data: ResolvedSpotifyData): Result<Playlist
 		image: getBiggestImage(data.images),
 		tracks: filteredTracks.map((track) => ({
 			name: track.name,
-			artist: track.artists![0].name,
+			artists: track.artists!.map(({ name }) => name),
 			color: track.dominantColor,
 			image: getBiggestImage(track.album.images)
 		}))
