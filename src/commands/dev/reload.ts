@@ -14,7 +14,7 @@ export class UserCommand extends ArimaCommand {
 		const type = interaction.options.getSubcommand(true);
 		const name = interaction.options.getString('name', true);
 
-		const timer = new Stopwatch().stop();
+		const timer = new Stopwatch().reset();
 
 		if (type === 'piece') {
 			const pieces = new Collection<string, Piece>().concat(...this.container.stores.values());
