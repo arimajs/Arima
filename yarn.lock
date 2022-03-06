@@ -1457,7 +1457,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swc/core@npm:^1.2.146":
+"@swc/core@npm:^1.2.148":
   version: 1.2.148
   resolution: "@swc/core@npm:1.2.148"
   dependencies:
@@ -2157,7 +2157,7 @@ __metadata:
     "@sapphire/utilities": ^3.3.0
     "@skyra/audio": ^2.0.0
     "@skyra/jaro-winkler": ^1.0.0
-    "@swc/core": ^1.2.146
+    "@swc/core": ^1.2.148
     "@swc/jest": ^0.2.20
     "@types/jest": ^27.4.1
     "@types/node": ^17.0.21
@@ -2169,24 +2169,24 @@ __metadata:
     discord-api-types: ^0.27.3
     discord.js: ^13.6.0
     dotenv: ^16.0.0
-    envalid: ^7.2.2
+    envalid: ^7.3.0
     eslint: ^8.10.0
-    eslint-config-prettier: ^8.4.0
+    eslint-config-prettier: ^8.5.0
     eslint-plugin-prettier: ^4.0.0
     eslint-plugin-unicorn: ^41.0.0
     fuse.js: ^6.5.3
     husky: ^7.0.4
     jest: ^27.5.1
-    lint-staged: ^12.3.4
+    lint-staged: ^12.3.5
     node-cache: ^5.1.2
     pm2: ^5.2.0
     prettier: ^2.5.1
     pretty-quick: ^3.1.3
-    spotify-url-info: ^2.2.6
+    spotify-url-info: ^2.2.7
     statcord.js: ^3.4.1
     tslib: ^2.3.1
     tsup: ^5.11.13
-    typescript: ^4.5.5
+    typescript: ^4.6.2
     utf-8-validate: ^5.0.8
     zlib-sync: ^0.1.7
   dependenciesMeta:
@@ -3364,7 +3364,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"envalid@npm:^7.2.2":
+"envalid@npm:^7.3.0":
   version: 7.3.0
   resolution: "envalid@npm:7.3.0"
   dependencies:
@@ -3673,7 +3673,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-prettier@npm:^8.4.0":
+"eslint-config-prettier@npm:^8.4.0, eslint-config-prettier@npm:^8.5.0":
   version: 8.5.0
   resolution: "eslint-config-prettier@npm:8.5.0"
   peerDependencies:
@@ -5617,7 +5617,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lint-staged@npm:^12.3.4":
+"lint-staged@npm:^12.3.5":
   version: 12.3.5
   resolution: "lint-staged@npm:12.3.5"
   dependencies:
@@ -7441,7 +7441,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"spotify-url-info@npm:^2.2.6":
+"spotify-url-info@npm:^2.2.7":
   version: 2.2.7
   resolution: "spotify-url-info@npm:2.2.7"
   dependencies:
@@ -8065,7 +8065,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^4.4.3, typescript@npm:^4.5.5":
+"typescript@npm:^4.4.3, typescript@npm:^4.5.5, typescript@npm:^4.6.2":
   version: 4.6.2
   resolution: "typescript@npm:4.6.2"
   bin:
@@ -8075,7 +8075,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^4.4.3#~builtin<compat/typescript>, typescript@patch:typescript@^4.5.5#~builtin<compat/typescript>":
+"typescript@patch:typescript@^4.4.3#~builtin<compat/typescript>, typescript@patch:typescript@^4.5.5#~builtin<compat/typescript>, typescript@patch:typescript@^4.6.2#~builtin<compat/typescript>":
   version: 4.6.2
   resolution: "typescript@patch:typescript@npm%3A4.6.2#~builtin<compat/typescript>::version=4.6.2&hash=bda367"
   bin:
