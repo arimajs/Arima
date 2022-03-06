@@ -1,5 +1,6 @@
 import type { HexColorString, Snowflake } from 'discord.js';
 import { SerializedPrimaryKey, PrimaryKey, Entity, Property, OptionalProps, Embedded, Embeddable } from '@mikro-orm/core';
+import { ObjectId } from '@mikro-orm/mongodb';
 
 @Embeddable()
 export class Track {
@@ -13,8 +14,19 @@ export class Track {
 	public color?: HexColorString;
 }
 
-@Embeddable()
+@Entity()
 export class Playlist {
+	public [OptionalProps]?: 'track' | 'createdAt';
+
+	@PrimaryKey()
+	public _id!: ObjectId;
+
+	@SerializedPrimaryKey()
+	public id!: string;
+
+	@Property({ type: 'string' })
+	public creator!: Snowflake;
+
 	@Property()
 	public name!: string;
 
@@ -23,18 +35,4 @@ export class Playlist {
 
 	@Property()
 	public createdAt: Date = new Date();
-}
-
-@Entity()
-export class User {
-	public [OptionalProps]?: 'playlists';
-
-	@PrimaryKey({ type: 'string' })
-	public _id!: Snowflake;
-
-	@SerializedPrimaryKey({ type: 'string' })
-	public id!: Snowflake;
-
-	@Embedded(() => Playlist, { array: true })
-	public playlists: Playlist[] = [];
 }
