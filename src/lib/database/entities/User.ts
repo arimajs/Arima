@@ -18,7 +18,7 @@ export class Playlist {
 	@Property()
 	public name!: string;
 
-	@Embedded()
+	@Embedded(() => Track, { array: true })
 	public tracks: Track[] = [];
 
 	@Property()
