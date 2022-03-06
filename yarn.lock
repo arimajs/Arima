@@ -1168,7 +1168,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sapphire/decorators@npm:^4.2.5":
+"@sapphire/decorators@npm:^4.2.6":
   version: 4.2.6
   resolution: "@sapphire/decorators@npm:4.2.6"
   dependencies:
@@ -1186,7 +1186,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sapphire/discord.js-utilities@npm:^4.8.1":
+"@sapphire/discord.js-utilities@npm:^4.8.1, @sapphire/discord.js-utilities@npm:^4.8.2":
   version: 4.8.2
   resolution: "@sapphire/discord.js-utilities@npm:4.8.2"
   dependencies:
@@ -2144,8 +2144,8 @@ __metadata:
     "@mikro-orm/core": ^5.0.5
     "@mikro-orm/mongodb": ^5.0.5
     "@sapphire/async-queue": ^1.2.0
-    "@sapphire/decorators": ^4.2.5
-    "@sapphire/discord.js-utilities": ^4.8.1
+    "@sapphire/decorators": ^4.2.6
+    "@sapphire/discord.js-utilities": ^4.8.2
     "@sapphire/eslint-config": ^4.2.2
     "@sapphire/framework": next
     "@sapphire/plugin-logger": ^2.1.3
