@@ -19,7 +19,7 @@ import { chunk } from '@sapphire/utilities';
 		idHints: ['937411028780736642']
 	}
 })
-export class UserCommand extends ArimaCommand {
+export class LeaderboardCommand extends ArimaCommand {
 	@UseRequestContext()
 	public override async chatInputRun(interaction: ArimaCommand.Interaction<'cached'>) {
 		const { members } = this.container.db;

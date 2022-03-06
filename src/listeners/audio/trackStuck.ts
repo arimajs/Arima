@@ -7,7 +7,7 @@ import { Listener } from '@sapphire/framework';
 import { Time } from '@sapphire/time-utilities';
 
 @ApplyOptions<Listener.Options>({ event: LavalinkEvent.TrackStuck })
-export class UserListener extends Listener {
+export class TrackStuckListener extends Listener {
 	public async run(payload: IncomingEventTrackStuckPayload) {
 		if (payload.thresholdMs < 1000) {
 			return;

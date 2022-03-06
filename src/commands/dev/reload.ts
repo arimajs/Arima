@@ -9,7 +9,7 @@ import { Stopwatch } from '@sapphire/stopwatch';
 import { env } from '#root/config';
 import Fuse from 'fuse.js/dist/fuse.basic.min.js';
 
-export class UserCommand extends ArimaCommand {
+export class ReloadCommand extends ArimaCommand {
 	public override async chatInputRun(interaction: ArimaCommand.Interaction) {
 		const type = interaction.options.getSubcommand(true);
 		const name = interaction.options.getString('name', true);

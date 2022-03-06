@@ -16,7 +16,7 @@ import { env } from '#root/config';
 	requiredClientPermissions: PermissionFlagsBits.EmbedLinks,
 	preconditions: [{ name: 'PlayingGame', context: { shouldBePlaying: false } }]
 })
-export class UserCommand extends ArimaCommand {
+export class StartCommand extends ArimaCommand {
 	private static errorDescriptors = {
 		[PlaylistResolutionError.NotEnoughTracks]: 'There must be at least 5 tracks over 30 seconds long',
 		[PlaylistResolutionError.NotFound]: "I couldn't find that playlist. Please make sure you entered a valid URL",
@@ -56,7 +56,7 @@ export class UserCommand extends ArimaCommand {
 		const [result] = await Promise.all([resolvePlaylist(url), interaction.deferReply()]);
 
 		if (isErr(result)) {
-			return sendError(interaction, UserCommand.errorDescriptors[result.error]);
+			return sendError(interaction, StartCommand.errorDescriptors[result.error]);
 		}
 
 		const game = new StandardGame({

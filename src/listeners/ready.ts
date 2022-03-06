@@ -11,7 +11,7 @@ import { Node } from '@skyra/audio';
 import { URL } from 'node:url';
 
 @ApplyOptions<Listener.Options>({ once: true })
-export class UserListener extends Listener<typeof Events.ClientReady> {
+export class ReadyListener extends Listener<typeof Events.ClientReady> {
 	public async run() {
 		await Promise.all([this.createAudioNode(), this.initStatTracker()]);
 		const raw = await readFile(new URL('../package.json', rootURL), 'utf8');

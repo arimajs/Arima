@@ -15,7 +15,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 		register: true
 	}
 })
-export class UserCommand extends ArimaCommand {
+export class PassCommand extends ArimaCommand {
 	public override async chatInputRun(interaction: ArimaCommand.Interaction<'cached'>) {
 		const game = this.container.games.get(interaction.guild.id)!;
 		if (game.round.passedPlayers.has(interaction.user.id)) {

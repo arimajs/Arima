@@ -14,7 +14,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 		idHints: ['937411030118694923']
 	}
 })
-export class UserCommand extends ArimaCommand {
+export class StopCommand extends ArimaCommand {
 	public override async chatInputRun(interaction: ArimaCommand.Interaction<'cached'>) {
 		const game = this.container.games.get(interaction.guild.id)!;
 		await game.end(GameEndReason.Other, interaction.reply.bind(interaction));

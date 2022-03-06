@@ -11,7 +11,7 @@ import { toPercent } from '#utils/common';
 	description: 'View the stats of a player in this guild!',
 	runIn: [CommandOptionsRunTypeEnum.GuildText]
 })
-export class UserCommand extends ArimaCommand {
+export class StatsCommand extends ArimaCommand {
 	@UseRequestContext()
 	public override async chatInputRun(interaction: ArimaCommand.Interaction<'cached'>) {
 		const user = interaction.options.getUser('player') ?? interaction.user;

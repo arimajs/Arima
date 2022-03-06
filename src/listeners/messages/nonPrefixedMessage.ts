@@ -4,7 +4,7 @@ import { Events, Listener } from '@sapphire/framework';
 
 // The `nonPrefixedMessage` listener is used instead of the base `messageCreate` because, as it was made for message
 // commands, all permission and other related checks that would have to be done anyways would already be done.
-export class UserListener extends Listener<typeof Events.NonPrefixedMessage> {
+export class NonPrefixedMessageListener extends Listener<typeof Events.NonPrefixedMessage> {
 	public async run(message: Message) {
 		// We don't specify the `DirectMessages` intent, so it isn't currently possible for the message to be from a DM,
 		// but typescript needs reassurance.

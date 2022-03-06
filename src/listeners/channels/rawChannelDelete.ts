@@ -7,7 +7,7 @@ import { Listener } from '@sapphire/framework';
 // be ended, as there would be no way to continue (either you wouldn't have a channel to guess in or a channel to listen
 // to in)
 @ApplyOptions<Listener.Options>({ event: GatewayDispatchEvents.ChannelDelete, emitter: 'ws' })
-export class UserListener extends Listener {
+export class RawChannelDeleteListener extends Listener {
 	// The real type is `APIChannel`, but I used `APITextChannel` to avoid certain Typescript issues.
 	public async run(data: APITextChannel) {
 		// Exit early if it's a DM channel.

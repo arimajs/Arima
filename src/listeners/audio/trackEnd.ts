@@ -4,7 +4,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 import { Listener } from '@sapphire/framework';
 
 @ApplyOptions<Listener.Options>({ event: LavalinkEvent.TrackEnd })
-export class UserListener extends Listener {
+export class TrackEndListener extends Listener {
 	public async run(payload: IncomingEventTrackEndPayload) {
 		const game = this.container.games.get(payload.guildId);
 		if (!game) {

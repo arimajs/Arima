@@ -12,7 +12,7 @@ import { inlineCode } from '@discordjs/builders';
 		idHints: ['937409132519129088']
 	}
 })
-export class UserCommand extends ArimaCommand {
+export class PingCommand extends ArimaCommand {
 	public override async chatInputRun(interaction: ArimaCommand.Interaction) {
 		const embed = createEmbed('', EmbedColor.Secondary).setTitle('Ping? 🏓');
 		const message = (await interaction.reply({ embeds: [embed], fetchReply: true })) as Message;

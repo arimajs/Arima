@@ -4,7 +4,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 import { Listener } from '@sapphire/framework';
 
 @ApplyOptions<Listener.Options>({ event: ConnectionEvents.Error })
-export class UserListener extends Listener {
+export class LavalinkErrorListener extends Listener {
 	public run(error: Error) {
 		this.container.logger.fatal(`${redBright(bold('[LAVALINK]'))} ${error.stack || error.message}`);
 	}

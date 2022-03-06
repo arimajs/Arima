@@ -8,7 +8,7 @@ import { Listener } from '@sapphire/framework';
 import { env } from '#root/config';
 
 @ApplyOptions<Listener.Options>({ event: LavalinkEvent.TrackException })
-export class UserListener extends Listener {
+export class TrackExceptionListener extends Listener {
 	public async run(payload: IncomingEventTrackExceptionPayload) {
 		const game = this.container.games.get(payload.guildId);
 		if (!game) {

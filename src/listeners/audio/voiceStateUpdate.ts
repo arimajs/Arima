@@ -3,7 +3,7 @@ import { Listener, type Events } from '@sapphire/framework';
 import { GameEndReason } from '#types/Enums';
 
 // This event is run on voice channel joins, moves, or disconnects of any person in a guild channel.
-export class UserListener extends Listener<typeof Events.VoiceStateUpdate> {
+export class VoiceStateUpdateListener extends Listener<typeof Events.VoiceStateUpdate> {
 	public async run(oldState: VoiceState, newState: VoiceState) {
 		const game = this.container.games.get(newState.guild.id);
 
