@@ -1,6 +1,6 @@
 import type { CommandInteraction, Guild, Snowflake, GuildTextBasedChannel, User, VoiceChannel, MessageOptions, Message } from 'discord.js';
 import type { RoundData } from '#game/RoundData';
-import type { Playlist } from '#utils/audio';
+import type { Playlist } from '#types/Playlist';
 import { PlaylistType, AcceptedAnswer, GameEndReason, type GameType } from '#types/Enums';
 import { bold, inlineCode, italic, userMention } from '@discordjs/builders';
 import { DurationFormatter, Time } from '@sapphire/time-utilities';
