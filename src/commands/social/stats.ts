@@ -44,8 +44,8 @@ export class StatsCommand extends ArimaCommand {
 				builder
 					.setName(this.name)
 					.setDescription(this.description)
-					.addUserOption((builder) =>
-						builder //
+					.addUserOption((option) =>
+						option //
 							.setName('player')
 							.setDescription('The player to view info of (defaults to the command executor)')
 							.setRequired(false)

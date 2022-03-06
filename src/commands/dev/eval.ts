@@ -44,26 +44,26 @@ export class EvalCommand extends ArimaCommand {
 				builder
 					.setName(this.name)
 					.setDescription('[owner only] Evaluate any JavaScript code!')
-					.addStringOption((builder) =>
-						builder //
+					.addStringOption((option) =>
+						option //
 							.setName('code')
 							.setDescription('The code to evaluate')
 							.setRequired(true)
 					)
-					.addBooleanOption((builder) =>
-						builder
+					.addBooleanOption((option) =>
+						option
 							.setName('async')
 							.setDescription('Whether to allow use of async/await. If set, the result will have to be returned')
 							.setRequired(false)
 					)
-					.addBooleanOption((builder) =>
-						builder //
+					.addBooleanOption((option) =>
+						option //
 							.setName('ephemeral')
 							.setDescription('Whether to show the result ephemerally')
 							.setRequired(false)
 					)
-					.addIntegerOption((builder) =>
-						builder //
+					.addIntegerOption((option) =>
+						option //
 							.setName('depth')
 							.setDescription('The depth of the displayed return type')
 							.setRequired(false)

@@ -70,32 +70,32 @@ export class ReloadCommand extends ArimaCommand {
 				builder
 					.setName(this.name)
 					.setDescription('[owner only] Reload a piece, or a store, or all of both!')
-					.addSubcommand((builder) =>
-						builder
+					.addSubcommand((subcommand) =>
+						subcommand
 							.setName('piece')
 							.setDescription('Reload a piece')
-							.addStringOption((builder) =>
-								builder //
+							.addStringOption((option) =>
+								option //
 									.setName('name')
 									.setDescription('[owner only] The name of the piece to reload')
 									.setRequired(true)
 									.setAutocomplete(true)
 							)
 					)
-					.addSubcommand((builder) =>
-						builder
+					.addSubcommand((subcommand) =>
+						subcommand
 							.setName('store')
 							.setDescription('Reload a store')
-							.addStringOption((builder) =>
-								builder //
+							.addStringOption((option) =>
+								option //
 									.setName('name')
 									.setDescription('[owner only] The name of the store to reload')
 									.setRequired(true)
 									.setAutocomplete(true)
 							)
 					)
-					.addSubcommand((builder) =>
-						builder //
+					.addSubcommand((subcommand) =>
+						subcommand //
 							.setName('all')
 							.setDescription('[owner only] Reload all stores and pieces')
 					),

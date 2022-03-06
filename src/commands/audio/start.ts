@@ -81,28 +81,28 @@ export class StartCommand extends ArimaCommand {
 				builder
 					.setName(this.name)
 					.setDescription(this.description)
-					.addStringOption((builder) =>
-						builder
+					.addStringOption((option) =>
+						option
 							.setName('url')
 							.setDescription('The URL of the Youtube/Soundcloud/Bandcamp/Spotify playlist, album, or artist to play!')
 							.setRequired(true)
 					)
-					.addIntegerOption((builder) =>
-						builder //
+					.addIntegerOption((option) =>
+						option //
 							.setName('goal')
 							.setDescription('The amount of points to play to! (Optional)')
 							.setMinValue(5)
 							.setRequired(false)
 					)
-					.addIntegerOption((builder) =>
-						builder //
+					.addIntegerOption((option) =>
+						option //
 							.setName('limit')
 							.setDescription('The number of songs to play to! (Optional)')
 							.setMinValue(5)
 							.setRequired(false)
 					)
-					.addStringOption((builder) =>
-						builder
+					.addStringOption((option) =>
+						option
 							.setName('answers')
 							.setDescription('The type of answer to accept! (Optional)')
 							.addChoices([
