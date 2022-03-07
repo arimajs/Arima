@@ -1,22 +1,14 @@
-import type { HexColorString, Snowflake } from 'discord.js';
-import { SerializedPrimaryKey, PrimaryKey, Entity, Property, OptionalProps, Embedded, Embeddable } from '@mikro-orm/core';
+import type { Snowflake } from 'discord.js';
+import { SerializedPrimaryKey, PrimaryKey, Entity, Property, OptionalProps, ManyToMany, Collection } from '@mikro-orm/core';
 import { ObjectId } from '@mikro-orm/mongodb';
+import { Track } from '#entities/Track';
 
-@Embeddable()
-export class Track {
-	@Property()
-	public track!: string;
-
-	@Property()
-	public thumbnail?: string;
-
-	@Property()
-	public color?: HexColorString;
-}
+// TODO: Figure out cascading
+// https://discord.com/channels/737141877803057244/737142325217722478/950201322500673617
 
 @Entity()
 export class Playlist {
-	public [OptionalProps]?: 'track' | 'createdAt';
+	public [OptionalProps]?: 'tracks' | 'createdAt';
 
 	@PrimaryKey()
 	public _id!: ObjectId;
@@ -30,8 +22,8 @@ export class Playlist {
 	@Property()
 	public name!: string;
 
-	@Embedded(() => Track, { array: true })
-	public tracks: Track[] = [];
+	@ManyToMany(() => Track)
+	public tracks = new Collection<Track>(this);
 
 	@Property()
 	public createdAt: Date = new Date();
