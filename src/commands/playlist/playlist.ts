@@ -21,7 +21,7 @@ export class UserCommand extends ArimaCommand {
 		const { playlists } = this.container.db;
 
 		const name = interaction.options.getString('name', true);
-		const existingPlaylists = await playlists.find({ creator: interaction.user.id });
+		const existingPlaylists = await playlists.find({ creator: interaction.user.id }, { fields: ['name'] });
 
 		if (existingPlaylists.some((playlist) => playlist.name === name)) {
 			return sendError(interaction, 'You already have a playlist with that name');
