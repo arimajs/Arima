@@ -16,9 +16,9 @@ export class Track {
 	@Property()
 	public track!: string;
 
-	@Property()
+	@Property({ nullable: true })
 	public thumbnail?: string;
 
-	@Property({ type: 'string' })
+	@Property({ type: 'string', nullable: true })
 	public color?: HexColorString;
 }
