@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import { createEmbed, sendError } from '#utils/responses';
+import { prefixAndPluralize } from '#utils/common';
 import { UseRequestContext } from '#utils/decorators';
 import { ArimaCommand } from '#structures/ArimaCommand';
 import { ApplyOptions } from '@sapphire/decorators';
@@ -34,7 +35,7 @@ export class UserCommand extends ArimaCommand {
 		await playlists.persistAndFlush(playlist);
 
 		const embed = createEmbed('✅ Successfully created playlist!').setFooter({
-			text: `You now have ${existingPlaylists.length + 1} playlists 🎵`
+			text: `You now have ${prefixAndPluralize('playlist', existingPlaylists.length + 1)} 🎵`
 		});
 
 		await interaction.reply({ embeds: [embed] });
@@ -50,9 +51,10 @@ export class UserCommand extends ArimaCommand {
 						.setName('create')
 						.setDescription('Create a custom playlist!')
 						.addStringOption((option) =>
-							option //
+							option
 								.setName('name')
 								.setDescription("The name of the playlist! (You won't be able to edit this later)")
+								.setRequired(true)
 						)
 				)
 		);
