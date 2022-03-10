@@ -3,9 +3,6 @@ import { SerializedPrimaryKey, PrimaryKey, Entity, Property, OptionalProps, Many
 import { ObjectId } from '@mikro-orm/mongodb';
 import { Track } from '#entities/Track';
 
-// TODO: Figure out cascading
-// https://discord.com/channels/737141877803057244/737142325217722478/950201322500673617
-
 @Entity()
 export class Playlist {
 	public [OptionalProps]?: 'tracks' | 'createdAt';
