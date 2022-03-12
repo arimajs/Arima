@@ -6,6 +6,7 @@ import { bold, inlineCode, italic, userMention } from '@discordjs/builders';
 import { DurationFormatter, Time } from '@sapphire/time-utilities';
 import { prefixAndPluralize } from '#utils/common';
 import { UseRequestContext } from '#utils/decorators';
+import { kGuessThreshold } from '#utils/constants';
 import { StreakCounter } from '#game/StreakCounter';
 import { jaroWinkler } from '@skyra/jaro-winkler';
 import { Leaderboard } from '#game/Leaderboard';
@@ -33,8 +34,6 @@ export interface Player {
 	id: Snowflake;
 }
 
-// Might be changed in the future after more testing.
-const kGuessThreshold = 0.9 as const;
 const durationFormatter = new DurationFormatter();
 
 export abstract class Game {

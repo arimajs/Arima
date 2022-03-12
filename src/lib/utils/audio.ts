@@ -3,9 +3,11 @@ import { container, isOk, ok, err, fromAsync, type Result } from '@sapphire/fram
 import { LoadType, type PlaylistInfo } from '@skyra/audio';
 import { getData as getSpotifyData } from 'spotify-url-info';
 import { PlaylistResolutionError, PlaylistType } from '#types/Enums';
+import { kGuessThreshold } from '#utils/constants';
 import { parseURL } from '@sapphire/utilities';
 import { Time } from '@sapphire/time-utilities';
 import { URL } from 'node:url';
+import { jaroWinkler } from '@skyra/jaro-winkler';
 
 /**
  * Capture a random thirty seconds within a duration in seconds to mark the
@@ -162,8 +164,8 @@ export const cleanSongName = (songName: string, artistNames: string[]): string[]
 	songWithoutSuffixAndPrefix = songWithoutSuffixAndPrefix.replace(/\s*\(.*|\s*- .*/, '');
 
 	// Remove any strings that contain an artist as this isn't the song name.
-	const songNamesNoArtist = [songWithoutSuffixAndPrefix, songWithoutPrefix, songWithoutSuffix].filter(
-		(str) => !artistNames.some((artist) => str.includes(artist))
+	const songNamesNoArtist = [songWithoutSuffixAndPrefix, songWithoutPrefix, songWithoutSuffix].filter((songName) =>
+		artistNames.some((artist) => jaroWinkler(songName, artist) >= kGuessThreshold)
 	);
 
 	const validSongVariations = [...new Set([...songNamesNoArtist, normalized])];
