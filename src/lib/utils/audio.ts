@@ -164,8 +164,8 @@ export const cleanSongName = (songName: string, artistNames: string[]): string[]
 	songWithoutSuffixAndPrefix = songWithoutSuffixAndPrefix.replace(/\s*\(.*|\s*- .*/, '');
 
 	// Remove any strings that contain an artist as this isn't the song name.
-	const songNamesNoArtist = [songWithoutSuffixAndPrefix, songWithoutPrefix, songWithoutSuffix].filter((songName) =>
-		artistNames.some((artist) => jaroWinkler(songName, artist) >= kGuessThreshold)
+	const songNamesNoArtist = [songWithoutSuffixAndPrefix, songWithoutPrefix, songWithoutSuffix].filter(
+		(songName) => !artistNames.some((artist) => jaroWinkler(songName, artist) >= kGuessThreshold)
 	);
 
 	const validSongVariations = [...new Set([...songNamesNoArtist, normalized])];
@@ -174,10 +174,12 @@ export const cleanSongName = (songName: string, artistNames: string[]): string[]
 };
 
 /**
- * Currently just calls {@link cleanName}, but logic specific to artist names may be added in the future.
+ * Currently just does suffix removal, but this is not safe at all.
  */
 export const cleanArtistName = (artistName: string) => {
-	return cleanName(artistName);
+	const normalized = convertToNormalized(artistName);
+	const artistWithoutSuffix = normalized.replace(/\s*\(.*|\s*- .*/, '');
+	return convertToAlphaNumeric(artistWithoutSuffix);
 };
 
 /**
