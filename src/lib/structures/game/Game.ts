@@ -6,7 +6,7 @@ import { bold, inlineCode, italic, userMention } from '@discordjs/builders';
 import { DurationFormatter, Time } from '@sapphire/time-utilities';
 import { prefixAndPluralize } from '#utils/common';
 import { UseRequestContext } from '#utils/decorators';
-import { kGuessThreshold } from '#utils/constants';
+import { wordSimilarityThreshold } from '#utils/constants';
 import { StreakCounter } from '#game/StreakCounter';
 import { jaroWinkler } from '@skyra/jaro-winkler';
 import { Leaderboard } from '#game/Leaderboard';
@@ -234,7 +234,7 @@ export abstract class Game {
 				continue;
 			}
 
-			const match = guess === artist || jaroWinkler(guess, artist) >= kGuessThreshold;
+			const match = guess === artist || jaroWinkler(guess, artist) >= wordSimilarityThreshold;
 			if (match) {
 				guessers.push(user);
 				return artist === this.round.primaryArtist;
@@ -261,7 +261,8 @@ export abstract class Game {
 
 		// Try a bunch of different variations to try to match the most accurate track name. The guess is valid if it's
 		// an exact match or very close to any variation.
-		const match = validSongVariations.includes(cleaned) || validSongVariations.some((str) => jaroWinkler(cleaned, str) >= kGuessThreshold);
+		const match =
+			validSongVariations.includes(cleaned) || validSongVariations.some((str) => jaroWinkler(cleaned, str) >= wordSimilarityThreshold);
 
 		if (match) {
 			songGuessers.push(user);

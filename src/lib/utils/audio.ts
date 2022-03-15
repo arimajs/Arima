@@ -3,12 +3,11 @@ import { container, isOk, ok, err, fromAsync, type Result } from '@sapphire/fram
 import { LoadType, type PlaylistInfo } from '@skyra/audio';
 import { getData as getSpotifyData } from 'spotify-url-info';
 import { PlaylistResolutionError, PlaylistType } from '#types/Enums';
-import { kGuessThreshold } from '#utils/constants';
+import { wordSimilarityThreshold } from '#utils/constants';
+import { jaroWinkler } from '@skyra/jaro-winkler';
 import { parseURL } from '@sapphire/utilities';
 import { Time } from '@sapphire/time-utilities';
 import { URL } from 'node:url';
-import { jaroWinkler } from '@skyra/jaro-winkler';
-
 /**
  * Capture a random thirty seconds within a duration in seconds to mark the
  * start and end of a track.
@@ -165,12 +164,10 @@ export const cleanSongName = (songName: string, artistNames: string[]): string[]
 
 	// Remove any strings that contain an artist as this isn't the song name.
 	const songNamesNoArtist = [songWithoutSuffixAndPrefix, songWithoutPrefix, songWithoutSuffix].filter(
-		(songName) => !artistNames.some((artist) => jaroWinkler(songName, artist) >= kGuessThreshold)
+		(songName) => !artistNames.some((artist) => jaroWinkler(songName, artist) >= wordSimilarityThreshold)
 	);
 
-	const validSongVariations = [...new Set([...songNamesNoArtist, normalized])];
-
-	return validSongVariations.map((variation) => convertToAlphaNumeric(variation));
+	return [...new Set([...songNamesNoArtist, normalized].map((variation) => convertToAlphaNumeric(variation)))];
 };
 
 /**
@@ -178,7 +175,7 @@ export const cleanSongName = (songName: string, artistNames: string[]): string[]
  */
 export const cleanArtistName = (artistName: string) => {
 	const normalized = convertToNormalized(artistName);
-	const artistWithoutSuffix = normalized.replace(/\s*\(.*|\s*- .*/, '');
+	const artistWithoutSuffix = normalized.replace(/\s*\(.*|\s*- .*|VEVO$/, '');
 	return convertToAlphaNumeric(artistWithoutSuffix);
 };
 
