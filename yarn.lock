@@ -952,9 +952,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mikro-orm/core@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "@mikro-orm/core@npm:5.1.0"
+"@mikro-orm/core@npm:^5.1.1":
+  version: 5.1.1
+  resolution: "@mikro-orm/core@npm:5.1.1"
   dependencies:
     dotenv: 16.0.0
     escaya: 0.0.61
@@ -991,13 +991,13 @@ __metadata:
       optional: true
     "@mikro-orm/sqlite":
       optional: true
-  checksum: b66755ebd15c8f2c09f3357e3ea623e8526816b1bfddc2c8d942e24646912ce6011995e22e569f0b3e9092172a187fc9b8cda54353471ea71077096b1ac93482
+  checksum: d693514ddf5a9053d4510c3b036c2547de19053665e28e87875ccb1870cc4b4e6bf387263718cc3371a0494b4584db61669718ded00af43e9f85b3f6c085319e
   languageName: node
   linkType: hard
 
-"@mikro-orm/mongodb@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "@mikro-orm/mongodb@npm:5.1.0"
+"@mikro-orm/mongodb@npm:^5.1.1":
+  version: 5.1.1
+  resolution: "@mikro-orm/mongodb@npm:5.1.1"
   dependencies:
     bson: ^4.6.1
     mongodb: 4.4.1
@@ -1013,7 +1013,7 @@ __metadata:
       optional: true
     "@mikro-orm/seeder":
       optional: true
-  checksum: c484642e93aa0df006d7f30475fcf1b6a70002a43afcaa63e9404f2f4cd47780e452c440aea11e97c3fc1caa5ecebd6aa1f4cb92f5ef9f8d8b99c6b007811c1c
+  checksum: 813c85d7bfaefacd63f4fad79e2de1de24129c5c989d26dc2319d67df0bd8db93f99f6fbe1a9bae39af737c970cf31be1b455e96a64cd1b217eddaffb42ed760
   languageName: node
   linkType: hard
 
@@ -2194,8 +2194,8 @@ __metadata:
     "@commitlint/cli": ^16.2.3
     "@commitlint/config-conventional": ^16.2.1
     "@discordjs/builders": 0.12.0
-    "@mikro-orm/core": ^5.1.0
-    "@mikro-orm/mongodb": ^5.1.0
+    "@mikro-orm/core": ^5.1.1
+    "@mikro-orm/mongodb": ^5.1.1
     "@sapphire/async-queue": ^1.3.0
     "@sapphire/decorators": ^4.3.2
     "@sapphire/discord.js-utilities": ^4.9.2
@@ -2235,7 +2235,7 @@ __metadata:
     pm2: ^5.2.0
     prettier: ^2.6.0
     pretty-quick: ^3.1.3
-    spotify-url-info: ^2.2.7
+    spotify-url-info: ^2.2.9
     statcord.js: ^3.4.1
     tslib: ^2.3.1
     tsup: ^5.12.1
@@ -7506,14 +7506,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"spotify-url-info@npm:^2.2.7":
-  version: 2.2.7
-  resolution: "spotify-url-info@npm:2.2.7"
+"spotify-url-info@npm:^2.2.9":
+  version: 2.2.9
+  resolution: "spotify-url-info@npm:2.2.9"
   dependencies:
     cross-fetch: ~3.1.4
     himalaya: ~1.1.0
     spotify-uri: ~2.2.0
-  checksum: f7efc7e0af20f2c2017a726a7fe9de97c1948a16a07e1f5c5760889f1dea4a56ac0dc8f5c4d42935e8a4a412b6cf7ef505c7941f0836b2ecb95ed7895b32008e
+  checksum: 16c5916305e1a04aff4e971882955aed94877f016aa3568fe409591c1c7c1370674621a7da2c2e01329d2f4bcd37cd7e6e9b4c6205298a03bede260b6308b26a
   languageName: node
   linkType: hard
 
