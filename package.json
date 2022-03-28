@@ -10,7 +10,6 @@
 	"private": true,
 	"imports": {
 		"#root/*": "./dist/*.js",
-		"#lib/*": "./dist/lib/*.js",
 		"#types/*": "./dist/lib/types/*.js",
 		"#structures/*": "./dist/lib/structures/*.js",
 		"#game/*": "./dist/lib/structures/game/*.js",
