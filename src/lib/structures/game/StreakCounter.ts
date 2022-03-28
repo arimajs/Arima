@@ -5,14 +5,14 @@ export class StreakCounter extends Leaderboard {
 	public incStreak(...keys: Snowflake[]) {
 		// Iterate through each player in the leaderboard, and remove their streak if they are not `key`. If another
 		// player's streak is incremented, the others obviously don't have a streak anymore.
-		for (const [id, points] of this.entries()) {
+		for (const [id, points] of this) {
 			this.inc(id, keys.includes(id) ? -points : 1);
 		}
 	}
 
-	public removeAll(): void {
+	public removeAll() {
 		// If nobody guesses correctly, everybody's streak is ruined.
-		for (const [id, points] of this.entries()) {
+		for (const [id, points] of this) {
 			this.inc(id, -points);
 		}
 	}

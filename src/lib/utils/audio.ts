@@ -136,7 +136,7 @@ export const resolveThumbnail = (info: ExtendedTrack['info']) => {
 /**
  * Get the biggest image in an array of {@link SpotifyImage}s.
  */
-export const getBiggestImage = (images: SpotifyImage[]): string => {
+export const getBiggestImage = (images: SpotifyImage[]) => {
 	// Array#reduce is actually more performant than #sort in this situation.
 	// eslint-disable-next-line unicorn/no-array-reduce
 	return images.reduce((a, b) => (a.width > b.width ? a : b)).url;
@@ -145,7 +145,7 @@ export const getBiggestImage = (images: SpotifyImage[]): string => {
 /**
  * Generate 3 variations of the song name: Stripped prefix, stripped suffix, stripped both.
  */
-export const cleanSongName = (songName: string, artistNames: string[]): string[] => {
+export const cleanSongName = (songName: string, artistNames: string[]) => {
 	const normalized = convertToNormalized(songName);
 
 	// "Blank Space - Taylor Swift" -> "Blank Space"
@@ -167,7 +167,6 @@ export const cleanSongName = (songName: string, artistNames: string[]): string[]
 	);
 
 	const validSongVariations = [...new Set([...songNamesNoArtist, normalized])];
-
 	return validSongVariations.map((variation) => convertToAlphaNumeric(variation));
 };
 
