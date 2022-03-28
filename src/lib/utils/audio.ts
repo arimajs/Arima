@@ -3,6 +3,8 @@ import { container, isOk, ok, err, fromAsync, type Result } from '@sapphire/fram
 import { LoadType, type PlaylistInfo } from '@skyra/audio';
 import { getData as getSpotifyData } from 'spotify-url-info';
 import { PlaylistResolutionError, PlaylistType } from '#types/Enums';
+import { wordSimilarityThreshold } from '#utils/constants';
+import { jaroWinkler } from '@skyra/jaro-winkler';
 import { parseURL } from '@sapphire/utilities';
 import { Time } from '@sapphire/time-utilities';
 import { URL } from 'node:url';
@@ -163,18 +165,19 @@ export const cleanSongName = (songName: string, artistNames: string[]) => {
 
 	// Remove any strings that contain an artist as this isn't the song name.
 	const songNamesNoArtist = [songWithoutSuffixAndPrefix, songWithoutPrefix, songWithoutSuffix].filter(
-		(str) => !artistNames.some((artist) => str.includes(artist))
+		(songName) => !artistNames.some((artist) => jaroWinkler(songName, artist) >= wordSimilarityThreshold)
 	);
 
-	const validSongVariations = [...new Set([...songNamesNoArtist, normalized])];
-	return validSongVariations.map((variation) => convertToAlphaNumeric(variation));
+	return [...new Set([...songNamesNoArtist, normalized].map((variation) => convertToAlphaNumeric(variation)))];
 };
 
 /**
- * Currently just calls {@link cleanName}, but logic specific to artist names may be added in the future.
+ * Currently just does suffix removal, but this is not safe at all.
  */
 export const cleanArtistName = (artistName: string) => {
-	return cleanName(artistName);
+	const normalized = convertToNormalized(artistName);
+	const artistWithoutSuffix = normalized.replace(/\s*\(.*|\s*- .*|VEVO$/, '');
+	return convertToAlphaNumeric(artistWithoutSuffix);
 };
 
 /**
