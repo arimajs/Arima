@@ -1,6 +1,7 @@
-import type { Message, Snowflake, User } from 'discord.js';
+import type { Message, Snowflake } from 'discord.js';
 import { EmbedColor, AcceptedAnswer, GameType } from '#types/Enums';
 import { cleanName, resolveThumbnail } from '#utils/audio';
+import { filterNullish } from '@sapphire/utilities';
 import { createEmbed } from '#utils/responses';
 import { container } from '@sapphire/framework';
 import { Game } from '#game/Game';
@@ -51,7 +52,9 @@ export class StandardGame extends Game {
 			// Ensure players are only in here once.
 			const uniqueGuessers = [...new Set([...songGuessers, ...primaryArtistGuessers])];
 			const usersOrNull = await Promise.all(uniqueGuessers.map((id) => container.client.users.fetch(id).catch(() => null)));
-			const guessers = usersOrNull.filter(Boolean) as User[];
+
+			// eslint-disable-next-line unicorn/no-array-callback-reference
+			const guessers = usersOrNull.filter(filterNullish);
 
 			const numGuessers = guessers.length;
 			const requiresBoth = this.acceptedAnswer === AcceptedAnswer.Both;
