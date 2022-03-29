@@ -1,13 +1,17 @@
 import type { ResolvedSpotifyData, SpotifyTrack, Playlist, ExtendedTrack, SpotifyImage } from '#types/Playlist';
 import { container, isOk, ok, err, fromAsync, type Result } from '@sapphire/framework';
 import { LoadType, type PlaylistInfo } from '@skyra/audio';
-import { getData as getSpotifyData } from 'spotify-url-info';
 import { PlaylistResolutionError, PlaylistType } from '#types/Enums';
 import { wordSimilarityThreshold } from '#utils/constants';
 import { jaroWinkler } from '@skyra/jaro-winkler';
 import { parseURL } from '@sapphire/utilities';
+import { fetch } from 'undici';
 import { Time } from '@sapphire/time-utilities';
 import { URL } from 'node:url';
+import init from 'spotify-url-info';
+
+// eslint-disable-next-line @typescript-eslint/unbound-method
+export const { getData: getSpotifyData } = init(fetch);
 
 /**
  * Capture a random thirty seconds within a duration in seconds to mark the
@@ -52,7 +56,7 @@ export const resolvePlaylist = async (url: string): Promise<Result<Playlist, Pla
 		return err(PlaylistResolutionError.NotFound);
 	}
 
-	const res = await fromAsync<ResolvedSpotifyData>(() => getSpotifyData(url));
+	const res = await fromAsync(() => getSpotifyData(url));
 	if (isOk(res)) {
 		return resolveSpotifyEntity(res.value);
 	}

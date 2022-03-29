@@ -1,7 +1,7 @@
 import type { Track, TrackInfo } from '@skyra/audio';
 import type { HexColorString } from 'discord.js';
+import type { PlaylistType } from '#types/Enums';
 import type { Tracks } from 'spotify-url-info';
-import type { PlaylistType } from './Enums';
 
 /**
  * Extra track & playlist data that is only available when using Spotify as a provider.

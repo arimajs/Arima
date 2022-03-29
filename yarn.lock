@@ -2352,11 +2352,12 @@ __metadata:
     pm2: ^5.2.0
     prettier: ^2.6.1
     pretty-quick: ^3.1.3
-    spotify-url-info: ^2.2.9
+    spotify-url-info: ^3.0.0
     statcord.js: ^3.4.1
     tslib: ^2.3.1
     tsup: ^5.12.1
     typescript: ^4.6.3
+    undici: ^4.16.0
     utf-8-validate: ^5.0.9
     zlib-sync: ^0.1.7
   dependenciesMeta:
@@ -3154,15 +3155,6 @@ __metadata:
     cross-env: src/bin/cross-env.js
     cross-env-shell: src/bin/cross-env-shell.js
   checksum: 26f2f3ea2ab32617f57effb70d329c2070d2f5630adc800985d8b30b56e8bf7f5f439dd3a0358b79cee6f930afc23cf8e23515f17ccfb30092c6b62c6b630a79
-  languageName: node
-  linkType: hard
-
-"cross-fetch@npm:~3.1.4":
-  version: 3.1.5
-  resolution: "cross-fetch@npm:3.1.5"
-  dependencies:
-    node-fetch: 2.6.7
-  checksum: f6b8c6ee3ef993ace6277fd789c71b6acf1b504fd5f5c7128df4ef2f125a429e29cd62dc8c127523f04a5f2fa4771ed80e3f3d9695617f441425045f505cf3bb
   languageName: node
   linkType: hard
 
@@ -6346,7 +6338,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:2.6.7, node-fetch@npm:^2.6.1, node-fetch@npm:^2.6.5, node-fetch@npm:^2.6.7":
+"node-fetch@npm:^2.6.1, node-fetch@npm:^2.6.5, node-fetch@npm:^2.6.7":
   version: 2.6.7
   resolution: "node-fetch@npm:2.6.7"
   dependencies:
@@ -7668,14 +7660,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"spotify-url-info@npm:^2.2.9":
-  version: 2.2.9
-  resolution: "spotify-url-info@npm:2.2.9"
+"spotify-url-info@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "spotify-url-info@npm:3.0.0"
   dependencies:
-    cross-fetch: ~3.1.4
     himalaya: ~1.1.0
     spotify-uri: ~2.2.0
-  checksum: 16c5916305e1a04aff4e971882955aed94877f016aa3568fe409591c1c7c1370674621a7da2c2e01329d2f4bcd37cd7e6e9b4c6205298a03bede260b6308b26a
+  checksum: 02c1cb2bc6f8623888d800e5002a99afb5539e914aa84db186996b981dc93fb3a6a084d40444a6b81134767a3925b082010bbfe20f30caebeaad5733b1d70a30
   languageName: node
   linkType: hard
 
@@ -8336,6 +8327,13 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 6bf45caf847062420592e711bc9c28bf5f9a9a7fa8245343b81493e4ededae33f1774009d1234d911422d1646a2c839f44e1a23ecb111b40a60ac2ea4c1482a8
+  languageName: node
+  linkType: hard
+
+"undici@npm:^4.16.0":
+  version: 4.16.0
+  resolution: "undici@npm:4.16.0"
+  checksum: 5e88c2b3381085e25ed1d1a308610ac7ee985f478ac705af7a8e03213536e10f73ef8dd8d85e6ed38948d1883fa0ae935e04357c317b0f5d3d3c0211d0c8c393
   languageName: node
   linkType: hard
 
