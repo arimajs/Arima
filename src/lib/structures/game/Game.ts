@@ -95,7 +95,7 @@ export abstract class Game {
 		const embed = createEmbed(description)
 			.setAuthor({ name: `Hosted by ${this.host.tag}`, iconURL: this.host.displayAvatarURL({ size: 128, dynamic: true }) })
 			.setTitle(`🎶 Playing the playlist "${playlist.name}"`)
-			.setFooter({ text: "💡 Tip! Use /pass on songs you don't know" });
+			.setFooter({ text: "💡 Use /pass on songs you don't know" });
 
 		if (playlist.type === PlaylistType.Spotify) {
 			if (playlist.image) {

@@ -30,7 +30,7 @@ export class PassCommand extends ArimaCommand {
 		const everyonePassed = passedPlayers.size === game.players.size;
 		if (!everyonePassed) {
 			const remaining = inlineCode(`${passedPlayers.size}/${game.players.size}`);
-			embedDescription += `\n${italic(`💡 If everyone passes, the song will skip (${remaining}`)}`;
+			embedDescription += `\n${italic(`💡If everyone passes, the song will skip (${remaining}`)}`;
 		}
 
 		const embed = createEmbed(embedDescription);
