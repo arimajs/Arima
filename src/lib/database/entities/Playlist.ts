@@ -5,7 +5,7 @@ import { Track } from '#entities/Track';
 
 @Entity()
 export class Playlist {
-	public [OptionalProps]?: 'tracks' | 'createdAt';
+	public [OptionalProps]?: 'tracks' | 'listenCount' | 'createdAt';
 
 	@PrimaryKey()
 	public _id!: ObjectId;
@@ -21,6 +21,9 @@ export class Playlist {
 
 	@ManyToMany(() => Track)
 	public tracks = new Collection<Track>(this);
+
+	@Property()
+	public listenCount: number = 0;
 
 	@Property()
 	public createdAt: Date = new Date();
