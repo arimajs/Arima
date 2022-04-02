@@ -10,12 +10,12 @@ export const shuffle = (array: unknown[]) => {
 };
 
 /**
- * Pluralize `word` if `count` is greater than 1. Does not work with -es plurals.
+ * Pluralize `word` if `count` is greater than 1. For other basic suffixes, use the third parameter, suffix.
  * @example pluralize('word', 1) // 'word'
  * @example pluralize('word', 2) // 'words'
  */
-export const prefixAndPluralize = (word: string, count: number) => {
-	return `${count} ${word}${count === 1 ? '' : 's'}`;
+export const pluralize = (word: string, count: number, suffix = 's') => {
+	return `${count} ${word}${count === 1 ? '' : suffix}`;
 };
 
 const formatter = new Intl.PluralRules('en-US', { type: 'ordinal' });

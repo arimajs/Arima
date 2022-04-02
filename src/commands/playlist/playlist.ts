@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import { createEmbed, sendError } from '#utils/responses';
-import { prefixAndPluralize } from '#utils/common';
 import { UseRequestContext } from '#utils/decorators';
 import { ArimaCommand } from '#structures/ArimaCommand';
 import { ApplyOptions } from '@sapphire/decorators';
+import { pluralize } from '#utils/common';
 
 @ApplyOptions<ArimaCommand.Options>({
 	description: 'Execute functions related to cutsom playlists!'
@@ -35,7 +35,7 @@ export class UserCommand extends ArimaCommand {
 		await playlists.persistAndFlush(playlist);
 
 		const embed = createEmbed('✅ Successfully created playlist!').setFooter({
-			text: `You now have ${prefixAndPluralize('playlist', existingPlaylists.length + 1)} 🎵`
+			text: `You now have ${pluralize('playlist', existingPlaylists.length + 1)} 🎵`
 		});
 
 		await interaction.reply({ embeds: [embed] });

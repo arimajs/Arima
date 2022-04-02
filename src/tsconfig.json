@@ -7,7 +7,6 @@
 		"noEmit": true,
 		"paths": {
 			"#root/*": ["*"],
-			"#lib/*": ["lib/*"],
 			"#types/*": ["lib/types/*"],
 			"#structures/*": ["lib/structures/*"],
 			"#game/*": ["lib/structures/game/*"],

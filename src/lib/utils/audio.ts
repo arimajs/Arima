@@ -1,11 +1,17 @@
 import type { ResolvedSpotifyData, SpotifyTrack, Playlist, ExtendedTrack, SpotifyImage } from '#types/Playlist';
 import { container, isOk, ok, err, fromAsync, type Result } from '@sapphire/framework';
 import { LoadType, type PlaylistInfo } from '@skyra/audio';
-import { getData as getSpotifyData } from 'spotify-url-info';
 import { PlaylistResolutionError, PlaylistType } from '#types/Enums';
+import { wordSimilarityThreshold } from '#utils/constants';
+import { jaroWinkler } from '@skyra/jaro-winkler';
 import { parseURL } from '@sapphire/utilities';
+import { fetch } from 'undici';
 import { Time } from '@sapphire/time-utilities';
 import { URL } from 'node:url';
+import init from 'spotify-url-info';
+
+// eslint-disable-next-line @typescript-eslint/unbound-method
+export const { getData: getSpotifyData } = init(fetch);
 
 /**
  * Capture a random thirty seconds within a duration in seconds to mark the
@@ -50,7 +56,7 @@ export const resolvePlaylist = async (url: string): Promise<Result<Playlist, Pla
 		return err(PlaylistResolutionError.NotFound);
 	}
 
-	const res = await fromAsync<ResolvedSpotifyData>(() => getSpotifyData(url));
+	const res = await fromAsync(() => getSpotifyData(url));
 	if (isOk(res)) {
 		return resolveSpotifyEntity(res.value);
 	}
@@ -136,7 +142,7 @@ export const resolveThumbnail = (info: ExtendedTrack['info']) => {
 /**
  * Get the biggest image in an array of {@link SpotifyImage}s.
  */
-export const getBiggestImage = (images: SpotifyImage[]): string => {
+export const getBiggestImage = (images: SpotifyImage[]) => {
 	// Array#reduce is actually more performant than #sort in this situation.
 	// eslint-disable-next-line unicorn/no-array-reduce
 	return images.reduce((a, b) => (a.width > b.width ? a : b)).url;
@@ -145,7 +151,7 @@ export const getBiggestImage = (images: SpotifyImage[]): string => {
 /**
  * Generate 3 variations of the song name: Stripped prefix, stripped suffix, stripped both.
  */
-export const cleanSongName = (songName: string, artistNames: string[]): string[] => {
+export const cleanSongName = (songName: string, artistNames: string[]) => {
 	const normalized = convertToNormalized(songName);
 
 	// "Blank Space - Taylor Swift" -> "Blank Space"
@@ -163,19 +169,19 @@ export const cleanSongName = (songName: string, artistNames: string[]): string[]
 
 	// Remove any strings that contain an artist as this isn't the song name.
 	const songNamesNoArtist = [songWithoutSuffixAndPrefix, songWithoutPrefix, songWithoutSuffix].filter(
-		(str) => !artistNames.some((artist) => str.includes(artist))
+		(songName) => !artistNames.some((artist) => jaroWinkler(songName, artist) >= wordSimilarityThreshold)
 	);
 
-	const validSongVariations = [...new Set([...songNamesNoArtist, normalized])];
-
-	return validSongVariations.map((variation) => convertToAlphaNumeric(variation));
+	return [...new Set([...songNamesNoArtist, normalized].map((variation) => convertToAlphaNumeric(variation)))];
 };
 
 /**
- * Currently just calls {@link cleanName}, but logic specific to artist names may be added in the future.
+ * Currently just does suffix removal, but this is not safe at all.
  */
 export const cleanArtistName = (artistName: string) => {
-	return cleanName(artistName);
+	const normalized = convertToNormalized(artistName);
+	const artistWithoutSuffix = normalized.replace(/\s*\(.*|\s*- .*|VEVO$/, '');
+	return convertToAlphaNumeric(artistWithoutSuffix);
 };
 
 /**
