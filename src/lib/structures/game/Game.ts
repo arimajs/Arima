@@ -142,7 +142,7 @@ export abstract class Game {
 			const embed = createEmbed(descriptions[reason])
 				.setThumbnail(leader?.displayAvatarURL({ dynamic: true, size: 256 }) ?? '')
 				.setTitle(this.leaderboard.leader ? `🎉 ${leader?.tag ?? 'An unknown user'} won 🎉` : '😔 Nobody won')
-				.addField('Time Elapsed', durationFormatter.format(Date.now() - this.startTime).toString(), true)
+				.addField('Time Elapsed', durationFormatter.format(Date.now() - this.startTime), true)
 				.addField('Tracks Played', inlineCode(this.queue.tracksPlayed.toString()), true)
 				.addField('Leaderboard (Top 10)', this.leaderboard.compute())
 				.setFooter({ text: 'Nice job! Play again sometime :)' });
