@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/member-ordering */
-import { bold, inlineCode, time, TimestampStyles } from '@discordjs/builders';
+import { bold, inlineCode, italic, time, TimestampStyles } from '@discordjs/builders';
 import { PlaylistAutocompleteHandler } from '#autocomplete/playlistAutocomplete';
 import { createEmbed, sendError } from '#utils/responses';
 import { UseRequestContext } from '#utils/decorators';
@@ -68,7 +68,6 @@ export class PlaylistCommand extends ArimaCommand {
 		}
 
 		const items = playlist.tracks.getItems();
-
 		const decodedTracks = await this.container.audio.decode(items.map(({ track }) => track));
 
 		// Track urls are sorted by specificity. If a Spotify url is present, it will be first, and we'll generally want
@@ -81,17 +80,16 @@ export class PlaylistCommand extends ArimaCommand {
 			['Listen Count', playlist.listenCount]
 		] as const;
 
-		const template = createEmbed()
+		const template = createEmbed(stats.map(([key, value]) => `${bold(key)}: ${value}`).join('\n'))
 			.setTitle(`"${playlist.name}"`)
-			.setThumbnail(interaction.user.displayAvatarURL({ dynamic: true, size: 256 }))
-			.setDescription(stats.map(([key, value]) => `${bold(key)}: ${value}`).join('\n'));
+			.setThumbnail(interaction.user.displayAvatarURL({ dynamic: true, size: 256 }));
 
 		const handler = new PaginatedMessage({ template });
 
 		for (const [chunkIdx, chunkedTracks] of chunk(tracks, 5).entries()) {
 			const indexOffset = chunkIdx * 5;
 			const description = chunkedTracks.map((track, idx) => {
-				const position = bold(`[${inlineCode(`${indexOffset + idx + 1}`)}]`);
+				const position = bold(`[${inlineCode((indexOffset + idx + 1).toString())}]`);
 
 				// TODO: Check if the user is currently playing a game with the playlist. If so, censor the
 				// currently playing song and artist title and add some indicator that it's currently playing.
@@ -106,6 +104,22 @@ export class PlaylistCommand extends ArimaCommand {
 		}
 
 		await handler.run(interaction);
+	}
+
+	public async list(interaction: ArimaCommand.Interaction) {
+		const playlists = await this.container.db.playlists.find({ creator: interaction.user.id }, { fields: ['name', 'tracks'] });
+		if (!playlists.length) {
+			return sendError(interaction, "You don't have any playlists yet!", { tip: `You can create one with ${inlineCode('/playlist create')}` });
+		}
+
+		const tip = italic(`💡Use ${inlineCode('/playlist info')} to see more info about a playlist!`);
+		const description = playlists.map(({ name, tracks }, idx) => {
+			const position = bold(`[${inlineCode((idx + 1).toString())}]`);
+			return `${position} ${name} (${tracks.length} songs)`;
+		});
+
+		const embed = createEmbed(`${tip}\n${description}`).setTitle(`${interaction.user.tag}'s Playlists`);
+		await interaction.reply({ embeds: [embed] });
 	}
 
 	public override registerApplicationCommands(registry: ArimaCommand.Registry) {
@@ -147,6 +161,11 @@ export class PlaylistCommand extends ArimaCommand {
 								.setRequired(true)
 								.setAutocomplete(true)
 						)
+				)
+				.addSubcommand((subcommand) =>
+					subcommand //
+						.setName('list')
+						.setDescription('List your custom playlists!')
 				)
 		);
 	}
