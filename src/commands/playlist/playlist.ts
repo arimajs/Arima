@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/member-ordering */
-import type { TrackInfo } from '@skyra/audio';
 import { bold, inlineCode, time, TimestampStyles } from '@discordjs/builders';
 import { PlaylistAutocompleteHandler } from '#autocomplete/playlistAutocomplete';
 import { createEmbed, sendError } from '#utils/responses';
@@ -71,15 +70,10 @@ export class PlaylistCommand extends ArimaCommand {
 		const items = playlist.tracks.getItems();
 
 		const decodedTracks = await this.container.audio.decode(items.map(({ track }) => track));
-		const map = new Map<string, TrackInfo>();
-
-		for (const entry of decodedTracks) {
-			map.set(entry.track, entry.info);
-		}
 
 		// Track urls are sorted by specificity. If a Spotify url is present, it will be first, and we'll generally want
 		// use it over Youtube.
-		const tracks = items.map((track) => ({ url: track.urls[0], ...map.get(track.track)! }));
+		const tracks = items.map((track, idx) => ({ ...decodedTracks[idx].info, url: track.urls[0] }));
 
 		const stats = [
 			['Created', `${time(playlist.createdAt, TimestampStyles.RelativeTime)} (${time(playlist.createdAt)})`],
