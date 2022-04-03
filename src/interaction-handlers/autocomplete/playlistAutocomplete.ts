@@ -1,15 +1,19 @@
-import type { AutocompleteInteraction } from 'discord.js';
+import type { AutocompleteInteraction, CommandInteraction, Snowflake } from 'discord.js';
+import type { Awaitable } from '@sapphire/utilities';
 import type { Playlist } from '#entities/Playlist';
-import { InteractionHandler, InteractionHandlerTypes } from '@sapphire/framework';
+import { from, container, InteractionHandler, InteractionHandlerTypes } from '@sapphire/framework';
+import { ObjectId, type EntityRepository } from '@mikro-orm/mongodb';
 import { QueryOrder, type FindOptions } from '@mikro-orm/core';
 import { ApplyOptions } from '@sapphire/decorators';
 import { pluralize } from '#utils/common';
+import { sendError } from '#utils/responses';
+import { italic } from '@discordjs/builders';
 import Fuse from 'fuse.js/dist/fuse.basic.min.js';
 
 @ApplyOptions<InteractionHandler.Options>({
 	interactionHandlerType: InteractionHandlerTypes.Autocomplete
 })
-export class PlaylistAutocompleteInteractionHandler extends InteractionHandler {
+export class PlaylistAutocompleteHandler extends InteractionHandler {
 	public override async run(interaction: AutocompleteInteraction, result: InteractionHandler.ParseResult<this>) {
 		return interaction.respond(result);
 	}
@@ -49,5 +53,26 @@ export class PlaylistAutocompleteInteractionHandler extends InteractionHandler {
 				value: id
 			}))
 		);
+	}
+
+	/**
+	 * Discord autocomplete suggestions can easily be ignored by the user, so this method can be used in commands to
+	 * double check that recieved IDs are valid (24 character hex string), and the playlists they correspond to belong to the user.
+	 *
+	 * @example
+	 * const playlist = await PlaylistAutocompleteHandler.resolve(interaction, (query, playlists) => playlists.findOne(query));
+	 * if (!playlist) {
+	 *     return;
+	 * }
+	 */
+	public static async resolve<T>(
+		interaction: CommandInteraction,
+		checkExistence: (query: { _id: ObjectId; creator: Snowflake }, playlists: EntityRepository<Playlist>) => Awaitable<T>
+	) {
+		const playlist = interaction.options.getString('playlist', true);
+		const _id = from(() => new ObjectId(playlist));
+
+		const res = _id.success && (await checkExistence({ _id: _id.value, creator: interaction.user.id }, container.db.playlists));
+		return res || sendError(interaction, `That playlist doesn't exist!\n${italic("💡Make sure you're using the autocomplete menu")}`);
 	}
 }

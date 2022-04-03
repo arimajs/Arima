@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/member-ordering */
+import type { TrackInfo } from '@skyra/audio';
+import { bold, inlineCode, time, TimestampStyles } from '@discordjs/builders';
+import { PlaylistAutocompleteHandler } from '#autocomplete/playlistAutocomplete';
 import { createEmbed, sendError } from '#utils/responses';
 import { UseRequestContext } from '#utils/decorators';
+import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import { ArimaCommand } from '#structures/ArimaCommand';
 import { pluralize } from '#utils/common';
-import { ObjectId } from '@mikro-orm/mongodb';
-import { italic } from '@discordjs/builders';
-import { from } from '@sapphire/framework';
+import { chunk } from '@sapphire/utilities';
 
 export class PlaylistCommand extends ArimaCommand {
 	@UseRequestContext()
@@ -45,22 +47,71 @@ export class PlaylistCommand extends ArimaCommand {
 	}
 
 	public async delete(interaction: ArimaCommand.Interaction) {
-		const playlist = interaction.options.getString('playlist', true);
-
-		// The id is validated here and the "creator" property is added to the query because in theory the use can
-		// ignore the autocomplete options and either input something that's not an ObjectId (24 character hex string),
-		// or an ObjectId that corresponds to a playlist that's not theirs.
-		const _id = from(() => new ObjectId(playlist));
-
-		// If `new ObjectId(...)` threw an error, exit early. Otherwise, send a delete query, which will return
-		// the number of "affected rows" (documents deleted). If the number is 0, the playlist doesn't exist.
-		const deleted = _id.success && (await this.container.db.playlists.nativeDelete({ _id: _id.value, creator: interaction.user.id }));
+		const deleted = await PlaylistAutocompleteHandler.resolve(interaction, (query, playlists) => playlists.nativeDelete(query));
 		if (!deleted) {
-			return sendError(interaction, `That playlist doesn't exist!\n${italic("💡Make sure you're using the autocomplete menu")}`);
+			return;
 		}
 
-		const embed = createEmbed('✅ Successfully deleted playlist!');
+		const embed = createEmbed('✅ Successfully deleted playlist!').setFooter({
+			text: `You now have ${pluralize('playlist', await this.container.db.playlists.count({ creator: interaction.user.id }))} 🎵`
+		});
+
 		await interaction.reply({ embeds: [embed] });
+	}
+
+	public async info(interaction: ArimaCommand.Interaction) {
+		const playlist = await PlaylistAutocompleteHandler.resolve(interaction, (query, playlists) =>
+			playlists.findOne(query, { populate: ['tracks'] })
+		);
+
+		if (!playlist) {
+			return;
+		}
+
+		const items = playlist.tracks.getItems();
+
+		const decodedTracks = await this.container.audio.decode(items.map(({ track }) => track));
+		const map = new Map<string, TrackInfo>();
+
+		for (const entry of decodedTracks) {
+			map.set(entry.track, entry.info);
+		}
+
+		// Track urls are sorted by specificity. If a Spotify url is present, it will be first, and we'll generally want
+		// use it over Youtube.
+		const tracks = items.map((track) => ({ url: track.urls[0], ...map.get(track.track)! }));
+
+		const stats = [
+			['Created', `${time(playlist.createdAt, TimestampStyles.RelativeTime)} (${time(playlist.createdAt)})`],
+			['Tracks', playlist.tracks.length],
+			['Listen Count', playlist.listenCount]
+		] as const;
+
+		const template = createEmbed()
+			.setTitle(`"${playlist.name}"`)
+			.setThumbnail(interaction.user.displayAvatarURL({ dynamic: true, size: 256 }))
+			.setDescription(stats.map(([key, value]) => `${bold(key)}: ${value}`).join('\n'));
+
+		const handler = new PaginatedMessage({ template });
+
+		for (const [chunkIdx, chunkedTracks] of chunk(tracks, 5).entries()) {
+			const indexOffset = chunkIdx * 5;
+			const description = chunkedTracks.map((track, idx) => {
+				const position = bold(`[${inlineCode(`${indexOffset + idx + 1}`)}]`);
+
+				// TODO: Check if the user is currently playing a game with the playlist. If so, censor the
+				// currently playing song and artist title and add some indicator that it's currently playing.
+				return `${position} [${track.title} - ${track.author}](${track.url})`;
+			});
+
+			handler.addPageEmbed((embed) =>
+				embed
+					.setDescription(`${embed.description}\n${description.join('\n')}`)
+					.setFooter({ text: `Showing songs ${indexOffset}-${indexOffset + 5}` })
+			);
+		}
+
+		await handler.run(interaction);
 	}
 
 	public override registerApplicationCommands(registry: ArimaCommand.Registry) {
@@ -87,6 +138,18 @@ export class PlaylistCommand extends ArimaCommand {
 							option
 								.setName('playlist')
 								.setDescription('The name of the playlist you want to delete!')
+								.setRequired(true)
+								.setAutocomplete(true)
+						)
+				)
+				.addSubcommand((subcommand) =>
+					subcommand
+						.setName('info')
+						.setDescription('Get info on one of your custom playlists!')
+						.addStringOption((option) =>
+							option
+								.setName('playlist')
+								.setDescription('The name of the playlist you want to view!')
 								.setRequired(true)
 								.setAutocomplete(true)
 						)

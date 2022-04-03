@@ -12,7 +12,8 @@
 			"#game/*": ["lib/structures/game/*"],
 			"#utils/*": ["lib/utils/*"],
 			"#database/*": ["lib/database/*"],
-			"#entities/*": ["lib/database/entities/*"]
+			"#entities/*": ["lib/database/entities/*"],
+			"#autocomplete/*": ["interaction-handlers/autocomplete/*"]
 		}
 	},
 	"include": ["."]
