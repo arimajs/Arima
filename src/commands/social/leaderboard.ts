@@ -12,7 +12,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 import { chunk } from '@sapphire/utilities';
 
 @ApplyOptions<ArimaCommand.Options>({
-	description: "View this guild's leaderboard!",
+	description: "View this server's leaderboard!",
 	runIn: [CommandOptionsRunTypeEnum.GuildText],
 	chatInputCommand: {
 		register: true,

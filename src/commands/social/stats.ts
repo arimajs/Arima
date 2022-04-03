@@ -15,7 +15,7 @@ export class StatsCommand extends ArimaCommand {
 		const player = await this.container.db.members.findOne({ userId: user.id, guildId: interaction.guild.id });
 
 		if (!player) {
-			return sendError(interaction, `${user} has not played any games in this guild yet`);
+			return sendError(interaction, `${user} has not played any games in this server yet`);
 		}
 
 		const gamesInfoPercent = toPercent(player.gamesWon / player.gamesPlayed);
@@ -40,7 +40,7 @@ export class StatsCommand extends ArimaCommand {
 			(builder) =>
 				builder
 					.setName(this.name)
-					.setDescription('View the stats of a player in this guild!')
+					.setDescription('View the stats of a player in this server!')
 					.addUserOption((option) =>
 						option //
 							.setName('player')
