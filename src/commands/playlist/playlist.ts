@@ -2,22 +2,22 @@
 import { createEmbed, sendError } from '#utils/responses';
 import { UseRequestContext } from '#utils/decorators';
 import { ArimaCommand } from '#structures/ArimaCommand';
-import { ApplyOptions } from '@sapphire/decorators';
 import { pluralize } from '#utils/common';
 import { ObjectId } from '@mikro-orm/mongodb';
 import { italic } from '@discordjs/builders';
 import { from } from '@sapphire/framework';
 
-@ApplyOptions<ArimaCommand.Options>({
-	description: 'Execute functions related to cutsom playlists!'
-})
-export class UserCommand extends ArimaCommand {
+export class PlaylistCommand extends ArimaCommand {
 	@UseRequestContext()
 	public override async chatInputRun(interaction: ArimaCommand.Interaction) {
-		const subcommand = interaction.options.getSubcommand(true);
-		if (subcommand === 'create') {
-			await this.create(interaction);
-		}
+		// This type is a bit weird, but boils down to the name of every method in this class that takes only one
+		// argument (interaction) and returns `Promise<void>`. This way, methods with the same name as subcommands can
+		// be dynamically run.
+		const subcommand = interaction.options.getSubcommand(true) as keyof {
+			[K in keyof PlaylistCommand as PlaylistCommand[K] extends PlaylistCommand['chatInputRun'] ? K : never]: never;
+		};
+
+		await this[subcommand]?.(interaction);
 	}
 
 	public async create(interaction: ArimaCommand.Interaction) {
@@ -67,15 +67,15 @@ export class UserCommand extends ArimaCommand {
 		registry.registerChatInputCommand((builder) =>
 			builder
 				.setName(this.name)
-				.setDescription(this.description)
+				.setDescription('Execute functions related to cutsom playlists!')
 				.addSubcommand((subcommand) =>
 					subcommand
 						.setName('create')
 						.setDescription('Create a custom playlist!')
 						.addStringOption((option) =>
 							option
-								.setName('name')
-								.setDescription("The name of the playlist! (You won't be able to edit this later)")
+								.setName('name') //
+								.setDescription('The name of the playlist!')
 								.setRequired(true)
 						)
 				)
