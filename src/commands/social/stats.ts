@@ -7,10 +7,7 @@ import { ArimaCommand } from '#structures/ArimaCommand';
 import { ApplyOptions } from '@sapphire/decorators';
 import { toPercent } from '#utils/common';
 
-@ApplyOptions<ArimaCommand.Options>({
-	description: 'View the stats of a player in this guild!',
-	runIn: [CommandOptionsRunTypeEnum.GuildText]
-})
+@ApplyOptions<ArimaCommand.Options>({ runIn: [CommandOptionsRunTypeEnum.GuildText] })
 export class StatsCommand extends ArimaCommand {
 	@UseRequestContext()
 	public override async chatInputRun(interaction: ArimaCommand.Interaction<'cached'>) {
@@ -43,7 +40,7 @@ export class StatsCommand extends ArimaCommand {
 			(builder) =>
 				builder
 					.setName(this.name)
-					.setDescription(this.description)
+					.setDescription('View the stats of a player in this guild!')
 					.addUserOption((option) =>
 						option //
 							.setName('player')
