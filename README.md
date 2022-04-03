@@ -10,13 +10,12 @@
 </div>
 
 > 🎶 A music quiz discord bot designed for lightly competitive fun. Import
-playlists from a variety of sources or create your own!
+> playlists from a variety of sources or create your own!
 
 We pride ourselves on keeping Arima 100% open source, so please feel free open an issue or submit a pull request! If you'd like contribution ideas, any of the following would be incredibly useful:
 
 - Setting up a system to use Docker in production
-- Setting up Sentry to catch errors
-- Adding more tests
+- Adding unit tests
 
 ## Contributors ✨
 

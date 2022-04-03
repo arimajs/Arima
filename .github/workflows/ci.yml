@@ -17,11 +17,11 @@ jobs:
       - name: Add problem matcher
         run: echo "::add-matcher::.github/problemMatchers/eslint.json"
       - name: Use Node.js v16
-        uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
+        uses: actions/setup-node@5b52f097d36d4b0b2f94ed6de710023fbb8b2236 # tag=v3
         with:
           node-version: 16
       - name: Restore CI Cache
-        uses: actions/cache@4b0cf6cc4619e737324ddfcec08fff2413359514 # tag=v3.0.0
+        uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0 # tag=v3.0.1
         id: cache-restore
         with:
           path: node_modules
@@ -31,29 +31,6 @@ jobs:
         run: yarn --immutable
       - name: Run ESLint
         run: yarn lint --fix=false
-
-  Testing:
-    name: Unit Tests
-    runs-on: ubuntu-latest
-    if: "!contains(needs.pre_ci.outputs.commit_message, '[skip ci]')"
-    steps:
-      - name: Checkout Project
-        uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846 # tag=v3
-      - name: Use Node.js v16.6
-        uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
-        with:
-          node-version: 16.6
-      - name: Restore CI Cache
-        uses: actions/cache@4b0cf6cc4619e737324ddfcec08fff2413359514 # tag=v3.0.0
-        id: cache-restore
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-16.6-${{ hashFiles('**/yarn.lock') }}
-      - name: Install Dependencies if Cache Miss
-        if: ${{ !steps.cache-restore.outputs.cache-hit }}
-        run: yarn --immutable
-      - name: Run tests
-        run: yarn test
 
   Building:
     name: Compile source code
@@ -65,11 +42,11 @@ jobs:
       - name: Add problem matcher
         run: echo "::add-matcher::.github/problemMatchers/tsc.json"
       - name: Use Node.js v16.6
-        uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # tag=v3
+        uses: actions/setup-node@5b52f097d36d4b0b2f94ed6de710023fbb8b2236 # tag=v3
         with:
           node-version: 16.6
       - name: Restore CI Cache
-        uses: actions/cache@4b0cf6cc4619e737324ddfcec08fff2413359514 # tag=v3.0.0
+        uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0 # tag=v3.0.1
         id: cache-restore
         with:
           path: node_modules

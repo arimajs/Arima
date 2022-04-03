@@ -7,7 +7,6 @@ import { QueryOrder, type FindOptions } from '@mikro-orm/core';
 import { ApplyOptions } from '@sapphire/decorators';
 import { pluralize } from '#utils/common';
 import { sendError } from '#utils/responses';
-import { italic } from '@discordjs/builders';
 import Fuse from 'fuse.js/dist/fuse.basic.min.js';
 
 @ApplyOptions<InteractionHandler.Options>({
@@ -73,6 +72,6 @@ export class PlaylistAutocompleteHandler extends InteractionHandler {
 		const _id = from(() => new ObjectId(playlist));
 
 		const res = _id.success && (await checkExistence({ _id: _id.value, creator: interaction.user.id }, container.db.playlists));
-		return res || sendError(interaction, `That playlist doesn't exist!\n${italic("💡Make sure you're using the autocomplete menu")}`);
+		return res || sendError(interaction, `That playlist doesn't exist!`, { tip: "Make sure you're using the autocomplete menu" });
 	}
 }
