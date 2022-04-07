@@ -27,7 +27,7 @@ export const getRandomThirtySecondWindow = (duration: number) => {
  * A typeguard that guarrantees that {@link ResolvedSpotifyData} is a playlist by checking if a property exists on its items.
  */
 export const isPlaylist = (items: SpotifyTrack[] | { track: SpotifyTrack }[]): items is { track: SpotifyTrack }[] => {
-	return 'track' in items;
+	return 'track' in items[0];
 };
 
 /**
@@ -75,7 +75,7 @@ export const resolveSpotifyEntity = (data: ResolvedSpotifyData): Result<Playlist
 
 	const tracks = resolveSpotifyTracks(data);
 
-	const filteredTracks = tracks.filter(({ duration_ms }) => duration_ms * Time.Second > 30);
+	const filteredTracks = tracks.filter(({ duration_ms }) => duration_ms / Time.Second > 30);
 	if (filteredTracks.length < 5) {
 		return err(PlaylistResolutionError.NotEnoughTracks);
 	}
@@ -111,7 +111,7 @@ export const resolveLavalinkURL = async (url: string): Promise<Result<Playlist, 
 		return err(PlaylistResolutionError.NotPlaylist);
 	}
 
-	const filteredTracks = response.tracks.filter(({ info }) => info.length * Time.Second > 30);
+	const filteredTracks = response.tracks.filter(({ info }) => info.length / Time.Second > 30);
 	if (filteredTracks.length < 5) {
 		return err(PlaylistResolutionError.NotEnoughTracks);
 	}
