@@ -24,7 +24,7 @@ try {
 	client.logger.fatal(error);
 
 	client.destroy();
-	container.db.orm.close();
+	container.db?.orm.close();
 
 	// eslint-disable-next-line unicorn/no-process-exit
 	process.exit(1);
