@@ -5,7 +5,6 @@ import { SapphireClient, ApplicationCommandRegistries, RegisterBehavior, Piece, 
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import { DatabaseManager } from '#database/DatabaseManager';
 import { clientOptions } from '#root/config';
-import process from 'node:process';
 
 const client = new SapphireClient(clientOptions);
 

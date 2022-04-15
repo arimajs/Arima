@@ -6,7 +6,6 @@ import { cleanEnv, str, port } from 'envalid';
 import { container, LogLevel } from '@sapphire/framework';
 import { GatewayIntentBits } from 'discord-api-types/v9';
 import { Time } from '@sapphire/time-utilities';
-import process from 'node:process';
 
 // Unless explicitly defined, set NODE_ENV to development.
 process.env.NODE_ENV ??= 'development';

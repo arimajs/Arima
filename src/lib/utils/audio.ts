@@ -7,7 +7,6 @@ import { jaroWinkler } from '@skyra/jaro-winkler';
 import { parseURL } from '@sapphire/utilities';
 import { fetch } from 'undici';
 import { Time } from '@sapphire/time-utilities';
-import { URL } from 'node:url';
 import init from 'spotify-url-info';
 
 // eslint-disable-next-line @typescript-eslint/unbound-method

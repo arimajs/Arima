@@ -8,7 +8,6 @@ import { readFile } from 'node:fs/promises';
 import { rootURL } from '#utils/constants';
 import { Queue } from '#game/Queue';
 import { Node } from '@skyra/audio';
-import { URL } from 'node:url';
 
 @ApplyOptions<Listener.Options>({ once: true })
 export class ReadyListener extends Listener<typeof Events.ClientReady> {

@@ -5,7 +5,6 @@ import { isThenable } from '@sapphire/utilities';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { codeBlock } from '@discordjs/builders';
 import { inspect } from 'node:util';
-import { Buffer } from 'node:buffer';
 import { Type } from '@sapphire/type';
 import { env } from '#root/config';
 

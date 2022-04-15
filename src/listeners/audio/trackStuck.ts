@@ -2,7 +2,7 @@ import type { IncomingEventTrackStuckPayload } from '@skyra/audio';
 import { LavalinkEvent } from '#types/Enums';
 import { ApplyOptions } from '@sapphire/decorators';
 import { createEmbed } from '#utils/responses';
-import { setTimeout } from 'node:timers';
+import { setTimeout } from 'node:timers/promises';
 import { Listener } from '@sapphire/framework';
 import { Time } from '@sapphire/time-utilities';
 
@@ -22,6 +22,7 @@ export class TrackStuckListener extends Listener {
 		const embed = createEmbed(description);
 		const response = await game.textChannel.send({ embeds: [embed] });
 
-		setTimeout(() => response.delete().catch(() => null), payload.thresholdMs);
+		await setTimeout(payload.thresholdMs);
+		await response.delete().catch(() => null);
 	}
 }
