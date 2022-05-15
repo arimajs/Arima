@@ -51,7 +51,7 @@
 		"envalid": "^7.3.1",
 		"fuse.js": "^6.6.2",
 		"node-cache": "^5.1.2",
-		"spotify-url-info": "^3.1.1",
+		"spotify-url-info": "^3.1.2",
 		"statcord.js": "^3.4.2",
 		"undici": "^5.2.0"
 	},
