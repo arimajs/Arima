@@ -1560,7 +1560,7 @@ __metadata:
     pm2: ^5.2.0
     prettier: ^2.6.2
     pretty-quick: ^3.1.3
-    spotify-url-info: ^3.1.2
+    spotify-url-info: ^3.1.7
     statcord.js: ^3.4.2
     tsup: ^5.12.9
     typescript: ^4.7.2
@@ -5822,20 +5822,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"spotify-uri@npm:~3.0.1":
-  version: 3.0.1
-  resolution: "spotify-uri@npm:3.0.1"
-  checksum: 59c0e7b026c1243271ebbd8b6deded52d34c3bb32c42d1d53a5dd5cb6326957d23f492d9297490494e49c88ff592e26b7c06fd05bd73d5db3b17520966c84b9b
+"spotify-uri@npm:~3.0.3":
+  version: 3.0.3
+  resolution: "spotify-uri@npm:3.0.3"
+  checksum: 8c05c67efe9e96b477e5129491f6911d03c84a9f9bb17e9f70f8ec82ac6b54fa158a6032933405dc654eff28598bdb2587665918804b1e5e66009d3c7cec2c11
   languageName: node
   linkType: hard
 
-"spotify-url-info@npm:^3.1.2":
-  version: 3.1.2
-  resolution: "spotify-url-info@npm:3.1.2"
+"spotify-url-info@npm:^3.1.7":
+  version: 3.1.7
+  resolution: "spotify-url-info@npm:3.1.7"
   dependencies:
     himalaya: ~1.1.0
-    spotify-uri: ~3.0.1
-  checksum: b65bdd48b12c4388bfefe8ab58eacf81fbb37b58bd54cf601f7a003fdf9306cfabab68eb860ab037ae62021ae08c6c4484406a6abed46ad14e3ae8a614f868ed
+    spotify-uri: ~3.0.3
+  checksum: 5f3ac0a0de46c9be24e13217cdb425d29be5868bd1d96200a7c38b570ad3554565804978526934900a6815f0450b6d8c43394159277086519d4d2c4a913cd486
   languageName: node
   linkType: hard
 
