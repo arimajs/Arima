@@ -5,7 +5,6 @@ import { isThenable } from '@sapphire/utilities';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { codeBlock } from '@discordjs/builders';
 import { inspect } from 'node:util';
-import { Type } from '@sapphire/type';
 import { env } from '#root/config';
 
 // In the future, this may be converted to/accompanied with a context menu interaction. That way, users could naturally
@@ -19,7 +18,7 @@ export class EvalCommand extends ArimaCommand {
 
 		await interaction.deferReply({ ephemeral });
 
-		const { result, success, type, elapsed } = await this.eval(interaction, code, { isAsync, depth });
+		const { result, success, elapsed } = await this.eval(interaction, code, { isAsync, depth });
 		const output = success ? codeBlock('js', result) : codeBlock('bash', result);
 
 		const embedLimitReached = output.length > 4096;
@@ -28,10 +27,7 @@ export class EvalCommand extends ArimaCommand {
 			success ? EmbedColor.Primary : EmbedColor.Error
 		);
 
-		embed
-			.setTitle(success ? 'Eval Result ✨' : 'Eval Error 💀')
-			.addField('Type 📝', codeBlock('ts', type), true)
-			.addField('Elapsed ⏱', elapsed, true);
+		embed.setTitle(success ? 'Eval Result ✨' : 'Eval Error 💀').addField('Elapsed ⏱', elapsed, true);
 
 		const files = embedLimitReached ? [{ attachment: Buffer.from(output), name: 'output.txt' }] : [];
 		await interaction.editReply({ embeds: [embed], files });
@@ -107,12 +103,10 @@ export class EvalCommand extends ArimaCommand {
 
 		stopwatch.stop();
 
-		const type = new Type(result).toString();
-
 		if (typeof result !== 'string') {
 			result = inspect(result, { depth });
 		}
 
-		return { result, success, type, elapsed };
+		return { result, success, elapsed };
 	}
 }
