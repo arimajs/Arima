@@ -103,17 +103,13 @@ export class StandardGame extends Game {
 			embedFooter += ` • Playing to ${this.goal} points or ${this.limit} songs`;
 		}
 
-		const { title, author, uri, color } = nowPlaying!.info;
+		const { title, author, uri } = nowPlaying!.info;
 
 		const embed = createEmbed(embedDescription, EmbedColor.Secondary)
 			.setURL(uri)
 			.setTitle(`That was "${title}" by ${author}`)
 			.addField('Leaderboard', this.leaderboard.compute())
 			.setFooter({ text: embedFooter });
-
-		if (color) {
-			embed.setColor(color);
-		}
 
 		const thumbnail = resolveThumbnail(nowPlaying!.info);
 		if (thumbnail) {

@@ -104,12 +104,12 @@ export class StartCommand extends ArimaCommand {
 						option
 							.setName('answers')
 							.setDescription('The type of answer to accept! (Optional)')
-							.addChoices([
-								['Song Name Only', AcceptedAnswer.Song],
-								['Artist Name Only', AcceptedAnswer.Artist],
-								['Either (Default)', AcceptedAnswer.Either],
-								['Both', AcceptedAnswer.Both]
-							])
+							.addChoices(
+								{ name: 'Song Name Only', value: AcceptedAnswer.Song },
+								{ name: 'Artist Name Only', value: AcceptedAnswer.Artist },
+								{ name: 'Either (Default)', value: AcceptedAnswer.Either },
+								{ name: 'Both', value: AcceptedAnswer.Both }
+							)
 							.setRequired(false)
 					),
 			{ idHints: ['937409133890633738'] }

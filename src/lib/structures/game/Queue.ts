@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/member-ordering */
-import type { ExtendedTrack, Playlist } from '#types/Playlist';
+import type { Playlist } from '#types/Playlist';
 import type { Snowflake } from 'discord.js';
 import type { Game } from '#game/Game';
 import { getRandomThirtySecondWindow } from '#utils/audio';
-import { LoadType, type IncomingEventTrackExceptionPayload } from '@skyra/audio';
+import { LoadType, Track, type IncomingEventTrackExceptionPayload } from '@skyra/audio';
 import { GameEndReason, LavalinkEvent } from '#types/Enums';
 import { container } from '@sapphire/framework';
 import { RoundData } from '#game/RoundData';
@@ -28,7 +28,7 @@ export class Queue {
 	 * The track that is currently playing. This is undefined if there is no track playing, obviously, and is reassigned
 	 * each time a new track starts.
 	 */
-	public nowPlaying?: ExtendedTrack;
+	public nowPlaying?: Track;
 
 	// `tracks` should be an array of strings, each representing a track encoded by Lavalink.
 	public constructor(public readonly game: Game, public playlist: Playlist) {
@@ -52,13 +52,13 @@ export class Queue {
 		// Will be the result of `node.load` if we have to search for a Spotify song. It already gives the track info,
 		// so it's better to store it instead of waste another API call to retrieve what we already have later in the
 		// code.
-		let nextTrackFull: ExtendedTrack | undefined;
+		let nextTrackFull: Track | undefined;
 
 		if (nextTrack) {
 			if (typeof nextTrack !== 'string') {
 				// This is what will be searched on Youtube to try to get the most accurate results.
 				const displayName = `${nextTrack.name} - ${nextTrack.artist}`;
-				const cachedTrack = Queue.spotifySongCache.get<ExtendedTrack>(displayName);
+				const cachedTrack = Queue.spotifySongCache.get<Track>(displayName);
 
 				if (cachedTrack) {
 					nextTrackFull = cachedTrack;
@@ -71,11 +71,7 @@ export class Queue {
 						nextTrackFull.info.author = nextTrack.artist;
 						nextTrackFull.info.title = nextTrack.name;
 
-						// Add on some new spicy properties because we can and it would be a waste not to.
-						nextTrackFull.info.color = nextTrack.color;
-						nextTrackFull.info.image = nextTrack.image;
-
-						Queue.spotifySongCache.set<ExtendedTrack>(displayName, nextTrackFull);
+						Queue.spotifySongCache.set<Track>(displayName, nextTrackFull);
 					} else {
 						// No matches, or the search failed.
 						container.client.emit(LavalinkEvent.TrackException, { guildId: this.game.guild.id } as IncomingEventTrackExceptionPayload);

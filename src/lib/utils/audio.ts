@@ -1,13 +1,14 @@
-import type { ResolvedSpotifyData, SpotifyTrack, Playlist, ExtendedTrack, SpotifyImage } from '#types/Playlist';
+import type { Playlist } from '#types/Playlist';
 import { container, isOk, ok, err, fromAsync, type Result } from '@sapphire/framework';
-import { LoadType, type PlaylistInfo } from '@skyra/audio';
+import { LoadType, TrackInfo, type PlaylistInfo } from '@skyra/audio';
 import { PlaylistResolutionError, PlaylistType } from '#types/Enums';
 import { wordSimilarityThreshold } from '#utils/constants';
 import { jaroWinkler } from '@skyra/jaro-winkler';
 import { parseURL } from '@sapphire/utilities';
 import { fetch } from 'undici';
 import { Time } from '@sapphire/time-utilities';
-import init from 'spotify-url-info';
+import init, { SpotifyPlaylist } from 'spotify-url-info';
+import type { HexColorString } from 'discord.js';
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
 export const { getData: getSpotifyData } = init(fetch);
@@ -20,30 +21,6 @@ export const { getData: getSpotifyData } = init(fetch);
 export const getRandomThirtySecondWindow = (duration: number) => {
 	const start = Math.floor(Math.random() * (duration - 30 * Time.Second));
 	return { start, end: start + 30 * Time.Second };
-};
-
-/**
- * A typeguard that guarrantees that {@link ResolvedSpotifyData} is a playlist by checking if a property exists on its items.
- */
-export const isPlaylist = (items: SpotifyTrack[] | { track: SpotifyTrack }[]): items is { track: SpotifyTrack }[] => {
-	return 'track' in items[0];
-};
-
-/**
- * Resolves scraped Spotify artist, playlist, or album data into the tracks.
- */
-const resolveSpotifyTracks = (data: ResolvedSpotifyData) => {
-	if ('items' in data.tracks) {
-		if (isPlaylist(data.tracks.items)) {
-			return data.tracks.items.map(({ track }) => track);
-		}
-
-		// Is an album.
-		return data.tracks.items;
-	}
-
-	// Is an artist.
-	return data.tracks;
 };
 
 /**
@@ -66,15 +43,13 @@ export const resolvePlaylist = async (url: string): Promise<Result<Playlist, Pla
 /**
  * Resolved a playlist/album/artist from scraped Spotify data.
  */
-export const resolveSpotifyEntity = (data: ResolvedSpotifyData): Result<Playlist, PlaylistResolutionError> => {
+export const resolveSpotifyEntity = (data: Awaited<ReturnType<typeof getSpotifyData>>): Result<Playlist, PlaylistResolutionError> => {
 	// If there's no `tracks` property, it's a track or podcast
-	if (!data.tracks) {
+	if (!('trackList' in data)) {
 		return err(PlaylistResolutionError.NotPlaylist);
 	}
 
-	const tracks = resolveSpotifyTracks(data);
-
-	const filteredTracks = tracks.filter(({ duration_ms }) => duration_ms / Time.Second > 30);
+	const filteredTracks = data.trackList.filter(({ duration }) => duration / Time.Second > 30);
 	if (filteredTracks.length < 5) {
 		return err(PlaylistResolutionError.NotEnoughTracks);
 	}
@@ -82,14 +57,9 @@ export const resolveSpotifyEntity = (data: ResolvedSpotifyData): Result<Playlist
 	return ok({
 		type: PlaylistType.Spotify,
 		name: data.name,
-		color: data.dominantColor,
-		image: getBiggestImage(data.images),
-		tracks: filteredTracks.map((track) => ({
-			name: track.name,
-			artist: track.artists![0].name,
-			color: track.dominantColor,
-			image: getBiggestImage(track.album.images)
-		}))
+		color: data.coverArt.extractedColors.colorDark.hex as HexColorString,
+		image: getBiggestImage(data.coverArt.sources),
+		tracks: filteredTracks.map((track) => ({ name: track.title, artist: track.subtitle }))
 	});
 };
 
@@ -125,11 +95,7 @@ export const resolveLavalinkURL = async (url: string): Promise<Result<Playlist, 
 /**
  * Resolve thumbnail from a Youtube or Spotify entity.
  */
-export const resolveThumbnail = (info: ExtendedTrack['info']) => {
-	if (info.image) {
-		return info.image;
-	}
-
+export const resolveThumbnail = (info: TrackInfo) => {
 	const url = new URL(info.uri);
 	if (url.hostname === 'www.youtube.com') {
 		return `https://img.youtube.com/vi/${info.identifier}/mqdefault.jpg`;
@@ -139,9 +105,9 @@ export const resolveThumbnail = (info: ExtendedTrack['info']) => {
 };
 
 /**
- * Get the biggest image in an array of {@link SpotifyImage}s.
+ * Get the biggest image in an array.
  */
-export const getBiggestImage = (images: SpotifyImage[]) => {
+export const getBiggestImage = (images: SpotifyPlaylist['coverArt']['sources']) => {
 	// Array#reduce is actually more performant than #sort in this situation.
 	// eslint-disable-next-line unicorn/no-array-reduce
 	return images.reduce((a, b) => (a.width > b.width ? a : b)).url;
