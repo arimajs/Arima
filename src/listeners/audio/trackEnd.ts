@@ -24,7 +24,7 @@ export class TrackEndListener extends Listener {
 			}
 
 			const points = game.leaderboard.leader?.[1];
-			if (points && game.goal && points === game.goal) {
+			if (points && points === game.goal) {
 				await game.end(GameEndReason.GoalMet);
 			} else if (game.queue.tracksPlayed === game.limit) {
 				await game.end(GameEndReason.LimitReached);
