@@ -128,9 +128,7 @@ export const cleanSongName = (songName: string, artistNames: string[]) => {
 
 	// Applies both of the above, one at a time.
 	// "Taylor Swift - Blank Space (Lyrics Video)" -> "Blank Space"
-	let songWithoutSuffixAndPrefix = normalized;
-	songWithoutSuffixAndPrefix = songWithoutSuffixAndPrefix.replace(/.* -\s*/, '');
-	songWithoutSuffixAndPrefix = songWithoutSuffixAndPrefix.replace(/\s*\(.*|\s*- .*/, '');
+	const songWithoutSuffixAndPrefix = songWithoutPrefix.replace(/\s*\(.*|\s*- .*/g, '');
 
 	// Remove any strings that contain an artist as this isn't the song name.
 	const songNamesNoArtist = [songWithoutSuffixAndPrefix, songWithoutPrefix, songWithoutSuffix].filter(
