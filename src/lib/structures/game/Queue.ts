@@ -16,7 +16,7 @@ export class Queue {
 	 * A cache between spotify track titles and the encoded track string found from Youtube. Usage of node-cache might
 	 * be refactored to redis if there becomes a need.
 	 */
-	private static spotifySongCache = new NodeCache({ stdTTL: Time.Day * Time.Second });
+	private static spotifySongCache = new NodeCache({ stdTTL: Time.Day / Time.Second });
 
 	/**
 	 * A constant number that represents the original length of the playlist. This is useful when determining how many
