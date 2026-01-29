@@ -64,7 +64,7 @@ export class LeaderboardCommand extends ArimaCommand {
 					const gamesWonDisplay = ranks.map((member, index) => {
 						const gamesInfoPercent = toPercent(member.gamesWon / member.gamesPlayed);
 						const gamesInfoDisplay = `${member.gamesWon}/${member.gamesPlayed} (${gamesInfoPercent})`;
-						return `${rankToString(index + 1)} ${userMention(member.userId)} • ${inlineCode(gamesInfoDisplay)}`;
+						return `${rankToString(index)} ${userMention(member.userId)} • ${inlineCode(gamesInfoDisplay)}`;
 					});
 
 					// Add trailing newlines to separate from the potential point leaderboard below. Discord will trim
@@ -75,7 +75,7 @@ export class LeaderboardCommand extends ArimaCommand {
 				if (points?.length) {
 					const pointsDisplay = points.map((member, index) => {
 						const pointDisplay = `${member.points} (level ${member.level})`;
-						return `${rankToString(index + 1)} ${userMention(member.userId)} • ${inlineCode(pointDisplay)}`;
+						return `${rankToString(index)} ${userMention(member.userId)} • ${inlineCode(pointDisplay)}`;
 					});
 
 					embed.description += `⭐ ${bold('Point Leaderboard')}\n\n${pointsDisplay.join('\n')}`;

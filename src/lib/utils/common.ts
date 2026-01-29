@@ -2,10 +2,9 @@
  * Shuffles an array in place.
  */
 export const shuffle = (array: unknown[]) => {
-	let m = array.length;
-	while (m) {
-		const i = Math.floor(Math.random() * m--);
-		[array[m], array[i]] = [array[i], array[m]];
+	for (let i = array.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[array[i], array[j]] = [array[j], array[i]];
 	}
 };
 
@@ -25,29 +24,25 @@ const suffixes = {
 	two: 'nd',
 	few: 'rd',
 	other: 'th'
-} as const;
+} as Record<Intl.LDMLPluralRule, string>;
 
 /**
  * Converts a number to its ordinal form.
  * @example ordinal(1) //  => '1st'
  */
 export const ordinal = (num: number) => {
-	const rule = formatter.select(num) as Exclude<Intl.LDMLPluralRule, 'zero' | 'many'>;
+	const rule = formatter.select(num);
 	const suffix = suffixes[rule];
 	return `${num}${suffix}`;
 };
 
-const medals: Readonly<Record<number, string>> = {
-	1: '🥇',
-	2: '🥈',
-	3: '🥉'
-};
+const medals = ['🥇', '🥈', '🥉'] as const;
 
 /**
- * Converts a rank number to a string to be used for a leaderboard.
+ * Converts a rank index to a string to be used for a leaderboard.
  */
 export const rankToString = (rank: number) => {
-	return medals[rank] ?? `${rank}.`;
+	return medals[rank] ?? `${rank + 1}.`;
 };
 
 /**
