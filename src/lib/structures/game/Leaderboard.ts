@@ -4,9 +4,9 @@ import { userMention } from '@discordjs/builders';
 
 export class Leaderboard extends Collection<Snowflake, number> {
 	public get leader() {
-		// Sort by points (ascending)
-		const sorted = this.sorted((a, b) => b - a);
-		return [...sorted.entries()][0];
+		return this.reduce((acc, points, id) => {
+			return !acc || points > acc[1] ? [id, points] as [Snowflake, number] : acc;
+		}, null as [Snowflake, number] | null);
 	}
 
 	public inc(key: Snowflake, value = 1) {
